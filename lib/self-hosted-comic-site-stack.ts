@@ -31,32 +31,48 @@ export class ComicSiteStack extends cdk.Stack {
 
 		// Create S3 bucket for website static content
 		const websiteBucket = new s3.Bucket(this, 'WebsiteBucket', {
-			publicReadAccess: false,
 			blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-			websiteIndexDocument: 'index.html',
-			cors: [{
-				allowedMethods: [s3.HttpMethods.GET],
-				allowedOrigins: ['*'],
-				allowedHeaders: ['*'],
-			}],
+			removalPolicy: cdk.RemovalPolicy.DESTROY, // For development - remove in production
+			autoDeleteObjects: true, // For development - remove in production
 		});
 
-		// Create Origin Access Identity for CloudFront
-		const originAccessIdentity = new cloudfront.OriginAccessIdentity(this, 'OAI');
-
-		// Grant read access to CloudFront
-		websiteBucket.grantRead(originAccessIdentity);
+		// Create Origin Access Control
+		const oac = new cloudfront.CfnOriginAccessControl(this, 'OAC', {
+			originAccessControlConfig: {
+				name: 'WebsiteOAC',
+				originAccessControlOriginType: 's3',
+				signingBehavior: 'always',
+				signingProtocol: 'sigv4',
+			},
+		});
 
 		// Create CloudFront distribution
-		const distribution = new cloudfront.Distribution(this, 'ComicDistribution', {
+		const distribution = new cloudfront.Distribution(this, 'WebsiteDistribution', {
 			defaultBehavior: {
-				origin: new origins.S3Origin(websiteBucket, {
-					originAccessIdentity,
-				}),
+				origin: new origins.S3Origin(websiteBucket),
 				viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+				allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
+				cachedMethods: cloudfront.CachedMethods.CACHE_GET_HEAD,
 			},
 			defaultRootObject: 'index.html',
 		});
+
+		// Configure OAC on the distribution
+		const cfnDistribution = distribution.node.defaultChild as cloudfront.CfnDistribution;
+		cfnDistribution.addPropertyOverride('DistributionConfig.Origins.0.S3OriginConfig.OriginAccessIdentity', '');
+		cfnDistribution.addPropertyOverride('DistributionConfig.Origins.0.OriginAccessControlId', oac.getAtt('Id'));
+
+		// Add bucket policy to allow CloudFront access
+		websiteBucket.addToResourcePolicy(new iam.PolicyStatement({
+			actions: ['s3:GetObject'],
+			resources: [websiteBucket.arnForObjects('*')],
+			principals: [new iam.ServicePrincipal('cloudfront.amazonaws.com')],
+			conditions: {
+				StringEquals: {
+					'AWS:SourceArn': `arn:aws:cloudfront::${cdk.Stack.of(this).account}:distribution/${distribution.distributionId}`
+				}
+			}
+		}));
 
 		// Upload static website content
 		new s3deploy.BucketDeployment(this, 'DeployWebsite', {
@@ -87,7 +103,12 @@ export class ComicSiteStack extends cdk.Stack {
 			authFlows: {
 				adminUserPassword: true,
 				userPassword: true,
+				userSrp: true,
+				custom: true
 			},
+			supportedIdentityProviders: [
+				cognito.UserPoolClientIdentityProvider.COGNITO
+			],
 		});
 
 		// Create a Cognito Identity Pool to link with User Pool
