@@ -219,13 +219,25 @@ export class ComicSiteStack extends cdk.Stack {
 
 		// Create Lambda for processing metadata
 		const processMetadataLambda = new lambda.Function(this, 'ProcessMetadataLambda', {
-			runtime: lambda.Runtime.NODEJS_LATEST,
+			runtime: lambda.Runtime.NODEJS_18_X,
 			handler: 'index.handler',
-			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'assets', 'lambda')),
+			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'assets', 'lambda'), {
+				bundling: {
+					command: [
+						'bash', '-c',
+						'npm install && npm run build && cp -r dist/* /asset-output/ && cp package.json /asset-output/'
+					],
+					image: lambda.Runtime.NODEJS_18_X.bundlingImage,
+					user: 'root',
+				},
+			}),
 			environment: {
 				COMIC_TABLE_NAME: comicTable.tableName,
 				COMIC_BUCKET_NAME: comicBucket.bucketName,
+				NODE_OPTIONS: '--enable-source-maps',
 			},
+			timeout: Duration.seconds(30),
+			memorySize: 256
 		});
 
 		// Grant Lambda permissions

@@ -6,7 +6,13 @@ node_modules
 # CDK asset staging directory
 .cdk.staging
 cdk.out
+cdk.context.json
 
 .env
+.env.*
 .DS_Store
-cdk.context.json
+
+# Build outputs
+dist/
+*.js.map
+*.map
