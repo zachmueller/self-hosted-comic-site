@@ -51,8 +51,30 @@ export class ComicSiteStack extends cdk.Stack {
 		// Create DynamoDB table
 		const comicTable = new dynamodb.Table(this, 'ComicTable', {
 			partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
-			sortKey: { name: 'uploadDate', type: dynamodb.AttributeType.STRING },
+			sortKey: { name: 'postedTimestamp', type: dynamodb.AttributeType.STRING },
 			billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+		});
+
+		// Add GSI for tag-based queries
+		comicTable.addGlobalSecondaryIndex({
+			indexName: 'TagIndex',
+			partitionKey: { name: 'tag', type: dynamodb.AttributeType.STRING },
+			sortKey: { name: 'happenedOnDate', type: dynamodb.AttributeType.STRING },
+			projectionType: dynamodb.ProjectionType.ALL
+		});
+
+		// Add GSI for slug lookups
+		comicTable.addGlobalSecondaryIndex({
+			indexName: 'SlugIndex',
+			partitionKey: { name: 'slug', type: dynamodb.AttributeType.STRING },
+			projectionType: dynamodb.ProjectionType.ALL
+		});
+
+		// Add GSI for title lookups
+		comicTable.addGlobalSecondaryIndex({
+			indexName: 'TitleIndex',
+			partitionKey: { name: 'title', type: dynamodb.AttributeType.STRING },
+			projectionType: dynamodb.ProjectionType.ALL
 		});
 
 		// Create Lambda@Edge function for fetching comics
@@ -374,6 +396,11 @@ export class ComicSiteStack extends cdk.Stack {
 
 		new cdk.CfnOutput(this, 'DistributionDomainName', {
 			value: distribution.distributionDomainName,
+		});
+
+		new cdk.CfnOutput(this, 'ComicTableName', {
+			value: comicTable.tableName,
+			description: 'Name of the DynamoDB table for comics'
 		});
 	}
 }
