@@ -86,7 +86,7 @@ export class ComicSiteStack extends cdk.Stack {
 
 		// Replace the placeholder with the actual table name
 		const processedCode = lambdaCode.replace(
-			'{{TABLE_NAME}}',
+			'{{DYNAMODB_TABLE_NAME}}',
 			comicTable.tableName
 		);
 
