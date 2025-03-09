@@ -1,4 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
+import { Duration } from 'aws-cdk-lib';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
@@ -47,14 +48,66 @@ export class ComicSiteStack extends cdk.Stack {
 		});
 
 		// Create CloudFront distribution
+		const responseHeadersPolicy = new cloudfront.ResponseHeadersPolicy(this, 'SecurityHeadersPolicy', {
+			responseHeadersPolicyName: 'SecurityHeadersPolicy',
+			securityHeadersBehavior: {
+				contentSecurityPolicy: {
+					override: true,
+					contentSecurityPolicy: [
+								"default-src 'self' *.amazonaws.com unpkg.com;",
+								"script-src 'self' 'unsafe-inline' *.amazonaws.com unpkg.com;",
+								"style-src 'self' 'unsafe-inline';",
+								"img-src 'self' data: blob: *.amazonaws.com;",
+								"connect-src 'self' *.amazonaws.com *.amazoncognito.com;"
+							].join(' ')
+				},
+				strictTransportSecurity: {
+					override: true,
+					accessControlMaxAge: Duration.days(2 * 365),
+					includeSubdomains: true,
+					preload: true
+				},
+				frameOptions: {
+					override: true,
+					frameOption: cloudfront.HeadersFrameOption.DENY
+				},
+				xssProtection: {
+					override: true,
+					protection: true,
+					modeBlock: true
+				},
+				contentTypeOptions: {
+					override: true
+				}
+			}
+		});
 		const distribution = new cloudfront.Distribution(this, 'WebsiteDistribution', {
 			defaultBehavior: {
 				origin: new origins.S3Origin(websiteBucket),
 				viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
 				allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
 				cachedMethods: cloudfront.CachedMethods.CACHE_GET_HEAD,
+				responseHeadersPolicy: responseHeadersPolicy
 			},
 			defaultRootObject: 'index.html',
+			errorResponses: [
+				{
+					httpStatus: 403,
+					responseHttpStatus: 200,
+					responsePagePath: '/index.html'
+				},
+				{
+					httpStatus: 404,
+					responseHttpStatus: 200,
+					responsePagePath: '/index.html'
+				}
+			],
+			additionalBehaviors: {
+				'/assets/*': {
+					origin: new origins.S3Origin(websiteBucket),
+					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+				}
+			}
 		});
 
 		// Configure OAC on the distribution
@@ -94,6 +147,19 @@ export class ComicSiteStack extends cdk.Stack {
 					mutable: true,
 				},
 			},
+			featurePlan: cognito.FeaturePlan.PLUS,
+			mfa: cognito.Mfa.OPTIONAL,
+			signInCaseSensitive: false,
+			autoVerify: {
+				email: true,
+			},
+		});
+
+		// Create the Cognito domain (using AWS domain)
+		const userPoolDomain = userPool.addDomain('CognitoDomain', {
+			cognitoDomain: {
+				domainPrefix: 'whatacomicallife-' + this.account.substring(0, 8), // Must be unique
+			},
 		});
 
 		// Create Cognito App Client
@@ -104,11 +170,35 @@ export class ComicSiteStack extends cdk.Stack {
 				adminUserPassword: true,
 				userPassword: true,
 				userSrp: true,
-				custom: true
+				custom: true,
 			},
 			supportedIdentityProviders: [
 				cognito.UserPoolClientIdentityProvider.COGNITO
 			],
+			oAuth: {
+				flows: {
+					authorizationCodeGrant: true,
+				},
+				scopes: [
+					cognito.OAuthScope.EMAIL,
+					cognito.OAuthScope.OPENID,
+					cognito.OAuthScope.PROFILE,
+				],
+				callbackUrls: [
+					`https://${distribution.distributionDomainName}`
+				],
+				logoutUrls: [
+					`https://${distribution.distributionDomainName}`
+				],
+			},
+		});
+
+		// Add Managed Login Branding
+		new cognito.CfnManagedLoginBranding(this, 'ManagedLoginBranding', {
+			userPoolId: userPool.userPoolId,
+			clientId: userPoolClient.userPoolClientId,
+			returnMergedResources: true,
+			useCognitoProvidedValues: true,
 		});
 
 		// Create a Cognito Identity Pool to link with User Pool
@@ -187,13 +277,23 @@ export class ComicSiteStack extends cdk.Stack {
 
 		comicBucket.grantPut(presignedUrlRole);
 
-		// Output values you'll need for the frontend
+		// Output values needed for the frontend
 		new cdk.CfnOutput(this, 'UserPoolId', {
 			value: userPool.userPoolId,
 		});
 
 		new cdk.CfnOutput(this, 'UserPoolClientId', {
 			value: userPoolClient.userPoolClientId,
+		});
+
+		new cdk.CfnOutput(this, 'CognitoDomainUrl', {
+			value: userPoolDomain.baseUrl(),
+		});
+
+		new cdk.CfnOutput(this, 'CognitoLoginUrl', {
+			value: userPoolDomain.signInUrl(userPoolClient, {
+				redirectUri: `https://${distribution.distributionDomainName}`,
+			})
 		});
 
 		new cdk.CfnOutput(this, 'IdentityPoolId', {
