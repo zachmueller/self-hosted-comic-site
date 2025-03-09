@@ -71,16 +71,11 @@ export class ComicSiteStack extends cdk.Stack {
 
 		// Create CloudFront Function for image routing
 		const imageRouterFunction = new cloudfront.Function(this, 'ImageRouterFunction', {
-			code: cloudfront.FunctionCode.fromInline(`
-function handler(event) {
+			code: cloudfront.FunctionCode.fromInline(`function handler(event) {
 	var request = event.request;
-	var queryParams = request.querystring;
-
-	if (queryParams.hash) {
-		// Construct the path to the image in S3
-		var newUri = '/comics/' + queryParams.hash;
-		request.uri = newUri;
-	}
+    var parts = request.uri.split('/');
+    var key = parts[parts.length - 1];
+    request.uri = \`/comics/${key}\`;
 
 	return request;
 }`),
