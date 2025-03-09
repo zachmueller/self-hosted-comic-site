@@ -1,5 +1,5 @@
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
-const { DynamoDBDocumentClient, QueryCommand } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDBDocumentClient, QueryCommand, ScanCommand } = require('@aws-sdk/lib-dynamodb');
 
 const ddbClient = new DynamoDBClient({
 	region: 'us-east-1',
@@ -12,7 +12,7 @@ exports.handler = async (event) => {
 
 	try {
 		console.log('Attempting to query DynamoDB table:', COMIC_TABLE_NAME);
-
+/*
 		const result = await ddbDocClient.send(new QueryCommand({
 			TableName: COMIC_TABLE_NAME,
 			Limit: 10,
@@ -21,6 +21,11 @@ exports.handler = async (event) => {
 			ExpressionAttributeValues: {
 				':id': '#PUBLISHED',
 			},
+		}));
+*/
+		const result = await ddbDocClient.send(new ScanCommand({
+			TableName: COMIC_TABLE_NAME,
+			Limit: 10
 		}));
 
 		console.log('DynamoDB query result:', JSON.stringify(result, null, 2));
