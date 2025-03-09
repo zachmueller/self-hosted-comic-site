@@ -75,7 +75,7 @@ export class ComicSiteStack extends cdk.Stack {
 	var request = event.request;
     var parts = request.uri.split('/');
     var key = parts[parts.length - 1];
-    request.uri = \`/comics/${key}\`;
+    request.uri = '/comics/' + key;
 
 	return request;
 }`),
@@ -148,9 +148,9 @@ export class ComicSiteStack extends cdk.Stack {
 					}],
 					allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
 					cachePolicy: new cloudfront.CachePolicy(this, 'ComicsApiCachePolicy', {
-						defaultTtl: Duration.minutes(5),
+						defaultTtl: Duration.minutes(0),
 						minTtl: Duration.seconds(0),
-						maxTtl: Duration.minutes(10),
+						maxTtl: Duration.minutes(0),
 					}),
 				},
 				'/api/images/*': {
