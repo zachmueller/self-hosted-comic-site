@@ -6,9 +6,144 @@
 	<script src="https://unpkg.com/amazon-cognito-identity-js@latest/dist/amazon-cognito-identity.min.js"></script>
 	<script src="router.js"></script>
 	<script src="app.js"></script>
+	<script src="upload.js"></script>
 	<style>
 		.hidden { display: none; }
 		.error { color: red; margin: 10px 0; }
+
+
+		/* upload form styles */
+		.form-group {
+			margin-bottom: 1rem;
+		}
+
+		.form-group label {
+			display: block;
+			margin-bottom: 0.5rem;
+		}
+
+		.form-group input[type="text"],
+		.form-group textarea {
+			width: 100%;
+			padding: 0.5rem;
+		}
+
+		.image-panel {
+			border: 1px solid #ccc;
+			padding: 15px;
+			margin: 10px 0;
+			display: flex;
+			align-items: flex-start;
+			gap: 1rem;
+			background: white;
+			cursor: move;
+		}
+
+		.image-panel img {
+			max-width: 150px;
+			max-height: 150px;
+		}
+
+		.image-panel .controls {
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+		}
+
+		.image-panel.dragging {
+			opacity: 0.5;
+			border: 2px dashed #666;
+		}
+
+		.panel-number {
+			font-weight: bold;
+			margin-bottom: 5px;
+		}
+
+		.panel-controls {
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+			min-width: 120px;
+		}
+
+		.order-controls {
+			display: flex;
+			gap: 0.5rem;
+			justify-content: center;
+		}
+
+		.order-controls button {
+			padding: 5px 10px;
+			cursor: pointer;
+		}
+
+		.position-input {
+			width: 60px;
+			text-align: center;
+			padding: 5px;
+			margin: 0 5px;
+		}
+
+		#imageOrderContainer {
+			min-height: 100px;
+			padding: 10px;
+			border: 2px dashed #ccc;
+		}
+
+		#imageOrderContainer.drag-active {
+			background: #f0f0f0;
+			border-color: #666;
+		}
+
+		.image-preview {
+			flex-grow: 1;
+		}
+
+		.image-preview img {
+			max-width: 200px;
+			max-height: 200px;
+			object-fit: contain;
+		}
+
+		.alt-text-input {
+			width: 100%;
+			margin-top: 5px;
+			padding: 5px;
+		}
+
+		.order-buttons {
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+		}
+
+		.panel-item {
+			border: 1px solid #ccc;
+			padding: 10px;
+			margin: 10px 0;
+			display: flex;
+			align-items: flex-start;
+			gap: 1rem;
+		}
+
+		.panel-item img {
+			max-width: 200px;
+			max-height: 200px;
+			object-fit: contain;
+		}
+
+		.panel-content {
+			flex-grow: 1;
+		}
+
+		.remove-button {
+			background: #ff4444;
+			color: white;
+			border: none;
+			padding: 5px 10px;
+			cursor: pointer;
+		}
 	</style>
 </head>
 <body>
@@ -36,10 +171,66 @@
 
 		<div id="uploadSection" class="page" style="display: none;">
 			<h2>Upload Comic</h2>
-			<input type="file" id="fileInput" accept="image/*" multiple>
-			<button onclick="uploadFiles()">Upload</button>
+			<form id="uploadForm" onsubmit="handleUpload(event)">
+				<div class="form-group">
+					<label for="title">Title:</label>
+					<input type="text" id="title" required>
+				</div>
+
+				<div class="form-group">
+					<label for="caption">Caption:</label>
+					<textarea id="caption" required></textarea>
+				</div>
+
+				<div class="form-group">
+					<label for="tags">Tags (comma-separated):</label>
+					<input type="text" id="tags" placeholder="jx-travels, muxu-love-story, etc.">
+				</div>
+
+				<div class="form-group">
+					<label for="happenedOnDate">Date Event Occurred:</label>
+					<input type="date" id="happenedOnDate" required>
+				</div>
+
+				<div class="form-group">
+					<label for="postedTimestamp">Original Post Date (optional):</label>
+					<input type="datetime-local" id="postedTimestamp">
+				</div>
+
+				<div class="form-group">
+					<label for="scrollStyle">Scroll Style:</label>
+					<select id="scrollStyle" required>
+						<option value="carousel">Carousel</option>
+						<option value="long">Long Scroll</option>
+					</select>
+				</div>
+
+				<div class="form-group">
+					<label>Integrations:</label>
+					<div class="integration-options">
+						<label>
+							<input type="checkbox" name="integration" value="instagram"> Instagram
+						</label>
+						<label>
+							<input type="checkbox" name="integration" value="facebook"> Facebook
+						</label>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label>Add Comic Panels:</label>
+					<input type="file" id="fileInput" accept="image/*">
+					<button type="button" onclick="addPanel()">Add Panel</button>
+					<div id="panelsContainer">
+						<!-- Panels will be added here -->
+					</div>
+				</div>
+
+				<button type="submit">Upload Comic</button>
+			</form>
 			<div id="uploadStatus"></div>
 		</div>
+
 
 		<div id="notFoundSection" class="page" style="display: none;">
 			<h2>Page Not Found</h2>
