@@ -144,6 +144,62 @@
 			padding: 5px 10px;
 			cursor: pointer;
 		}
+
+		/* Styling for simple comic view */
+		.comic-loading {
+			text-align: center;
+			padding: 2rem;
+			color: #666;
+		}
+
+		.comic-error {
+			color: #ff4444;
+			padding: 1rem;
+			margin: 1rem 0;
+			border: 1px solid #ff4444;
+			border-radius: 4px;
+			background-color: #fff5f5;
+		}
+
+		.comic-entry {
+			margin-bottom: 2rem;
+			padding: 1rem;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			background-color: white;
+		}
+
+		.comic-images {
+			margin: 1rem 0;
+		}
+
+		.comic-images img {
+			max-width: 100%;
+			height: auto;
+			margin-bottom: 1rem;
+		}
+
+		/* Carousel style */
+		.comic-entry[data-style="carousel"] .comic-images {
+			display: flex;
+			overflow-x: auto;
+			scroll-snap-type: x mandatory;
+			gap: 1rem;
+			padding-bottom: 1rem;
+		}
+
+		.comic-entry[data-style="carousel"] .comic-images img {
+			scroll-snap-align: start;
+			min-width: 90%;
+			margin-bottom: 0;
+		}
+
+		/* Long scroll style */
+		.comic-entry[data-style="long"] .comic-images {
+			display: flex;
+			flex-direction: column;
+			gap: 1rem;
+		}
 	</style>
 </head>
 <body>
@@ -159,8 +215,13 @@
 
 		<!-- Public sections -->
 		<div id="comicViewSection" class="page" style="display: none;">
-			<h2>Latest</h2>
-			<div id="comicDisplay"></div>
+			<h2>Latest Comics</h2>
+			<div id="comicDisplay">
+				<!-- Loading state will be inserted here -->
+			</div>
+			<div id="comicError" class="error" style="display: none;">
+				<!-- Error messages will be shown here -->
+			</div>
 		</div>
 
 		<!-- Protected sections -->

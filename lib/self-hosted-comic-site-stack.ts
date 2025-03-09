@@ -8,6 +8,7 @@ import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
+import * as cloudfront_origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as path from 'node:path';
 
@@ -45,6 +46,41 @@ export class ComicSiteStack extends cdk.Stack {
 				signingBehavior: 'always',
 				signingProtocol: 'sigv4',
 			},
+		});
+
+		// Create Lambda@Edge function for fetching comics
+		const getComicsLambda = new nodejs.NodejsFunction(this, 'GetComicsLambda', {
+			entry: path.join(__dirname, '..', 'assets', 'lambda', 'getComics.ts'),
+			handler: 'handler',
+			runtime: lambda.Runtime.NODEJS_18_X,
+			timeout: Duration.seconds(5),
+		});
+
+		// Grant the Lambda permission to read from DynamoDB
+		comicTable.grantReadData(getComicsLambda);
+
+		// Grant Lambda@Edge permissions to assume role
+		getComicsLambda.addToRolePolicy(new iam.PolicyStatement({
+			actions: ['sts:AssumeRole'],
+			resources: ['*'],
+		}));
+
+		// Create CloudFront Function for image routing
+		const imageRouterFunction = new cloudfront.Function(this, 'ImageRouterFunction', {
+			code: cloudfront.FunctionCode.fromInline(`
+				function handler(event) {
+					var request = event.request;
+					var queryParams = request.querystring;
+
+					if (queryParams.hash) {
+						// Construct the path to the image in S3
+						var newUri = '/comics/' + queryParams.hash;
+						request.uri = newUri;
+					}
+
+					return request;
+				}
+			`),
 		});
 
 		// Create CloudFront distribution
@@ -103,6 +139,22 @@ export class ComicSiteStack extends cdk.Stack {
 				}
 			],
 			additionalBehaviors: {
+				'/api/comics': {
+					origin: new origins.S3Origin(websiteBucket), // Dummy origin, will be overridden by Lambda@Edge
+					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+					edgeLambdas: [{
+						functionVersion: getComicsLambda.currentVersion,
+						eventType: cloudfront.LambdaEdgeEventType.ORIGIN_REQUEST,
+					}],
+				},
+				'/api/images/*': {
+					origin: new origins.S3Origin(comicBucket),
+					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+					functionAssociations: [{
+						function: imageRouterFunction,
+						eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
+					}],
+				},
 				'/assets/*': {
 					origin: new origins.S3Origin(websiteBucket),
 					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -221,7 +273,7 @@ export class ComicSiteStack extends cdk.Stack {
 		const processMetadataLambda = new lambda.Function(this, 'ProcessMetadataLambda', {
 			runtime: lambda.Runtime.NODEJS_18_X,
 			handler: 'index.handler',
-			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'assets', 'lambda', 'dist')),
+			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'assets', 'lambda', 'processMetadata.js')),
 			environment: {
 				COMIC_TABLE_NAME: comicTable.tableName,
 				COMIC_BUCKET_NAME: comicBucket.bucketName,
@@ -239,7 +291,7 @@ export class ComicSiteStack extends cdk.Stack {
 		comicBucket.addEventNotification(
 			s3.EventType.OBJECT_CREATED,
 			new s3n.LambdaDestination(processMetadataLambda),
-			{ suffix: 'metadata.json' }
+			{ prefix: 'uploads/' }
 		);
 
 		// Create IAM role limited to Cognito Identity Pool
