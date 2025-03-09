@@ -11,6 +11,7 @@ import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as cloudfront_origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as path from 'node:path';
+import * as fs from 'node:fs';
 
 export class ComicSiteStack extends cdk.Stack {
 	constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
@@ -77,11 +78,23 @@ export class ComicSiteStack extends cdk.Stack {
 			projectionType: dynamodb.ProjectionType.ALL
 		});
 
+		// Read the Lambda function code
+		const lambdaCode = fs.readFileSync(
+			path.join(__dirname, '..', 'assets', 'lambda', 'getComics', 'index.js.template'),
+			'utf8'
+		);
+
+		// Replace the placeholder with the actual table name
+		const processedCode = lambdaCode.replace(
+			'{{TABLE_NAME}}',
+			comicTable.tableName
+		);
+
 		// Create Lambda@Edge function for fetching comics
 		const getComicsLambda = new lambda.Function(this, 'GetComicsLambda', {
 			runtime: lambda.Runtime.NODEJS_18_X,
 			handler: 'index.handler',
-			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'assets', 'lambda', 'getComics')),
+			code: lambda.Code.fromInline(processedCode),
 			timeout: Duration.seconds(5),
 		});
 
@@ -92,15 +105,16 @@ export class ComicSiteStack extends cdk.Stack {
 		}));
 
 		// Create CloudFront Function for image routing
-		const imageRouterFunction = new cloudfront.Function(this, 'ImageRouterFunction', {
-			code: cloudfront.FunctionCode.fromInline(`function handler(event) {
+		const cfFunctionCode = 
+`function handler(event) {
 	var request = event.request;
     var parts = request.uri.split('/');
     var key = parts[parts.length - 1];
     request.uri = '/comics/' + key;
-
 	return request;
-}`),
+}`;
+		const imageRouterFunction = new cloudfront.Function(this, 'ImageRouterFunction', {
+			code: cloudfront.FunctionCode.fromInline(cfFunctionCode),
 		});
 
 		// Create CloudFront distribution
