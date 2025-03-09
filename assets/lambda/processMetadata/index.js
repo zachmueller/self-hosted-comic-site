@@ -1,0 +1,68 @@
+const { S3Client, GetObjectCommand, HeadObjectCommand } = require('@aws-sdk/client-s3');
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
+const { DynamoDBDocumentClient, PutCommand } = require('@aws-sdk/lib-dynamodb');
+// Initialize clients
+const s3Client = new S3Client({});
+const ddbClient = new DynamoDBClient({});
+const ddbDocClient = DynamoDBDocumentClient.from(ddbClient);
+exports.handler = async (event) => {
+    const bucket = event.Records[0].s3.bucket.name;
+    const key = decodeURIComponent(event.Records[0].s3.object.key);
+    try {
+        // Get metadata file
+        const metadataResponse = await s3Client.send(new GetObjectCommand({
+            Bucket: bucket,
+            Key: key,
+        }));
+        if (!metadataResponse.Body) {
+            throw new Error('No metadata body received');
+        }
+        const metadata = JSON.parse(await streamToString(metadataResponse.Body));
+        // Validate metadata
+        if (!metadata.title || !metadata.slug || !metadata.images?.length) {
+            throw new Error('Invalid metadata format');
+        }
+        // Check if all referenced images exist
+        await Promise.all(metadata.images.map(async (image) => {
+            try {
+                await s3Client.send(new HeadObjectCommand({
+                    Bucket: bucket,
+                    Key: image.key
+                }));
+            }
+            catch (error) {
+                throw new Error(`Referenced image not found: ${image.key}`);
+            }
+        }));
+        // Write to DynamoDB
+        await ddbDocClient.send(new PutCommand({
+            TableName: process.env.COMIC_TABLE_NAME,
+            Item: {
+                ...metadata,
+                id: metadata.uuid,
+                uploadDate: new Date().toISOString(),
+            }
+        }));
+        return {
+            statusCode: 200,
+            body: JSON.stringify({
+                message: 'Successfully processed metadata',
+                slug: metadata.slug
+            })
+        };
+    }
+    catch (error) {
+        console.error('Error processing metadata:', error);
+        throw error;
+    }
+};
+// Utility function to convert stream to string
+async function streamToString(stream) {
+    return new Promise((resolve, reject) => {
+        const chunks = [];
+        stream.on('data', (chunk) => chunks.push(chunk));
+        stream.on('error', reject);
+        stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+    });
+}
+//# sourceMappingURL=index.js.map
