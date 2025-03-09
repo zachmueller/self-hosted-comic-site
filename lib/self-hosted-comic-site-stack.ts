@@ -49,15 +49,12 @@ export class ComicSiteStack extends cdk.Stack {
 		});
 
 		// Create Lambda@Edge function for fetching comics
-		const getComicsLambda = new nodejs.NodejsFunction(this, 'GetComicsLambda', {
-			entry: path.join(__dirname, '..', 'assets', 'lambda', 'getComics.ts'),
-			handler: 'handler',
+		const getComicsLambda = new lambda.Function(this, 'GetComicsLambda', {
 			runtime: lambda.Runtime.NODEJS_18_X,
+			handler: 'index.handler',
+			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'assets', 'lambda', 'getComics')),
 			timeout: Duration.seconds(5),
 		});
-
-		// Grant the Lambda permission to read from DynamoDB
-		comicTable.grantReadData(getComicsLambda);
 
 		// Grant Lambda@Edge permissions to assume role
 		getComicsLambda.addToRolePolicy(new iam.PolicyStatement({
@@ -68,19 +65,18 @@ export class ComicSiteStack extends cdk.Stack {
 		// Create CloudFront Function for image routing
 		const imageRouterFunction = new cloudfront.Function(this, 'ImageRouterFunction', {
 			code: cloudfront.FunctionCode.fromInline(`
-				function handler(event) {
-					var request = event.request;
-					var queryParams = request.querystring;
+function handler(event) {
+	var request = event.request;
+	var queryParams = request.querystring;
 
-					if (queryParams.hash) {
-						// Construct the path to the image in S3
-						var newUri = '/comics/' + queryParams.hash;
-						request.uri = newUri;
-					}
+	if (queryParams.hash) {
+		// Construct the path to the image in S3
+		var newUri = '/comics/' + queryParams.hash;
+		request.uri = newUri;
+	}
 
-					return request;
-				}
-			`),
+	return request;
+}`),
 		});
 
 		// Create CloudFront distribution
@@ -210,7 +206,7 @@ export class ComicSiteStack extends cdk.Stack {
 		// Create the Cognito domain (using AWS domain)
 		const userPoolDomain = userPool.addDomain('CognitoDomain', {
 			cognitoDomain: {
-				domainPrefix: `whatacomicallife-${cdk.Names.uniqueId(this).toLowerCase().slice(0, 8)}`,
+				domainPrefix: 'whatacomicallife-06079590',
 			},
 		});
 
@@ -273,7 +269,7 @@ export class ComicSiteStack extends cdk.Stack {
 		const processMetadataLambda = new lambda.Function(this, 'ProcessMetadataLambda', {
 			runtime: lambda.Runtime.NODEJS_18_X,
 			handler: 'index.handler',
-			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'assets', 'lambda', 'processMetadata.js')),
+			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'assets', 'lambda', 'processMetadata')),
 			environment: {
 				COMIC_TABLE_NAME: comicTable.tableName,
 				COMIC_BUCKET_NAME: comicBucket.bucketName,
@@ -286,6 +282,7 @@ export class ComicSiteStack extends cdk.Stack {
 		// Grant Lambda permissions
 		comicBucket.grantRead(processMetadataLambda);
 		comicTable.grantWriteData(processMetadataLambda);
+		comicTable.grantReadData(getComicsLambda);
 
 		// Add S3 trigger for metadata.json uploads
 		comicBucket.addEventNotification(
