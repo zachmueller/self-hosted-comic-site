@@ -158,7 +158,7 @@ export class ComicSiteStack extends cdk.Stack {
 		// Create the Cognito domain (using AWS domain)
 		const userPoolDomain = userPool.addDomain('CognitoDomain', {
 			cognitoDomain: {
-				domainPrefix: 'whatacomicallife-' + this.account.substring(0, 8), // Must be unique
+				domainPrefix: `whatacomicallife-${cdk.Names.uniqueId(this).toLowerCase().slice(0, 8)}`,
 			},
 		});
 
@@ -221,23 +221,14 @@ export class ComicSiteStack extends cdk.Stack {
 		const processMetadataLambda = new lambda.Function(this, 'ProcessMetadataLambda', {
 			runtime: lambda.Runtime.NODEJS_18_X,
 			handler: 'index.handler',
-			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'assets', 'lambda'), {
-				bundling: {
-					command: [
-						'bash', '-c',
-						'npm install && npm run build && cp -r dist/* /asset-output/ && cp package.json /asset-output/'
-					],
-					image: lambda.Runtime.NODEJS_18_X.bundlingImage,
-					user: 'root',
-				},
-			}),
+			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'assets', 'lambda', 'dist')),
 			environment: {
 				COMIC_TABLE_NAME: comicTable.tableName,
 				COMIC_BUCKET_NAME: comicBucket.bucketName,
 				NODE_OPTIONS: '--enable-source-maps',
 			},
 			timeout: Duration.seconds(30),
-			memorySize: 256
+			memorySize: 256,
 		});
 
 		// Grant Lambda permissions
