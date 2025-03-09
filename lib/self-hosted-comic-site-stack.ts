@@ -48,6 +48,13 @@ export class ComicSiteStack extends cdk.Stack {
 			},
 		});
 
+		// Create DynamoDB table
+		const comicTable = new dynamodb.Table(this, 'ComicTable', {
+			partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
+			sortKey: { name: 'uploadDate', type: dynamodb.AttributeType.STRING },
+			billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+		});
+
 		// Create Lambda@Edge function for fetching comics
 		const getComicsLambda = new lambda.Function(this, 'GetComicsLambda', {
 			runtime: lambda.Runtime.NODEJS_18_X,
@@ -134,6 +141,7 @@ function handler(event) {
 					responsePagePath: '/index.html'
 				}
 			],
+			priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
 			additionalBehaviors: {
 				'/api/comics': {
 					origin: new origins.S3Origin(websiteBucket), // Dummy origin, will be overridden by Lambda@Edge
@@ -141,7 +149,14 @@ function handler(event) {
 					edgeLambdas: [{
 						functionVersion: getComicsLambda.currentVersion,
 						eventType: cloudfront.LambdaEdgeEventType.ORIGIN_REQUEST,
+						includeBody: false,
 					}],
+					allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
+					cachePolicy: new cloudfront.CachePolicy(this, 'ComicsApiCachePolicy', {
+						defaultTtl: Duration.minutes(5),
+						minTtl: Duration.seconds(0),
+						maxTtl: Duration.minutes(10),
+					}),
 				},
 				'/api/images/*': {
 					origin: new origins.S3Origin(comicBucket),
@@ -258,13 +273,6 @@ function handler(event) {
 			}],
 		});
 
-		// Create DynamoDB table
-		const comicTable = new dynamodb.Table(this, 'ComicTable', {
-			partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
-			sortKey: { name: 'uploadDate', type: dynamodb.AttributeType.STRING },
-			billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-		});
-
 		// Create Lambda for processing metadata
 		const processMetadataLambda = new lambda.Function(this, 'ProcessMetadataLambda', {
 			runtime: lambda.Runtime.NODEJS_18_X,
@@ -283,6 +291,15 @@ function handler(event) {
 		comicBucket.grantRead(processMetadataLambda);
 		comicTable.grantWriteData(processMetadataLambda);
 		comicTable.grantReadData(getComicsLambda);
+		getComicsLambda.addToRolePolicy(new iam.PolicyStatement({
+			effect: iam.Effect.ALLOW,
+			actions: [
+				'logs:CreateLogGroup',
+				'logs:CreateLogStream',
+				'logs:PutLogEvents'
+			],
+			resources: ['*']
+		}));
 
 		// Add S3 trigger for metadata.json uploads
 		comicBucket.addEventNotification(
