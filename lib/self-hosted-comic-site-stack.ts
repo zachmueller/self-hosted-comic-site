@@ -304,11 +304,15 @@ export class ComicSiteStack extends cdk.Stack {
 			}],
 		});
 
-		// Create Lambda for processing metadata
-		const processMetadataLambda = new lambda.Function(this, 'ProcessMetadataLambda', {
+		// Create Lambda function for processing uploads
+		const processUploadsCode = fs.readFileSync(
+			path.join(__dirname, '..', 'assets', 'lambda', 'processUploads', 'index.js.template'),
+			'utf8'
+		);
+		const processUploadsLambda = new lambda.Function(this, 'ProcessUploads', {
 			runtime: lambda.Runtime.NODEJS_18_X,
 			handler: 'index.handler',
-			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'assets', 'lambda', 'processMetadata')),
+			code: lambda.Code.fromInline(processUploadsCode),
 			environment: {
 				COMIC_TABLE_NAME: comicTable.tableName,
 				COMIC_BUCKET_NAME: comicBucket.bucketName,
@@ -319,8 +323,8 @@ export class ComicSiteStack extends cdk.Stack {
 		});
 
 		// Grant Lambda permissions
-		comicBucket.grantRead(processMetadataLambda);
-		comicTable.grantWriteData(processMetadataLambda);
+		comicBucket.grantRead(processUploadsLambda);
+		comicTable.grantWriteData(processUploadsLambda);
 		comicTable.grantReadData(getComicsLambda);
 		getComicsLambda.addToRolePolicy(new iam.PolicyStatement({
 			effect: iam.Effect.ALLOW,
@@ -332,10 +336,10 @@ export class ComicSiteStack extends cdk.Stack {
 			resources: ['*']
 		}));
 
-		// Add S3 trigger for metadata.json uploads
+		// Add S3 trigger for metadata uploads
 		comicBucket.addEventNotification(
 			s3.EventType.OBJECT_CREATED,
-			new s3n.LambdaDestination(processMetadataLambda),
+			new s3n.LambdaDestination(processUploadsLambda),
 			{ prefix: 'uploads/' }
 		);
 

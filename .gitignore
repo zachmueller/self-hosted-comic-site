@@ -16,7 +16,3 @@ cdk.context.json
 dist/
 *.js.map
 *.map
-
-# allow lambda code
-!assets/lambda/getComics/index.js
-!assets/lambda/processMetadata/index.js
