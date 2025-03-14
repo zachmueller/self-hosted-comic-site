@@ -387,7 +387,7 @@ export class ComicSiteStack extends cdk.Stack {
 				's3:PutObject',
 				's3:DeleteObject',
 				's3:ListObjects',
-				's3:ListObjectsV2'
+				's3:ListObjectsV2',
 				'logs:CreateLogGroup',
 				'logs:CreateLogStream',
 				'logs:PutLogEvents'
