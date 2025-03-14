@@ -78,17 +78,18 @@ export class ComicSiteStack extends cdk.Stack {
 			projectionType: dynamodb.ProjectionType.ALL
 		});
 
-		// Read the Lambda function code
-		const lambdaCode = fs.readFileSync(
+		// Read the getComics Lambda function code
+		const getComicsLambdaCode = fs.readFileSync(
 			path.join(__dirname, '..', 'assets', 'lambda', 'getComics', 'index.js.template'),
 			'utf8'
 		);
 
 		// Replace the placeholder with the actual table name
-		const processedCode = lambdaCode.replace(
-			'{{DYNAMODB_TABLE_NAME}}',
-			comicTable.tableName
-		);
+		const processedCode = getComicsLambdaCode.replace(
+				'{{DYNAMODB_TABLE_NAME}}', comicTable.tableName
+			).replace(
+				'{{COMIC_BUCKET_NAME}}', comicBucket.bucketName
+			);
 
 		// Create Lambda@Edge function for fetching comics
 		const getComicsLambda = new lambda.Function(this, 'GetComicsLambda', {
@@ -118,6 +119,11 @@ export class ComicSiteStack extends cdk.Stack {
 		});
 
 		// Create CloudFront distribution
+		const apiCachePolicyBase = new cloudfront.CachePolicy(this, 'ComicsApiCachePolicy', {
+				defaultTtl: Duration.minutes(0),
+				minTtl: Duration.seconds(0),
+				maxTtl: Duration.minutes(0),
+			});
 		const websiteBucketS3Origin = new origins.S3Origin(websiteBucket);
 		const comicBucketS3Origin = new origins.S3Origin(comicBucket);
 		const responseHeadersPolicy = new cloudfront.ResponseHeadersPolicy(this, 'SecurityHeadersPolicy', {
@@ -176,6 +182,17 @@ export class ComicSiteStack extends cdk.Stack {
 			],
 			priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
 			additionalBehaviors: {
+				'/api/getComics': {
+					origin: websiteBucketS3Origin, // Dummy origin, will be overridden by Lambda@Edge
+					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+					edgeLambdas: [{
+						functionVersion: getComicsLambda.currentVersion,
+						eventType: cloudfront.LambdaEdgeEventType.ORIGIN_REQUEST,
+						includeBody: false,
+					}],
+					allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
+					cachePolicy: apiCachePolicyBase,
+				},
 				'/api/comics': {
 					origin: websiteBucketS3Origin, // Dummy origin, will be overridden by Lambda@Edge
 					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -185,11 +202,7 @@ export class ComicSiteStack extends cdk.Stack {
 						includeBody: false,
 					}],
 					allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
-					cachePolicy: new cloudfront.CachePolicy(this, 'ComicsApiCachePolicy', {
-						defaultTtl: Duration.minutes(0),
-						minTtl: Duration.seconds(0),
-						maxTtl: Duration.minutes(0),
-					}),
+					cachePolicy: apiCachePolicyBase,
 				},
 				'/api/images/*': {
 					origin: comicBucketS3Origin,
@@ -343,6 +356,50 @@ export class ComicSiteStack extends cdk.Stack {
 			s3.EventType.OBJECT_CREATED,
 			new s3n.LambdaDestination(processUploadsLambda),
 			{ prefix: 'uploads/' }
+		);
+
+		// Create Lambda function for processing cache invalidations
+		const manageS3CacheCode = fs.readFileSync(
+			path.join(__dirname, '..', 'assets', 'lambda', 'manageS3Cache', 'index.js.template'),
+			'utf8'
+		);
+		const manageS3CacheLambda = new lambda.Function(this, 'manageS3Cache', {
+			runtime: lambda.Runtime.NODEJS_18_X,
+			handler: 'index.handler',
+			code: lambda.Code.fromInline(processUploadsCode),
+			environment: {
+				COMIC_TABLE_NAME: comicTable.tableName,
+				COMIC_BUCKET_NAME: comicBucket.bucketName,
+				NODE_OPTIONS: '--enable-source-maps',
+			},
+			timeout: Duration.seconds(30),
+			memorySize: 256,
+		});
+
+		// Grant Lambda permissions
+		comicBucket.grantRead(manageS3CacheLambda);
+		comicTable.grantWriteData(manageS3CacheLambda);
+		comicTable.grantReadData(getComicsLambda);
+		getComicsLambda.addToRolePolicy(new iam.PolicyStatement({
+			effect: iam.Effect.ALLOW,
+			actions: [
+				'dynamodb:Query',
+				's3:PutObject',
+				's3:DeleteObject',
+				's3:ListObjects',
+				's3:ListObjectsV2'
+				'logs:CreateLogGroup',
+				'logs:CreateLogStream',
+				'logs:PutLogEvents'
+			],
+			resources: ['*'] //TODO::pare this down and target the ARNs appropriately::
+		}));
+
+		// Add S3 trigger for invalidation uploads
+		comicBucket.addEventNotification(
+			s3.EventType.OBJECT_CREATED,
+			new s3n.LambdaDestination(manageS3CacheLambda),
+			{ prefix: 'invalidation/' }
 		);
 
 		// Create IAM role limited to Cognito Identity Pool
