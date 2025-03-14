@@ -105,6 +105,19 @@ export class ComicSiteStack extends cdk.Stack {
 			resources: ['*'],
 		}));
 
+		// Grant Lambda@Edge permissions to interact with DynamoDB
+		comicBucket.grantRead(getComicsLambda);
+		comicTable.grantReadData(getComicsLambda);
+		getComicsLambda.addToRolePolicy(new iam.PolicyStatement({
+			effect: iam.Effect.ALLOW,
+			actions: [
+				'logs:CreateLogGroup',
+				'logs:CreateLogStream',
+				'logs:PutLogEvents'
+			],
+			resources: ['*']
+		}));
+
 		// Create CloudFront Function for image routing
 		const cfFunctionCode = 
 `function handler(event) {
@@ -340,15 +353,18 @@ export class ComicSiteStack extends cdk.Stack {
 		// Grant Lambda permissions
 		comicBucket.grantRead(processUploadsLambda);
 		comicTable.grantWriteData(processUploadsLambda);
-		comicTable.grantReadData(getComicsLambda);
-		getComicsLambda.addToRolePolicy(new iam.PolicyStatement({
+		// Add specific permission for invalidation triggers
+		processUploadsLambda.addToRolePolicy(new iam.PolicyStatement({
 			effect: iam.Effect.ALLOW,
 			actions: [
-				'logs:CreateLogGroup',
-				'logs:CreateLogStream',
-				'logs:PutLogEvents'
+				's3:PutObject',
+				's3:GetObject',
 			],
-			resources: ['*']
+			resources: [
+				`${comicBucket.bucketArn}/comics/*`,
+				`${comicBucket.bucketArn}/uploads/*`,
+				`${comicBucket.bucketArn}/invalidation/*`
+			]
 		}));
 
 		// Add S3 trigger for metadata uploads
@@ -378,9 +394,8 @@ export class ComicSiteStack extends cdk.Stack {
 
 		// Grant Lambda permissions
 		comicBucket.grantRead(manageS3CacheLambda);
-		comicTable.grantWriteData(manageS3CacheLambda);
-		comicTable.grantReadData(getComicsLambda);
-		getComicsLambda.addToRolePolicy(new iam.PolicyStatement({
+		comicTable.grantReadData(manageS3CacheLambda);
+		manageS3CacheLambda.addToRolePolicy(new iam.PolicyStatement({
 			effect: iam.Effect.ALLOW,
 			actions: [
 				'dynamodb:Query',
