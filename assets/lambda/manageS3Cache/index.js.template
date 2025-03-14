@@ -92,7 +92,7 @@ async function refreshTagCache(tag) {
 
 	do {
 		// Query DynamoDB using the tag index
-		const queryResult = await dynamoClient.send(new QueryCommand({
+		const ddbQuery = new QueryCommand({
 			TableName: COMIC_TABLE,
 			IndexName: 'TagIndex',
 			KeyConditionExpression: 'tag = :tag',
@@ -102,7 +102,10 @@ async function refreshTagCache(tag) {
 			Limit: PAGE_SIZE,
 			ScanIndexForward: false, // DESC order by happenedOnDate
 			ExclusiveStartKey: lastEvaluatedKey
-		}));
+		})
+		console.log('Sending DDB query:', ddbQuery);
+		const queryResult = await dynamoClient.send(ddbQuery);
+		console.log('Processing query results:', queryResult);
 
 		// Process items and create cache page
 		if (queryResult.Items && queryResult.Items.length > 0) {

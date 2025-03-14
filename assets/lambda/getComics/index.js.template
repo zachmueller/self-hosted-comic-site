@@ -64,23 +64,46 @@ async function streamToString(stream) {
  * @param {string} querystring - Raw querystring from event
  * @returns {Object} - Parsed query parameters
  */
-const parseQueryParameters = (querystring) => {
-	if (!querystring) return {};
+const parseQueryParameters = (request) => {
+	console.log('Parsing request:', request);
 	
-	return querystring
-		.split('&')
-		.reduce((params, param) => {
-			const [key, value] = param.split('=');
-			if (key && value) {
-				params[decodeURIComponent(key)] = decodeURIComponent(value);
+	try {
+		// First check if querystring is available directly
+		if (request.querystring) {
+			const searchParams = new URLSearchParams(request.querystring);
+			const params = {};
+			console.log('Parsing via querystring');
+			for (const [key, value] of searchParams.entries()) {
+				console.log('Parsed parameter:', { key, value });
+				params[key] = value;
 			}
 			return params;
-		}, {});
+		}
+		
+		// Fallback to parsing from URI if querystring isn't separate
+		if (request.uri && request.uri.includes('?')) {
+			const querystring = request.uri.split('?')[1];
+			const searchParams = new URLSearchParams(querystring);
+			const params = {};
+			console.log('Parsing via URI');
+			for (const [key, value] of searchParams.entries()) {
+				console.log('Parsed parameter:', { key, value });
+				params[key] = value;
+			}
+			return params;
+		}
+		
+		return {};
+	} catch (error) {
+		console.error('Error parsing query parameters:', error);
+		return {};
+	}
 };
 
 // Different API calls
 const getComics = async ({ page = 1, tag, pageSize = 10 } = {}) => {
 	// TODO::validate inputs, especially that `page` is an integer::
+	console.log('getComics called with parameters:', { page, tag, pageSize });
 	const S3_KEY = tag ? `cache/tags/${tag}/${page}.json` : `cache/all/${page}.json`;
 	console.log('Looking for cache at S3_KEY:', S3_KEY);
 
@@ -146,6 +169,7 @@ exports.handler = async (event) => {
 		// Route based on URI
 		if (uri.startsWith('/api/getComics')) {
 			const { tag, page = 1, pageSize = 10 } = queryParams;
+			console.log('Calling getComics with query parameters:', queryParams);
 			result = await getComics({ page: parseInt(page), tag, pageSize: parseInt(pageSize) });
 			console.log('getComics result:', result);
 		}

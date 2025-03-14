@@ -133,10 +133,18 @@ export class ComicSiteStack extends cdk.Stack {
 
 		// Create CloudFront distribution
 		const apiCachePolicyBase = new cloudfront.CachePolicy(this, 'ComicsApiCachePolicy', {
-				defaultTtl: Duration.minutes(0),
-				minTtl: Duration.seconds(0),
-				maxTtl: Duration.minutes(0),
-			});
+			defaultTtl: Duration.minutes(10),
+			minTtl: Duration.seconds(0),
+			maxTtl: Duration.minutes(300),
+			queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
+			enableAcceptEncodingGzip: true,
+			enableAcceptEncodingBrotli: true,
+		});
+		const apiOriginRequestPolicy = new cloudfront.OriginRequestPolicy(this, 'ComicsApiOriginRequestPolicy', {
+			queryStringBehavior: cloudfront.OriginRequestQueryStringBehavior.all(),
+			headerBehavior: cloudfront.OriginRequestHeaderBehavior.none(),
+			cookieBehavior: cloudfront.OriginRequestCookieBehavior.none(),
+		});
 		const websiteBucketS3Origin = new origins.S3Origin(websiteBucket);
 		const comicBucketS3Origin = new origins.S3Origin(comicBucket);
 		const responseHeadersPolicy = new cloudfront.ResponseHeadersPolicy(this, 'SecurityHeadersPolicy', {
@@ -205,6 +213,7 @@ export class ComicSiteStack extends cdk.Stack {
 					}],
 					allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
 					cachePolicy: apiCachePolicyBase,
+					originRequestPolicy: apiOriginRequestPolicy,
 				},
 				'/api/comics': {
 					origin: websiteBucketS3Origin, // Dummy origin, will be overridden by Lambda@Edge
