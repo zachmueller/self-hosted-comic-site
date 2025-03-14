@@ -118,6 +118,8 @@ export class ComicSiteStack extends cdk.Stack {
 		});
 
 		// Create CloudFront distribution
+		const websiteBucketS3Origin = new origins.S3Origin(websiteBucket);
+		const comicBucketS3Origin = new origins.S3Origin(comicBucket);
 		const responseHeadersPolicy = new cloudfront.ResponseHeadersPolicy(this, 'SecurityHeadersPolicy', {
 			responseHeadersPolicyName: 'SecurityHeadersPolicy',
 			securityHeadersBehavior: {
@@ -153,7 +155,7 @@ export class ComicSiteStack extends cdk.Stack {
 		});
 		const distribution = new cloudfront.Distribution(this, 'WebsiteDistribution', {
 			defaultBehavior: {
-				origin: new origins.S3Origin(websiteBucket),
+				origin: websiteBucketS3Origin,
 				viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
 				allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
 				cachedMethods: cloudfront.CachedMethods.CACHE_GET_HEAD,
@@ -175,7 +177,7 @@ export class ComicSiteStack extends cdk.Stack {
 			priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
 			additionalBehaviors: {
 				'/api/comics': {
-					origin: new origins.S3Origin(websiteBucket), // Dummy origin, will be overridden by Lambda@Edge
+					origin: websiteBucketS3Origin, // Dummy origin, will be overridden by Lambda@Edge
 					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
 					edgeLambdas: [{
 						functionVersion: getComicsLambda.currentVersion,
@@ -190,7 +192,7 @@ export class ComicSiteStack extends cdk.Stack {
 					}),
 				},
 				'/api/images/*': {
-					origin: new origins.S3Origin(comicBucket),
+					origin: comicBucketS3Origin,
 					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
 					functionAssociations: [{
 						function: imageRouterFunction,
@@ -198,7 +200,7 @@ export class ComicSiteStack extends cdk.Stack {
 					}],
 				},
 				'/assets/*': {
-					origin: new origins.S3Origin(websiteBucket),
+					origin: websiteBucketS3Origin,
 					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
 				}
 			}
