@@ -1,11 +1,45 @@
-const { S3Client, GetObjectCommand, HeadObjectCommand } = require('@aws-sdk/client-s3');
+const { S3Client, GetObjectCommand, HeadObjectCommand, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { DynamoDBDocumentClient, PutCommand } = require('@aws-sdk/lib-dynamodb');
 
 // Initialize clients
-const s3Client = new S3Client({});
+const s3Client = new S3Client({ region: 'us-east-1' });
 const ddbClient = new DynamoDBClient({});
 const ddbDocClient = DynamoDBDocumentClient.from(ddbClient);
+
+// Function to trigger invalidations of S3 cache
+async function triggerCacheInvalidation(metadata) {
+	console.log('Triggering cache invalidation for new upload:', metadata);
+
+	const timestamp = Date.now();
+	const invalidations = [];
+
+	// Always invalidate the "all comics" cache
+	invalidations.push(`invalidation/all/${timestamp}`);
+
+	// Invalidate cache for each tag
+	if (metadata.tags && metadata.tags.length > 0) {
+		for (const tag of metadata.tags) {
+			invalidations.push(`invalidation/tags/${tag}/${timestamp}`);
+		}
+	}
+
+	// Create empty invalidation trigger files
+	for (const key of invalidations) {
+		try {
+			await s3Client.send(new PutObjectCommand({
+				Bucket: process.env.COMIC_BUCKET_NAME,
+				Key: key,
+				Body: '', // Empty file
+				ContentLength: 0
+			}));
+			console.log(`Created invalidation trigger: ${key}`);
+		} catch (error) {
+			// Continue with other invalidations even if one fails
+			console.error(`Error creating invalidation trigger for ${key}:`, error);
+		}
+	}
+}
 
 exports.handler = async (event) => {
     const bucket = event.Records[0].s3.bucket.name;
@@ -50,6 +84,9 @@ exports.handler = async (event) => {
                 uploadDate: new Date().toISOString(),
             }
         }));
+
+		// Refresh the S3 cache to include new comics
+		await triggerCacheInvalidation(metadata);
 
         return {
             statusCode: 200,
