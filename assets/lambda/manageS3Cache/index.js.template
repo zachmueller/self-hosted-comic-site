@@ -1,4 +1,4 @@
-const { DynamoDBClient, QueryCommand } = require('@aws-sdk/client-dynamodb');
+const { DynamoDBClient, QueryCommand, ScanCommand } = require('@aws-sdk/client-dynamodb');
 const { S3Client, PutObjectCommand, DeleteObjectCommand, ListObjectsV2Command } = require('@aws-sdk/client-s3');
 const { unmarshall } = require('@aws-sdk/util-dynamodb');
 
@@ -52,37 +52,31 @@ async function refreshAllComicsCache() {
 	let processedPages = new Set();
 
 	do {
-		// Query DynamoDB for a batch of items
-		const queryResult = await dynamoClient.send(new QueryCommand({
+		const scanResult = await dynamoClient.send(new ScanCommand({
 			TableName: COMIC_TABLE,
-			IndexName: 'TitleIndex', // Assuming we want to sort by posted date
-			KeyConditionExpression: 'attribute_exists(title)',
 			Limit: PAGE_SIZE,
-			ScanIndexForward: false, // DESC order
+			ScanIndexForward: false, // DESC order by sort key
 			ExclusiveStartKey: lastEvaluatedKey
 		}));
 
-		// Process items and create cache page
-		if (queryResult.Items && queryResult.Items.length > 0) {
-			const items = queryResult.Items.map(item => unmarshall(item));
+		if (scanResult.Items && scanResult.Items.length > 0) {
+			const items = scanResult.Items.map(item => unmarshall(item));
 			
 			const pageData = {
 				items,
 				page: pageNumber,
-				hasNextPage: !!queryResult.LastEvaluatedKey
+				hasNextPage: !!scanResult.LastEvaluatedKey
 			};
 
-			// Write cache page to S3
 			await writePageToS3('all', pageNumber, pageData);
 			processedPages.add(pageNumber);
 			
 			pageNumber++;
 		}
 
-		lastEvaluatedKey = queryResult.LastEvaluatedKey;
+		lastEvaluatedKey = scanResult.LastEvaluatedKey;
 	} while (lastEvaluatedKey);
 
-	// Clean up old cache pages
 	await cleanupOldPages('all', processedPages);
 }
 
