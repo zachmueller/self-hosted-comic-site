@@ -195,7 +195,7 @@ export class ComicSiteStack extends cdk.Stack {
 			],
 			priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
 			additionalBehaviors: {
-				'/api/getComics': {
+				'/api/getComics*': {
 					origin: websiteBucketS3Origin, // Dummy origin, will be overridden by Lambda@Edge
 					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
 					edgeLambdas: [{

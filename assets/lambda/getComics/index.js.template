@@ -21,7 +21,7 @@ const COMIC_BUCKET = '{{COMIC_BUCKET_NAME}}';
 async function getS3Data(key) {
 	try {
 		const command = new GetObjectCommand({
-			Bucket: COMICS_BUCKET,
+			Bucket: COMIC_BUCKET,
 			Key: `${key}`
 		});
 		const response = await s3Client.send(command);
@@ -79,17 +79,35 @@ const parseQueryParameters = (querystring) => {
 };
 
 // Different API calls
-const getComics = async ({ page = 1, tag, pageSize = 10 }) => {
+const getComics = async ({ page = 1, tag, pageSize = 10 } = {}) => {
 	// TODO::validate inputs, especially that `page` is an integer::
 	const S3_KEY = tag ? `cache/tags/${tag}/${page}.json` : `cache/all/${page}.json`;
+	console.log('Looking for cache at S3_KEY:', S3_KEY);
 
 	try {
 		// Get data from S3
 		const comics = await getS3Data(S3_KEY);
+		console.log('S3 cache response:', comics);
+
+		// If no cached data exists, return empty but valid structure
+		if (!comics) {
+			console.log('No cached data found, returning empty structure');
+			return {
+				items: [],
+				page: parseInt(page),
+				hasNextPage: false
+			};
+		}
+
 		return comics;
 	} catch (error) {
 		console.error('Error fetching comics:', error);
-		throw error;
+		// Return valid empty structure even on error
+		return {
+			items: [],
+			page: parseInt(page),
+			hasNextPage: false
+		};
 	}
 }
 
@@ -114,9 +132,14 @@ exports.handler = async (event) => {
 
 	try {
 		const request = event.Records[0].cf.request;
+		console.log('Parsed request:', {
+			uri: request.uri,
+			querystring: request.querystring,
+			headers: request.headers
+		});
 		const uri = request.uri;
-		const querystring = request.querystring;
-		const queryParams = parseQueryParameters(querystring);
+		const queryParams = parseQueryParameters(request.querystring);
+		console.log('Parsed query parameters:', queryParams);
 
 		let result;
 
@@ -124,6 +147,7 @@ exports.handler = async (event) => {
 		if (uri.startsWith('/api/getComics')) {
 			const { tag, page = 1, pageSize = 10 } = queryParams;
 			result = await getComics({ page: parseInt(page), tag, pageSize: parseInt(pageSize) });
+			console.log('getComics result:', result);
 		}
 		else if (uri.startsWith('/api/getComic/')) {
 			const comicId = uri.split('/api/getComic/')[1];
@@ -147,16 +171,16 @@ exports.handler = async (event) => {
 			};
 		}
 
-		return {
+		const response = {
 			status: '200',
 			statusDescription: 'OK',
 			headers: {
 				'content-type': [{ key: 'Content-Type', value: 'application/json' }],
-				'cache-control': [{ key: 'Cache-Control', value: 'max-age=300' }],
 			},
-			body: JSON.stringify(result),
+			body: JSON.stringify(result || { items: [], page: 1, hasNextPage: false }),
 		};
-
+		console.log('Sending response:', response);
+		return response;
 	} catch (error) {
 		console.error('Error details:', {
 			message: error.message,
