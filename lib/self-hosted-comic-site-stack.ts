@@ -56,14 +56,6 @@ export class ComicSiteStack extends cdk.Stack {
 			billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
 		});
 
-		// Add GSI for tag-based queries
-		comicTable.addGlobalSecondaryIndex({
-			indexName: 'TagIndex',
-			partitionKey: { name: 'tag', type: dynamodb.AttributeType.STRING },
-			sortKey: { name: 'happenedOnDate', type: dynamodb.AttributeType.STRING },
-			projectionType: dynamodb.ProjectionType.ALL
-		});
-
 		// Add GSI for slug lookups
 		comicTable.addGlobalSecondaryIndex({
 			indexName: 'SlugIndex',
@@ -75,6 +67,7 @@ export class ComicSiteStack extends cdk.Stack {
 		comicTable.addGlobalSecondaryIndex({
 			indexName: 'TitleIndex',
 			partitionKey: { name: 'title', type: dynamodb.AttributeType.STRING },
+			sortKey: { name: 'happenedOnDate', type: dynamodb.AttributeType.STRING },
 			projectionType: dynamodb.ProjectionType.ALL
 		});
 

@@ -41,6 +41,89 @@ async function triggerCacheInvalidation(metadata) {
 	}
 }
 
+function validateMetadata(metadata) {
+	const errors = [];
+
+	// Required fields validation
+	const requiredFields = ['id', 'title', 'slug', 'images'];
+	requiredFields.forEach(field => {
+		if (!metadata[field]) {
+			errors.push(`Missing required field: ${field}`);
+		}
+	});
+
+	// Images array validation
+	if (metadata.images) {
+		if (!Array.isArray(metadata.images)) {
+			errors.push('images must be an array');
+		} else {
+			metadata.images.forEach((image, index) => {
+				if (!image.key || typeof image.key !== 'string') {
+					errors.push(`Image at index ${index} missing or invalid key`);
+				}
+				if (image.altText && typeof image.altText !== 'string') {
+					errors.push(`Image at index ${index} has invalid altText type`);
+				}
+			});
+		}
+	}
+
+	// String fields validation
+	const stringFields = ['title', 'slug', 'caption', 'scrollStyle'];
+	stringFields.forEach(field => {
+		if (metadata[field] && typeof metadata[field] !== 'string') {
+			errors.push(`${field} must be a string`);
+		}
+	});
+
+	// Tags validation
+	if (metadata.tags) {
+		if (!Array.isArray(metadata.tags)) {
+			errors.push('tags must be an array');
+		} else if (metadata.tags.some(tag => typeof tag !== 'string')) {
+			errors.push('all tags must be strings');
+		}
+	}
+
+	// Date validations
+	if (metadata.happenedOnDate) {
+		const date = new Date(metadata.happenedOnDate);
+		if (isNaN(date.getTime())) {
+			errors.push('happenedOnDate must be a valid date');
+		}
+	}
+
+	if (metadata.postedTimestamp) {
+		const timestamp = new Date(metadata.postedTimestamp);
+		if (isNaN(timestamp.getTime())) {
+			errors.push('postedTimestamp must be a valid timestamp');
+		}
+	}
+
+	// Integrations validation
+	if (metadata.integrations) {
+		if (!Array.isArray(metadata.integrations)) {
+			errors.push('integrations must be an array');
+		} else {
+			metadata.integrations.forEach((integration, index) => {
+				if (!integration.type || typeof integration.type !== 'string') {
+					errors.push(`Integration at index ${index} missing or invalid type`);
+				}
+				if (typeof integration.use !== 'boolean') {
+					errors.push(`Integration at index ${index} missing or invalid use flag`);
+				}
+			});
+		}
+	}
+
+	// If any errors were found, throw them
+	if (errors.length > 0) {
+		throw new Error('Metadata validation failed:\n' + errors.join('\n'));
+	}
+
+	return true;
+}
+
 exports.handler = async (event) => {
     const bucket = event.Records[0].s3.bucket.name;
     const key = decodeURIComponent(event.Records[0].s3.object.key);
@@ -57,33 +140,25 @@ exports.handler = async (event) => {
 
         const metadata = JSON.parse(await streamToString(metadataResponse.Body));
 
-        // Validate metadata
-        if (!metadata.title || !metadata.slug || !metadata.images?.length) {
-            throw new Error('Invalid metadata format');
-        }
+		// Validate the metadata structure
+		validateMetadata(metadata);
 
-        // Check if all referenced images exist
-        await Promise.all(metadata.images.map(async (image) => {
-            try {
-                await s3Client.send(new HeadObjectCommand({
-                    Bucket: bucket,
-                    Key: image.key
-                }));
-            }
-            catch (error) {
-                throw new Error(`Referenced image not found: ${image.key}`);
-            }
-        }));
+		// Prepare item for DynamoDB
+		const itemToWrite = {
+			...metadata,
+			uploadDate: new Date().toISOString(),
+		};
 
-        // Write to DynamoDB
-        await ddbDocClient.send(new PutCommand({
-            TableName: process.env.COMIC_TABLE_NAME,
-            Item: {
-                ...metadata,
-                id: metadata.uuid,
-                uploadDate: new Date().toISOString(),
-            }
-        }));
+		// Convert tags to DynamoDB Set if present
+		if (metadata.tags && Array.isArray(metadata.tags)) {
+			itemToWrite.tags = new Set(metadata.tags);
+		}
+
+		// Write to DynamoDB
+		await ddbDocClient.send(new PutCommand({
+			TableName: process.env.COMIC_TABLE_NAME,
+			Item: itemToWrite
+		}));
 
 		// Refresh the S3 cache to include new comics
 		await triggerCacheInvalidation(metadata);
