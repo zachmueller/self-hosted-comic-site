@@ -390,8 +390,8 @@ export class ComicSiteStack extends cdk.Stack {
 				COMIC_BUCKET_NAME: comicBucket.bucketName,
 				NODE_OPTIONS: '--enable-source-maps',
 			},
-			timeout: Duration.seconds(30),
-			memorySize: 256,
+			timeout: Duration.minutes(5),
+			memorySize: 1024,
 		});
 
 		// Grant Lambda permissions

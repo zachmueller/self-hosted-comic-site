@@ -91,25 +91,29 @@ async function refreshTagCache(tag) {
 	let processedPages = new Set();
 
 	do {
-		// Query DynamoDB using the tag index
-		const ddbQuery = new QueryCommand({
+		// Query DynamoDB using a Scan with filter
+		const queryParams = {
 			TableName: COMIC_TABLE,
-			IndexName: 'TagIndex',
-			KeyConditionExpression: 'tag = :tag',
+			FilterExpression: 'contains(#tags, :tag)',
+			ExpressionAttributeNames: {
+				'#tags': 'tags'
+			},
 			ExpressionAttributeValues: {
-				':tag': { S: tag }
+				':tag': tag
 			},
 			Limit: PAGE_SIZE,
-			ScanIndexForward: false, // DESC order by happenedOnDate
 			ExclusiveStartKey: lastEvaluatedKey
-		})
-		console.log('Sending DDB query:', ddbQuery);
-		const queryResult = await dynamoClient.send(ddbQuery);
-		console.log('Processing query results:', queryResult);
+		};
 
-		// Process items and create cache page
+		console.log('Querying DynamoDB with params:', queryParams);
+		const queryResult = await ddbDocClient.send(new ScanCommand(queryParams));
+		console.log('Query results:', queryResult);
+
 		if (queryResult.Items && queryResult.Items.length > 0) {
-			const items = queryResult.Items.map(item => unmarshall(item));
+			// Sort items by happenedOnDate
+			const items = queryResult.Items.sort((a, b) => 
+				(b.happenedOnDate || '') .localeCompare(a.happenedOnDate || '')
+			);
 			
 			const pageData = {
 				items,
