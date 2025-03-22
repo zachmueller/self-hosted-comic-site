@@ -384,7 +384,7 @@ export class ComicSiteStack extends cdk.Stack {
 		const manageS3CacheLambda = new lambda.Function(this, 'manageS3Cache', {
 			runtime: lambda.Runtime.NODEJS_18_X,
 			handler: 'index.handler',
-			code: lambda.Code.fromInline(processUploadsCode),
+			code: lambda.Code.fromInline(manageS3CacheCode),
 			environment: {
 				COMIC_TABLE_NAME: comicTable.tableName,
 				COMIC_BUCKET_NAME: comicBucket.bucketName,
