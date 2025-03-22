@@ -99,21 +99,20 @@ async function refreshTagCache(tag) {
 				'#tags': 'tags'
 			},
 			ExpressionAttributeValues: {
-				':tag': tag
+				':tag': { S: tag }
 			},
 			Limit: PAGE_SIZE,
 			ExclusiveStartKey: lastEvaluatedKey
 		};
 
 		console.log('Querying DynamoDB with params:', queryParams);
-		const queryResult = await ddbDocClient.send(new ScanCommand(queryParams));
+		const queryResult = await dynamoClient.send(new ScanCommand(queryParams));
 		console.log('Query results:', queryResult);
 
 		if (queryResult.Items && queryResult.Items.length > 0) {
 			// Sort items by happenedOnDate
-			const items = queryResult.Items.sort((a, b) => 
-				(b.happenedOnDate || '') .localeCompare(a.happenedOnDate || '')
-			);
+			const items = queryResult.Items.map(item => unmarshall(item))
+				.sort((a, b) => (b.happenedOnDate || '').localeCompare(a.happenedOnDate || ''));
 			
 			const pageData = {
 				items,
