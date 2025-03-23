@@ -25,9 +25,17 @@ function initializeRouter() {
 			showPage('comicViewSection');
 			await displayComics({ page: parseInt(params.page) });
 		},
+		'/comic/:slug': async (params) => {
+			showPage('singleComicSection');
+			await displaySingleComic(params.slug);
+		},
 		'/tags/:tag': async (params) => {
 			showPage('comicViewSection');
 			await displayComics({ page: 1, tag: params.tag });
+		},
+		'/tags/:tag/comic/:slug': async (params) => {
+			showPage('singleComicSection');
+			await displaySingleComic(params.slug, params.tag);
 		},
 		'/tags/:tag/:page': async (params) => {
 			showPage('comicViewSection');
@@ -399,7 +407,7 @@ async function displayComics({ page = 1, tag = null } = {}) {
 		console.log(`Rendering ${response.items.length} comics...`);
 		const comicHtml = response.items.map(comic => `
 			<div class="comic-entry" data-style="${comic.scrollStyle || 'long'}">
-				<h3>${comic.title}</h3>
+				<h3><a href="/comic/${comic.slug}">${comic.title}</a></h3>
 				<p>${comic.caption}</p>
 				<div class="comic-images">
 					${comic.images.map(image => {
@@ -447,6 +455,95 @@ async function displayComics({ page = 1, tag = null } = {}) {
 			<button onclick="displayComics({page: ${page}${tag ? `, tag: '${tag}'` : ''})">Retry</button>
 		`;
 		comicDisplay.innerHTML = '';
+	}
+}
+
+async function fetchSingleComic(slug) {
+	console.log(`Fetching comic with slug: ${slug}`);
+	try {
+		const response = await fetch(`/api/getComic/slug/${slug}`);
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		return await response.json();
+	} catch (error) {
+		console.error('Error fetching single comic:', error);
+		throw error;
+	}
+}
+
+async function displaySingleComic(slug, tag = null) {
+	console.log('Displaying single comic:', { slug, tag });
+	const displayElement = document.getElementById('singleComicDisplay');
+	const errorElement = document.getElementById('singleComicError');
+
+	// Show loading state
+	displayElement.innerHTML = `
+		<div class="comic-loading">
+			<p>Loading comic...</p>
+		</div>
+	`;
+	errorElement.style.display = 'none';
+
+	try {
+		const comic = await fetchSingleComic(slug);
+
+		if (!comic) {
+			throw new Error('Comic not found');
+		}
+
+		const happenedDate = new Date(comic.happenedOnDate).toLocaleDateString();
+		const postedDate = new Date(comic.postedTimestamp).toLocaleDateString();
+
+		displayElement.innerHTML = `
+			<article class="single-comic" data-style="${comic.scrollStyle || 'long'}">
+				<div class="single-comic-header">
+					<h1 class="single-comic-title">${comic.title}</h1>
+					<div class="single-comic-metadata">
+						<div>Event Date: ${happenedDate}</div>
+						<div>Posted: ${postedDate}</div>
+						${comic.tags ? `
+							<div>Tags: ${comic.tags.map(t => 
+								`<a href="/tags/${encodeURIComponent(t)}">${t}</a>`
+							).join(', ')}</div>
+						` : ''}
+					</div>
+				</div>
+
+				<div class="single-comic-images">
+					${comic.images.map(image => `
+						<img 
+							src="/api/images/comic/${image.key}"
+							alt="${image.altText || ''}"
+							loading="lazy"
+						>
+					`).join('')}
+				</div>
+
+				<div class="single-comic-caption">
+					${comic.caption}
+				</div>
+
+				${tag ? `
+					<div class="single-comic-navigation">
+						<a href="/tags/${encodeURIComponent(tag)}">Back to ${tag} comics</a>
+					</div>
+				` : `
+					<div class="single-comic-navigation">
+						<a href="/comics">← Back to all comics</a>
+					</div>
+				`}
+			</article>
+		`;
+
+	} catch (error) {
+		console.error('Error displaying single comic:', error);
+		errorElement.style.display = 'block';
+		errorElement.innerHTML = `
+			<p>Sorry, there was an error loading this comic. Please try again later.</p>
+			<button onclick="displaySingleComic('${slug}'${tag ? `, '${tag}'` : ''})">Retry</button>
+		`;
+		displayElement.innerHTML = '';
 	}
 }
 

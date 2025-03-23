@@ -158,6 +158,72 @@
 			cursor: pointer;
 		}
 
+		/* Single comic page styles */
+		.single-comic {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 2rem;
+		}
+
+		.single-comic-header {
+			margin-bottom: 2rem;
+		}
+
+		.single-comic-title {
+			font-size: 2rem;
+			margin-bottom: 1rem;
+		}
+
+		.single-comic-metadata {
+			color: #666;
+			font-size: 0.9rem;
+			margin-bottom: 1rem;
+		}
+
+		.single-comic-images {
+			margin: 2rem 0;
+		}
+
+		.single-comic-caption {
+			font-size: 1.1rem;
+			line-height: 1.6;
+			margin: 2rem 0;
+		}
+
+		.single-comic-navigation {
+			display: flex;
+			justify-content: space-between;
+			margin-top: 2rem;
+			padding-top: 1rem;
+			border-top: 1px solid #ddd;
+		}
+
+		.single-comic[data-style="carousel"] .single-comic-images {
+			display: flex;
+			overflow-x: auto;
+			scroll-snap-type: x mandatory;
+			gap: 1rem;
+			padding-bottom: 1rem;
+		}
+
+		.single-comic[data-style="carousel"] .single-comic-images img {
+			scroll-snap-align: start;
+			min-width: 90%;
+			max-width: 90%;
+			height: auto;
+		}
+
+		.single-comic[data-style="long"] .single-comic-images {
+			display: flex;
+			flex-direction: column;
+			gap: 1rem;
+		}
+
+		.single-comic[data-style="long"] .single-comic-images img {
+			max-width: 100%;
+			height: auto;
+		}
+
 		/* Styling for simple comic view */
 		.comic-loading {
 			text-align: center;
@@ -236,6 +302,16 @@
 				<!-- Error messages will be shown here -->
 			</div>
 		</div>
+
+		<div id="singleComicSection" class="page" style="display: none;">
+			<div id="singleComicDisplay">
+				<!-- Comic content will be inserted here -->
+			</div>
+			<div id="singleComicError" class="error" style="display: none;">
+				<!-- Error messages will be shown here -->
+			</div>
+		</div>
+
 
 		<!-- Protected sections -->
 		<div id="loginSection" class="page" style="display: none;">

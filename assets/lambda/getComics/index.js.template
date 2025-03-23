@@ -115,9 +115,88 @@ const getComics = async ({ page = 1, tag, pageSize = 10 } = {}) => {
 	}
 }
 
-const getComic = async (comicId) => {
-	// TODO: Implement getComic logic
-	throw new Error('Not implemented');
+const getComic = async (type, value) => {
+	if (!type || !value) {
+		throw new Error('Both type and value are required');
+	}
+
+	// Validate type is one of the allowed values
+	const allowedTypes = ['uuid', 'slug', 'title'];
+	if (!allowedTypes.includes(type)) {
+		throw new Error(`Invalid type. Must be one of: ${allowedTypes.join(', ')}`);
+	}
+
+	// Input validation based on type
+	switch (type) {
+		case 'uuid':
+			const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+			if (!uuidPattern.test(value)) {
+				throw new Error('Invalid UUID format');
+			}
+			break;
+		case 'slug':
+			const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+			if (!slugPattern.test(value)) {
+				throw new Error('Invalid slug format');
+			}
+			break;
+		case 'title':
+			if (typeof value !== 'string' || value.trim().length === 0) {
+				throw new Error('Invalid title format');
+			}
+			break;
+	}
+
+	// Query configuration
+	const queryConfig = {
+		uuid: {
+			indexName: null,
+			keyField: 'id'
+		},
+		title: {
+			indexName: 'TitleIndex',
+			keyField: 'title'
+		},
+		slug: {
+			indexName: 'SlugIndex',
+			keyField: 'slug'
+		}
+	};
+
+	const config = queryConfig[type];
+	const queryParams = {
+		TableName: COMIC_TABLE_NAME,
+		KeyConditionExpression: `${config.keyField} = :value`,
+		ExpressionAttributeValues: {
+			':value': value
+		}
+	};
+
+	if (config.indexName) {
+		queryParams.IndexName = config.indexName;
+	}
+
+	try {
+		console.log('Querying DynamoDB with params:', queryParams);
+		const result = await ddbDocClient.send(new QueryCommand(queryParams));
+
+		if (!result.Items || result.Items.length === 0) {
+			console.log(`No comic found for ${type}:`, value);
+			return null;
+		}
+
+		console.log('Found comic:', result.Items[0]);
+		return result.Items[0];
+	} catch (error) {
+		console.error('Error fetching comic:', {
+			error,
+			queryParams,
+			type,
+			value
+		});
+
+		throw error;
+	}
 };
 
 const getComicImage = async (comicId) => {
@@ -162,9 +241,21 @@ exports.handler = async (event) => {
 				pageSize 
 			});
 		}
-		else if (uri.startsWith('/api/getComic/')) {
-			const comicId = uri.split('/api/getComic/')[1];
-			result = await getComic(comicId);
+		else if (uri.match(/^\/api\/getComic\/(uuid|slug|title)\/.+$/)) {
+			const [, type, value] = uri.match(/^\/api\/getComic\/(uuid|slug|title)\/(.+)$/);
+
+			result = await getComic(type, decodeURIComponent(value));
+
+			if (!result) {
+				return {
+					status: '404',
+					statusDescription: 'Not Found',
+					headers: {
+						'content-type': [{ key: 'Content-Type', value: 'application/json' }],
+					},
+					body: JSON.stringify({ error: 'Comic not found' }),
+				};
+			}
 		}
 		else if (uri.startsWith('/api/getComicImage/')) {
 			const comicId = uri.split('/api/getComicImage/')[1];
