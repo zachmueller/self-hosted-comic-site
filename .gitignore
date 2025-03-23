@@ -3,6 +3,10 @@
 *.d.ts
 node_modules
 
+# But allow JS and HTML files in the specific directory
+!assets/website/static/**/*.js
+!assets/website/static/**/*.html
+
 # CDK asset staging directory
 .cdk.staging
 cdk.out
