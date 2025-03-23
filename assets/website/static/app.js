@@ -530,7 +530,7 @@ async function displaySingleComic(slug, tag = null) {
 					</div>
 				` : `
 					<div class="single-comic-navigation">
-						<a href="/comics">← Back to all comics</a>
+						<a href="/comics">Back to all comics</a>
 					</div>
 				`}
 			</article>
