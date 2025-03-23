@@ -208,17 +208,6 @@ export class ComicSiteStack extends cdk.Stack {
 					cachePolicy: apiCachePolicyBase,
 					originRequestPolicy: apiOriginRequestPolicy,
 				},
-				'/api/comics': {
-					origin: websiteBucketS3Origin, // Dummy origin, will be overridden by Lambda@Edge
-					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-					edgeLambdas: [{
-						functionVersion: getComicsLambda.currentVersion,
-						eventType: cloudfront.LambdaEdgeEventType.ORIGIN_REQUEST,
-						includeBody: false,
-					}],
-					allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
-					cachePolicy: apiCachePolicyBase,
-				},
 				'/api/images/*': {
 					origin: comicBucketS3Origin,
 					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
