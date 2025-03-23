@@ -341,7 +341,7 @@ export class ComicSiteStack extends cdk.Stack {
 			memorySize: 256,
 		});
 
-		// Grant Lambda permissions
+		// Grant processUploadsLambda Lambda permissions
 		comicBucket.grantRead(processUploadsLambda);
 		comicTable.grantWriteData(processUploadsLambda);
 		// Add specific permission for invalidation triggers
@@ -377,13 +377,14 @@ export class ComicSiteStack extends cdk.Stack {
 			environment: {
 				COMIC_TABLE_NAME: comicTable.tableName,
 				COMIC_BUCKET_NAME: comicBucket.bucketName,
+				CLOUDFRONT_DISTRIBUTION_ID: distribution.distributionId,
 				NODE_OPTIONS: '--enable-source-maps',
 			},
 			timeout: Duration.minutes(5),
 			memorySize: 1024,
 		});
 
-		// Grant Lambda permissions
+		// Grant manageS3CacheCode Lambda permissions
 		comicBucket.grantRead(manageS3CacheLambda);
 		comicTable.grantReadData(manageS3CacheLambda);
 		manageS3CacheLambda.addToRolePolicy(new iam.PolicyStatement({
@@ -399,6 +400,17 @@ export class ComicSiteStack extends cdk.Stack {
 				'logs:PutLogEvents'
 			],
 			resources: ['*'] //TODO::pare this down and target the ARNs appropriately::
+		}));
+
+		// Grant CloudFront invalidation permissions
+		manageS3CacheLambda.addToRolePolicy(new iam.PolicyStatement({
+			effect: iam.Effect.ALLOW,
+			actions: [
+				'cloudfront:CreateInvalidation'
+			],
+			resources: [
+				`arn:aws:cloudfront::${cdk.Stack.of(this).account}:distribution/${distribution.distributionId}`
+			]
 		}));
 
 		// Add S3 trigger for invalidation uploads
