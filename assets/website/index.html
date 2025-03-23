@@ -11,6 +11,19 @@
 		.hidden { display: none; }
 		.error { color: red; margin: 10px 0; }
 
+		@font-face {
+			font-family: 'Wacl Font';
+			src: url('/static/WhatAComicalLife-Regular.woff2') format('woff2'),
+				url('/static/WhatAComicalLife-Regular.woff') format('woff'),
+				url('/static/WhatAComicalLife-Regular.ttf') format('truetype');
+			font-weight: normal;
+			font-style: normal;
+			font-display: swap;
+		}
+
+		html, body {
+			font-family: 'Wacl Font', 'Helvetica Neue', 'Open Sans';
+		}
 
 		/* upload form styles */
 		.form-group {
