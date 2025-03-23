@@ -7,6 +7,11 @@ node_modules
 !assets/website/static/**/*.js
 !assets/website/static/**/*.html
 
+# ignore font files
+*.ttf
+*.woff
+*.woff2
+
 # CDK asset staging directory
 .cdk.staging
 cdk.out
