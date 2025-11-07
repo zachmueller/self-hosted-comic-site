@@ -94,10 +94,10 @@ A CDK-based package that enables individual comic artists to easily deploy and m
 - Session management maintains artist login across upload sessions using Cognito tokens
 - Secure logout functionality terminates artist sessions and invalidates Cognito tokens
 
-### FR-2: iPad-Optimized Comic Upload Interface
-**Description:** Mobile-friendly upload interface optimized for iPad usage and artist workflow
+### FR-2: iPad-Optimized Comic Upload Interface  
+**Description:** Mobile-friendly upload interface optimized for iPad usage and artist workflow, with desktop Chrome support
 **Acceptance Criteria:**
-- Upload interface renders properly on iPad Safari and Chrome browsers
+- Upload interface renders properly on iPad Safari and Chrome browsers, with full functionality on desktop Chrome
 - Drag-and-drop file upload supports multiple comic images in JPG, PNG, and WebP formats
 - Separate 'Raw Sketches' upload field in same form allows optional sketch upload alongside final comics
 - File size validation enforces 20MB maximum per image with clear error messaging for both final and sketch uploads
@@ -109,12 +109,24 @@ A CDK-based package that enables individual comic artists to easily deploy and m
 ### FR-3: Comic Metadata Management
 **Description:** Comprehensive metadata system supporting artist content organization and reader discovery
 **Acceptance Criteria:**
-- Required fields: title, "happened on" date, publish status
-- Optional fields: description, tags (multiple), series name, series order
+- **Metadata Schema per Post:**
+  - `id` (string): Unique identifier serving as DynamoDB partition key
+  - `images` (array): Ordered list of comic panel images with:
+    - `key` (string): Full S3 key derived from SHA1 hash of image contents
+    - `altText` (string, optional): Accessibility text included in search functionality
+  - `title` (string): Display title for the post
+  - `slug` (string): URL slug portion specific to this post
+  - `caption` (string): Text displayed below each comic
+  - `tags` (array of strings): List of tags applied to comic
+  - `happenedOnDate` (date): Date when comic situation occurred
+  - `scrollStyle` (string): Display style (`carousel` or `long`)
+  - `postedTimestamp` (timestamp): Publication date (artist-selectable in bulk uploads)
 - Tag system supports reader filtering and content discovery with case-insensitive matching while preserving original case display
-- Series grouping allows related comic organization with automatic ordering based on 'happened on' date within each series
+- Series functionality implemented as tag attributes - each tag can optionally be flagged by the artist as a series
+- Series-flagged tags function identically to regular tags for URL rendering and comic association
+- Series ordering based on 'happened on' date within comics sharing the same series-flagged tag
 - **Implementation Note:** Series ordering within DynamoDB requires further architectural debate to determine optimal approach
-- Bulk metadata editing for multiple comics
+- Bulk metadata editing for multiple comics with artist-selectable publish dates
 
 ### FR-4: Reader Homepage and Navigation
 **Description:** Reader-facing homepage displaying latest comics with pagination and filtering
@@ -122,17 +134,19 @@ A CDK-based package that enables individual comic artists to easily deploy and m
 - Homepage displays 10 most recent comics ordered by "happened on" date (descending)
 - Pagination system for browsing complete comic history
 - Tag-based filtering system for content discovery
-- Series-based browsing for related comic sequences
+- Series-based browsing functions identically to tag-based browsing (same filtering mechanism)
+- Navigation interface groups tags into two sections: "Series" header for series-flagged tags, "Tags" header for regular tags
+- Each tag appears in only one navigation section (either Series or Tags, never both)
 - Responsive design supports mobile and desktop readers
 
 ### FR-5: Multi-Image Comic Display
-**Description:** Carousel-style viewer for comics containing multiple images
+**Description:** Configurable display system allowing artists to choose between carousel and long form presentation for each comic
 **Acceptance Criteria:**
-- Single-image comics display normally without carousel controls
-- Multi-image comics automatically enable carousel navigation
-- Touch/swipe gestures support mobile navigation
-- Keyboard arrow key support for desktop navigation
-- Image preloading optimizes carousel performance
+- Artist can select display style per comic: carousel (default) or long form
+- Single-image comics display normally without carousel controls regardless of chosen style
+- Carousel mode: Multi-image comics enable carousel navigation with touch/swipe gestures and keyboard arrow key support
+- Long form mode: Multi-image comics display all images vertically in sequence
+- Image preloading optimizes performance for both display styles
 
 ### FR-6: Individual Comic Pages
 **Description:** Dedicated page view for single comics with full metadata and navigation
@@ -141,8 +155,7 @@ A CDK-based package that enables individual comic artists to easily deploy and m
 - Comic slugs generated from titles for SEO-friendly URLs with duplicate detection requiring artist resolution during upload
 - Full comic metadata display including tags and series information
 - Related comics suggestions based on tags or series
-- Series navigation (previous/next in series) when applicable
-- Social sharing capabilities for individual comics with canonical URLs
+- Next/previous navigation buttons for both tag-based and series-based browsing contexts
 - Tag-filtered URLs maintain browsing context for reader navigation
 
 ### FR-7: Raw Sketches Display System
@@ -180,7 +193,7 @@ A CDK-based package that enables individual comic artists to easily deploy and m
 **Description:** User experience requirements prioritizing comic artist productivity and ease of use
 **Acceptance Criteria:**
 - Complete upload workflow (login to published comic) completable in under 5 minutes
-- Bulk upload operations support uploading 10+ comics efficiently
+- Bulk upload operations support uploading 10+ comics efficiently with ability to override publish date for importing historical comics
 - Error recovery preserves user-entered metadata in browser storage during upload failures
 - Failed image uploads require complete restart but metadata fields remain populated
 - Management interface provides quick publish/unpublish toggle functionality
