@@ -15,6 +15,18 @@ A CDK-based package that enables individual comic artists to easily deploy and m
 - Q: Should the system automatically compress and optimize uploaded comic images to reduce storage costs and improve performance? → A: No - store original images as-is to preserve artist's intended quality
 - Q: What URL structure should be used for individual comics and series pages? → A: Multiple access paths: `/comic/{slug}` for individual comics, `/tags/{tag}/{slug}` for tag-filtered access to same comic
 - Q: How should the system handle upload failures and interrupted operations - should it support resume functionality or require complete restart? → A: Simple restart for image uploads, but cache metadata in browser to preserve user-entered form data
+- Q: What should happen when two comics would generate the same URL slug from their titles? → A: Require artist to manually resolve conflicts during upload
+- Q: Should the tag system be case-sensitive or case-insensitive for filtering and comic organization? → A: Case-insensitive - preserve original case but match regardless (Fantasy matches fantasy)
+- Q: How should custom domain setup work for the CDK deployment? → A: Manual DNS setup to save on costs - artist configures CNAME records pointing to CloudFront distribution
+- Q: Should the system serve different image sizes for different contexts or always serve original uploaded images? → A: Create responsive image sets (thumbnail, mobile, desktop) for optimal performance while preserving originals
+- Q: How should series ordering work when artists add comics to a series? → A: Automatic ordering based on 'happened on' date within the series
+
+### Implementation Gap Analysis 2025-11-07
+- Q: Google authentication implementation status vs spec requirements? → A: Keep spec as-is and implement Google federation later
+- Q: Responsive image generation implementation vs spec requirements? → A: Keep spec as-is and implement image optimization later
+- Q: Series functionality data model and implementation status? → A: Series ordering within DynamoDB needs further implementation debate - specific approach TBD
+- Q: Bulk operations implementation vs spec requirements? → A: Keep spec as-is and implement bulk operations later
+- Q: Publish status controls implementation vs spec requirements? → A: Keep spec as-is and implement publish controls later
 
 ## Constitutional Alignment
 
@@ -49,7 +61,7 @@ A CDK-based package that enables individual comic artists to easily deploy and m
 **Deployment approach:**
 - Single CDK command: `cdk deploy` creates entire infrastructure
 - Environment-specific configuration via CDK context
-- Automated SSL certificate provisioning and domain setup
+- Automated SSL certificate provisioning for custom domains with manual CNAME configuration
 - Self-contained deployment with no manual infrastructure setup
 
 ## User Stories
@@ -88,8 +100,9 @@ A CDK-based package that enables individual comic artists to easily deploy and m
 **Acceptance Criteria:**
 - Required fields: title, "happened on" date, publish status
 - Optional fields: description, tags (multiple), series name, series order
-- Tag system supports reader filtering and content discovery
-- Series grouping allows related comic organization
+- Tag system supports reader filtering and content discovery with case-insensitive matching while preserving original case display
+- Series grouping allows related comic organization with automatic ordering based on 'happened on' date within each series
+- **Implementation Note:** Series ordering within DynamoDB requires further architectural debate to determine optimal approach
 - Bulk metadata editing for multiple comics
 
 ### FR-4: Reader Homepage and Navigation
@@ -114,7 +127,7 @@ A CDK-based package that enables individual comic artists to easily deploy and m
 **Description:** Dedicated page view for single comics with full metadata and navigation
 **Acceptance Criteria:**
 - URL structure supports multiple access patterns: `/comic/{slug}` for direct access and `/tags/{tag}/{slug}` for tag-filtered context
-- Comic slugs generated from titles for SEO-friendly URLs
+- Comic slugs generated from titles for SEO-friendly URLs with duplicate detection requiring artist resolution during upload
 - Full comic metadata display including tags and series information
 - Related comics suggestions based on tags or series
 - Series navigation (previous/next in series) when applicable
@@ -135,7 +148,7 @@ A CDK-based package that enables individual comic artists to easily deploy and m
 ### NFR-2: Cost Efficiency  
 **Description:** Architecture designed to stay well within $10/month hosting budget
 **Acceptance Criteria:**
-- Image storage preserves original quality without automatic compression to prioritize artist intent
+- Image storage preserves original quality while generating responsive image variants (thumbnail, mobile, desktop) for optimal performance
 - CDN caching configured to minimize data transfer costs while serving original images
 - Lambda functions optimized for minimal execution time and memory usage
 - DynamoDB queries designed for cost-effective read/write patterns
