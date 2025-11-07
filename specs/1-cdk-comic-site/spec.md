@@ -28,6 +28,13 @@ A CDK-based package that enables individual comic artists to easily deploy and m
 - Q: Bulk operations implementation vs spec requirements? → A: Keep spec as-is and implement bulk operations later
 - Q: Publish status controls implementation vs spec requirements? → A: Keep spec as-is and implement publish controls later
 
+### Raw Sketches Feature Clarification 2025-11-07
+- Q: How should artists upload raw sketches in the upload interface - as a separate field during the same upload workflow, or as an optional additional step after uploading final comic images? → A: Separate 'Raw Sketches' upload field in the same form as final comic images
+- Q: What should the toggle UI element look like for readers switching between final comics and raw sketches? → A: Use icons specified later with artist input, not text labels
+- Q: When a comic has both final images and raw sketches, but they have different counts (e.g., 1 raw sketch vs 3 final panels), how should the reader navigate between them? → A: Toggle controls viewing mode (Final vs Sketch), never showing both together. Browser remembers position when switching modes. Position sync only when sketch and final panel counts match; otherwise switching preserves original mode position
+- Q: Should the raw sketch feature impact the homepage and browse views, or should those always show final comics only? → A: Global site-wide toggle in consistent location affects all comic displays across homepage, browse views, and individual comic pages
+- Q: When a comic has only raw sketches (no final version), how should it behave with the global toggle - should the sketch be visible in both modes, or only when in sketch mode? → A: Show sketch-only comics in both modes since they represent the only available version
+
 ## Constitutional Alignment
 
 ### Artist-First User Experience
@@ -68,9 +75,11 @@ A CDK-based package that enables individual comic artists to easily deploy and m
 - As a comic artist, I want to easily upload my comics from my iPad so that I can publish content anywhere without requiring a computer
 - As a comic artist, I want to authenticate using my Google account so that I don't need to manage separate login credentials
 - As a comic artist, I want to organize my comics with tags and series information so that readers can discover related content
+- As a comic artist, I want to upload raw sketches alongside my final comics so that readers can see my creative process
 - As a comic reader, I want to see the latest comics on the homepage so that I can quickly access new content
-- As a comic reader, I want to browse comics by tags so that I can find content that matches my interests
+- As a comic reader, I want to browse comics by tags so that I can find content that matches my interests  
 - As a comic reader, I want to view multi-image comics in a carousel format so that I can easily navigate through comic sequences
+- As a comic reader, I want to toggle between final comics and raw sketches site-wide so that I can explore the artist's creative process
 - As a site administrator (artist), I want simple CDK-based deployment so that I can maintain my site without complex server management
 
 ## Functional Requirements
@@ -90,10 +99,12 @@ A CDK-based package that enables individual comic artists to easily deploy and m
 **Acceptance Criteria:**
 - Upload interface renders properly on iPad Safari and Chrome browsers
 - Drag-and-drop file upload supports multiple comic images in JPG, PNG, and WebP formats
-- File size validation enforces 20MB maximum per image with clear error messaging
+- Separate 'Raw Sketches' upload field in same form allows optional sketch upload alongside final comics
+- File size validation enforces 20MB maximum per image with clear error messaging for both final and sketch uploads
 - Touch-friendly form controls for comic metadata entry
-- Real-time upload progress indicators for large image files
+- Real-time upload progress indicators for large image files (both final and sketches)
 - Form validation provides clear error messages for missing required fields
+- Comics can be published with only raw sketches, only final images, or both
 
 ### FR-3: Comic Metadata Management
 **Description:** Comprehensive metadata system supporting artist content organization and reader discovery
@@ -133,6 +144,17 @@ A CDK-based package that enables individual comic artists to easily deploy and m
 - Series navigation (previous/next in series) when applicable
 - Social sharing capabilities for individual comics with canonical URLs
 - Tag-filtered URLs maintain browsing context for reader navigation
+
+### FR-7: Raw Sketches Display System
+**Description:** Global toggle system allowing readers to view raw sketches alongside or instead of final comic images
+**Acceptance Criteria:**
+- Global site-wide toggle in consistent location affects all comic displays across homepage, browse views, and individual comic pages
+- Toggle uses artist-customizable icons rather than text labels
+- Comics with only raw sketches (no final version) display sketches in both toggle modes
+- Comics with both final and raw images never display both simultaneously - toggle controls viewing mode
+- Position synchronization: when final and raw sketch counts match, carousel position syncs between modes; otherwise position preserved per mode
+- Browser state management maintains carousel position when switching between Final and Sketch modes
+- Toggle state persists across page navigation and browser sessions
 
 ## Non-Functional Requirements
 
@@ -189,6 +211,8 @@ A CDK-based package that enables individual comic artists to easily deploy and m
 - Series management: Artist organizes related comics into series with proper ordering
 - Error recovery: Artist resumes interrupted upload after network disconnection
 - Reader browsing: Reader discovers comics via tag filtering and series navigation
+- Raw sketch workflow: Artist uploads raw sketches alongside final comics, reader toggles between final and sketch views site-wide
+- Sketch-only publishing: Artist uploads only raw sketches with no final version, sketches display in both toggle modes for readers
 
 ## Success Criteria
 Measurable, constitutional-principle-aligned outcomes:
@@ -202,8 +226,8 @@ Measurable, constitutional-principle-aligned outcomes:
 ## Key Entities
 
 ### Comic Entity
-- **Attributes:** id, title, description, happenedOnDate, publishDate, publishStatus, imageUrls, tags, seriesName, seriesOrder
-- **Validation:** Required title and happenedOnDate, valid image URLs, optional metadata fields
+- **Attributes:** id, title, description, happenedOnDate, publishDate, publishStatus, imageUrls, sketchImageUrls, tags, seriesName, seriesOrder
+- **Validation:** Required title and happenedOnDate, at least one of imageUrls or sketchImageUrls must be provided, optional metadata fields
 - **Relationships:** Belongs to series (optional), has multiple tags
 
 ### Series Entity  
