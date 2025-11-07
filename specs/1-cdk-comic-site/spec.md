@@ -7,6 +7,15 @@
 ## Overview
 A CDK-based package that enables individual comic artists to easily deploy and manage their own AWS-hosted comic website. The system prioritizes artist workflow efficiency with an iPad-friendly upload interface, while providing readers with an intuitive browsing experience for published comics.
 
+## Clarifications
+
+### Session 2025-11-07
+- Q: What are the image format and file size restrictions for comic uploads? → A: Accept common formats (JPG, PNG, WebP) with 20MB per image limit
+- Q: How should the system handle Google OAuth configuration - should it require manual Google Cloud Console setup or provide automated configuration? → A: Use AWS Cognito's built-in Google federation instead of direct OAuth
+- Q: Should the system automatically compress and optimize uploaded comic images to reduce storage costs and improve performance? → A: No - store original images as-is to preserve artist's intended quality
+- Q: What URL structure should be used for individual comics and series pages? → A: Multiple access paths: `/comic/{slug}` for individual comics, `/tags/{tag}/{slug}` for tag-filtered access to same comic
+- Q: How should the system handle upload failures and interrupted operations - should it support resume functionality or require complete restart? → A: Simple restart for image uploads, but cache metadata in browser to preserve user-entered form data
+
 ## Constitutional Alignment
 
 ### Artist-First User Experience
@@ -55,19 +64,21 @@ A CDK-based package that enables individual comic artists to easily deploy and m
 ## Functional Requirements
 
 ### FR-1: Artist Authentication and Access Control
-**Description:** Single-artist authentication system using Google SSO for content management access
+**Description:** Single-artist authentication system using AWS Cognito with Google federation for content management access
 **Acceptance Criteria:**
-- Artist can authenticate using Google OAuth2 integration
+- Artist can authenticate using AWS Cognito's Google identity provider federation
+- Cognito user pool configuration supports Google sign-in with minimal manual setup
 - Only authenticated artist has access to upload and management interfaces
 - Reader access requires no authentication for published content
-- Session management maintains artist login across upload sessions
-- Secure logout functionality terminates artist sessions
+- Session management maintains artist login across upload sessions using Cognito tokens
+- Secure logout functionality terminates artist sessions and invalidates Cognito tokens
 
 ### FR-2: iPad-Optimized Comic Upload Interface
 **Description:** Mobile-friendly upload interface optimized for iPad usage and artist workflow
 **Acceptance Criteria:**
 - Upload interface renders properly on iPad Safari and Chrome browsers
-- Drag-and-drop file upload supports multiple comic images
+- Drag-and-drop file upload supports multiple comic images in JPG, PNG, and WebP formats
+- File size validation enforces 20MB maximum per image with clear error messaging
 - Touch-friendly form controls for comic metadata entry
 - Real-time upload progress indicators for large image files
 - Form validation provides clear error messages for missing required fields
@@ -102,11 +113,13 @@ A CDK-based package that enables individual comic artists to easily deploy and m
 ### FR-6: Individual Comic Pages
 **Description:** Dedicated page view for single comics with full metadata and navigation
 **Acceptance Criteria:**
-- URL structure supports direct comic linking and sharing
+- URL structure supports multiple access patterns: `/comic/{slug}` for direct access and `/tags/{tag}/{slug}` for tag-filtered context
+- Comic slugs generated from titles for SEO-friendly URLs
 - Full comic metadata display including tags and series information
 - Related comics suggestions based on tags or series
 - Series navigation (previous/next in series) when applicable
-- Social sharing capabilities for individual comics
+- Social sharing capabilities for individual comics with canonical URLs
+- Tag-filtered URLs maintain browsing context for reader navigation
 
 ## Non-Functional Requirements
 
@@ -122,8 +135,8 @@ A CDK-based package that enables individual comic artists to easily deploy and m
 ### NFR-2: Cost Efficiency  
 **Description:** Architecture designed to stay well within $10/month hosting budget
 **Acceptance Criteria:**
-- Image storage optimized with automatic compression and format selection
-- CDN caching configured to minimize data transfer costs
+- Image storage preserves original quality without automatic compression to prioritize artist intent
+- CDN caching configured to minimize data transfer costs while serving original images
 - Lambda functions optimized for minimal execution time and memory usage
 - DynamoDB queries designed for cost-effective read/write patterns
 - Cost monitoring and alerting configured for budget threshold warnings
@@ -133,7 +146,8 @@ A CDK-based package that enables individual comic artists to easily deploy and m
 **Acceptance Criteria:**
 - Complete upload workflow (login to published comic) completable in under 5 minutes
 - Bulk upload operations support uploading 10+ comics efficiently
-- Error recovery allows resume of interrupted upload operations
+- Error recovery preserves user-entered metadata in browser storage during upload failures
+- Failed image uploads require complete restart but metadata fields remain populated
 - Management interface provides quick publish/unpublish toggle functionality
 - Mobile-first design ensures full functionality on artist's preferred devices
 
