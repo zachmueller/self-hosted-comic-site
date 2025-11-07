@@ -1,0 +1,284 @@
+[
+  {
+    "description": "Missing required fields",
+    "data": {
+      "title": "Incomplete Comic"
+    }
+  },
+  {
+    "description": "Invalid UUID format",
+    "data": {
+      "id": "not-a-valid-uuid",
+      "title": "Bad UUID Comic",
+      "slug": "bad-uuid-comic",
+      "caption": "This comic has an invalid UUID.",
+      "images": [
+        {
+          "key": "comics/test.jpg"
+        }
+      ],
+      "happenedOnDate": "2023-10-15",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "uploadDate": "2023-10-16T10:31:15.234Z"
+    }
+  },
+  {
+    "description": "Invalid slug format (uppercase and special characters)",
+    "data": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "Bad Slug Comic",
+      "slug": "Bad-Slug_With@Special!Characters",
+      "caption": "This comic has an invalid slug format.",
+      "images": [
+        {
+          "key": "comics/test.jpg"
+        }
+      ],
+      "happenedOnDate": "2023-10-15",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "uploadDate": "2023-10-16T10:31:15.234Z"
+    }
+  },
+  {
+    "description": "Title too long (over 200 characters)",
+    "data": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "This is an extremely long title that exceeds the maximum allowed length of 200 characters and should trigger a validation error because it goes on and on and on and never seems to end making it invalid",
+      "slug": "very-long-title",
+      "caption": "This comic has a title that's too long.",
+      "images": [
+        {
+          "key": "comics/test.jpg"
+        }
+      ],
+      "happenedOnDate": "2023-10-15",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "uploadDate": "2023-10-16T10:31:15.234Z"
+    }
+  },
+  {
+    "description": "Empty images array",
+    "data": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "No Images Comic",
+      "slug": "no-images-comic",
+      "caption": "This comic has no images.",
+      "images": [],
+      "happenedOnDate": "2023-10-15",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "uploadDate": "2023-10-16T10:31:15.234Z"
+    }
+  },
+  {
+    "description": "Too many images (over 20)",
+    "data": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "Too Many Images",
+      "slug": "too-many-images",
+      "caption": "This comic has too many images.",
+      "images": [
+        {"key": "img01.jpg"}, {"key": "img02.jpg"}, {"key": "img03.jpg"}, {"key": "img04.jpg"}, {"key": "img05.jpg"},
+        {"key": "img06.jpg"}, {"key": "img07.jpg"}, {"key": "img08.jpg"}, {"key": "img09.jpg"}, {"key": "img10.jpg"},
+        {"key": "img11.jpg"}, {"key": "img12.jpg"}, {"key": "img13.jpg"}, {"key": "img14.jpg"}, {"key": "img15.jpg"},
+        {"key": "img16.jpg"}, {"key": "img17.jpg"}, {"key": "img18.jpg"}, {"key": "img19.jpg"}, {"key": "img20.jpg"},
+        {"key": "img21.jpg"}
+      ],
+      "happenedOnDate": "2023-10-15",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "uploadDate": "2023-10-16T10:31:15.234Z"
+    }
+  },
+  {
+    "description": "Invalid scroll style",
+    "data": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "Invalid Scroll Style",
+      "slug": "invalid-scroll-style",
+      "caption": "This comic has an invalid scroll style.",
+      "images": [
+        {
+          "key": "comics/test.jpg"
+        }
+      ],
+      "happenedOnDate": "2023-10-15",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "scrollStyle": "invalid-style",
+      "uploadDate": "2023-10-16T10:31:15.234Z"
+    }
+  },
+  {
+    "description": "Invalid date format",
+    "data": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "Invalid Date Format",
+      "slug": "invalid-date-format",
+      "caption": "This comic has an invalid date format.",
+      "images": [
+        {
+          "key": "comics/test.jpg"
+        }
+      ],
+      "happenedOnDate": "not-a-date",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "uploadDate": "2023-10-16T10:31:15.234Z"
+    }
+  },
+  {
+    "description": "Invalid datetime format",
+    "data": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "Invalid DateTime Format",
+      "slug": "invalid-datetime-format",
+      "caption": "This comic has an invalid datetime format.",
+      "images": [
+        {
+          "key": "comics/test.jpg"
+        }
+      ],
+      "happenedOnDate": "2023-10-15",
+      "postedTimestamp": "not-a-datetime",
+      "uploadDate": "2023-10-16T10:31:15.234Z"
+    }
+  },
+  {
+    "description": "Too many tags (over 50)",
+    "data": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "Too Many Tags",
+      "slug": "too-many-tags",
+      "caption": "This comic has too many tags.",
+      "images": [
+        {
+          "key": "comics/test.jpg"
+        }
+      ],
+      "tags": [
+        "tag01", "tag02", "tag03", "tag04", "tag05", "tag06", "tag07", "tag08", "tag09", "tag10",
+        "tag11", "tag12", "tag13", "tag14", "tag15", "tag16", "tag17", "tag18", "tag19", "tag20",
+        "tag21", "tag22", "tag23", "tag24", "tag25", "tag26", "tag27", "tag28", "tag29", "tag30",
+        "tag31", "tag32", "tag33", "tag34", "tag35", "tag36", "tag37", "tag38", "tag39", "tag40",
+        "tag41", "tag42", "tag43", "tag44", "tag45", "tag46", "tag47", "tag48", "tag49", "tag50",
+        "tag51"
+      ],
+      "happenedOnDate": "2023-10-15",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "uploadDate": "2023-10-16T10:31:15.234Z"
+    }
+  },
+  {
+    "description": "Invalid tag format (special characters)",
+    "data": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "Invalid Tag Format",
+      "slug": "invalid-tag-format",
+      "caption": "This comic has invalid tag formats.",
+      "images": [
+        {
+          "key": "comics/test.jpg"
+        }
+      ],
+      "tags": ["valid-tag", "invalid@tag", "another#bad%tag"],
+      "happenedOnDate": "2023-10-15",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "uploadDate": "2023-10-16T10:31:15.234Z"
+    }
+  },
+  {
+    "description": "Empty S3 key",
+    "data": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "Empty S3 Key",
+      "slug": "empty-s3-key",
+      "caption": "This comic has an image with empty S3 key.",
+      "images": [
+        {
+          "key": ""
+        }
+      ],
+      "happenedOnDate": "2023-10-15",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "uploadDate": "2023-10-16T10:31:15.234Z"
+    }
+  },
+  {
+    "description": "Alt text too long (over 500 characters)",
+    "data": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "Alt Text Too Long",
+      "slug": "alt-text-too-long",
+      "caption": "This comic has alt text that's too long.",
+      "images": [
+        {
+          "key": "comics/test.jpg",
+          "altText": "This is an extremely long alt text that exceeds the maximum allowed length of 500 characters and should trigger a validation error because it goes on and on describing every minute detail of the image in excruciating detail that nobody would ever want to read because it's so verbose and repetitive and continues to ramble on about nothing in particular just to make sure we exceed the character limit for testing purposes and verify that our validation system properly catches this error condition and rejects the input as invalid data that doesn't meet our schema requirements for reasonable alt text length."
+        }
+      ],
+      "happenedOnDate": "2023-10-15",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "uploadDate": "2023-10-16T10:31:15.234Z"
+    }
+  },
+  {
+    "description": "Negative image order",
+    "data": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "Negative Image Order",
+      "slug": "negative-image-order",
+      "caption": "This comic has an image with negative order.",
+      "images": [
+        {
+          "key": "comics/test.jpg",
+          "order": -1
+        }
+      ],
+      "happenedOnDate": "2023-10-15",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "uploadDate": "2023-10-16T10:31:15.234Z"
+    }
+  },
+  {
+    "description": "Invalid integration type",
+    "data": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "Invalid Integration",
+      "slug": "invalid-integration",
+      "caption": "This comic has an invalid integration type.",
+      "images": [
+        {
+          "key": "comics/test.jpg"
+        }
+      ],
+      "happenedOnDate": "2023-10-15",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "integrations": [
+        {
+          "type": "invalid-type",
+          "use": true
+        }
+      ],
+      "uploadDate": "2023-10-16T10:31:15.234Z"
+    }
+  },
+  {
+    "description": "Missing integration use field",
+    "data": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "Missing Integration Use",
+      "slug": "missing-integration-use",
+      "caption": "This comic has an integration missing the use field.",
+      "images": [
+        {
+          "key": "comics/test.jpg"
+        }
+      ],
+      "happenedOnDate": "2023-10-15",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "integrations": [
+        {
+          "type": "social"
+        }
+      ],
+      "uploadDate": "2023-10-16T10:31:15.234Z"
+    }
+  }
+]

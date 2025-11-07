@@ -1,0 +1,113 @@
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "title": "My First Comic",
+    "slug": "my-first-comic",
+    "caption": "This is a test comic about a cat who loves pizza.",
+    "images": [
+      {
+        "key": "comics/2023/my-first-comic-01.jpg",
+        "altText": "A cat sitting next to a pizza box",
+        "order": 0
+      },
+      {
+        "key": "comics/2023/my-first-comic-02.png",
+        "altText": "The cat taking a bite of pizza"
+      }
+    ],
+    "tags": ["cats", "pizza", "humor"],
+    "happenedOnDate": "2023-10-15",
+    "postedTimestamp": "2023-10-16T10:30:00.000Z",
+    "scrollStyle": "standard",
+    "integrations": [
+      {
+        "type": "social",
+        "use": true,
+        "config": {
+          "platforms": ["twitter", "instagram"]
+        }
+      }
+    ],
+    "uploadDate": "2023-10-16T10:31:15.234Z"
+  },
+  {
+    "id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+    "title": "Adventures in Space",
+    "slug": "adventures-in-space",
+    "caption": "A thrilling journey through the cosmos with our intrepid explorer.",
+    "images": [
+      {
+        "key": "comics/2023/space-adventure.webp"
+      }
+    ],
+    "happenedOnDate": "2023-09-01",
+    "postedTimestamp": "2023-09-02T14:45:30.000Z",
+    "scrollStyle": "long",
+    "uploadDate": "2023-09-02T14:46:00.123Z"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440001",
+    "title": "Simple Story",
+    "slug": "simple-story",
+    "caption": "A minimal comic with just the essentials.",
+    "images": [
+      {
+        "key": "comics/2023/simple.jpg"
+      }
+    ],
+    "happenedOnDate": "2023-08-20",
+    "postedTimestamp": "2023-08-21T09:00:00.000Z",
+    "uploadDate": "2023-08-21T09:01:30.567Z"
+  },
+  {
+    "id": "6ba7b811-9dad-11d1-80b4-00c04fd430c8",
+    "title": "Multi-Image Epic",
+    "slug": "multi-image-epic",
+    "caption": "A longer story told through multiple images with detailed alt text.",
+    "images": [
+      {
+        "key": "comics/2023/epic-01.png",
+        "altText": "Opening scene showing the protagonist in their hometown",
+        "order": 0
+      },
+      {
+        "key": "comics/2023/epic-02.png", 
+        "altText": "The journey begins as they set off on an adventure",
+        "order": 1
+      },
+      {
+        "key": "comics/2023/epic-03.png",
+        "altText": "Encountering the first challenge along the way",
+        "order": 2
+      },
+      {
+        "key": "comics/2023/epic-04.png",
+        "altText": "The climactic moment of the story",
+        "order": 3
+      },
+      {
+        "key": "comics/2023/epic-05.png",
+        "altText": "Resolution and return home",
+        "order": 4
+      }
+    ],
+    "tags": ["adventure", "epic", "journey", "multi-part"],
+    "happenedOnDate": "2023-07-10",
+    "postedTimestamp": "2023-07-15T16:20:00.000Z",
+    "scrollStyle": "long",
+    "integrations": [
+      {
+        "type": "analytics",
+        "use": true,
+        "config": {
+          "trackingId": "GA-12345-67"
+        }
+      },
+      {
+        "type": "syndication",
+        "use": false
+      }
+    ],
+    "uploadDate": "2023-07-15T16:25:45.890Z"
+  }
+]

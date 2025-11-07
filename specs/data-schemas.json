@@ -1,0 +1,387 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://comic-site.local/schemas/data-schemas.json",
+  "title": "Self-Hosted Comic Site Data Schemas",
+  "description": "Comprehensive JSON schemas for all data structures used in the comic site application",
+  
+  "definitions": {
+    "ComicImage": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "S3 object key for the image",
+          "pattern": "^[a-zA-Z0-9/_.-]+$",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "altText": {
+          "type": "string",
+          "description": "Accessibility description for the image",
+          "maxLength": 500
+        },
+        "order": {
+          "type": "integer",
+          "description": "Display order (defaults to array index)",
+          "minimum": 0
+        }
+      },
+      "required": ["key"],
+      "additionalProperties": false
+    },
+    
+    "Integration": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["social", "analytics", "syndication"],
+          "description": "Type of integration"
+        },
+        "use": {
+          "type": "boolean",
+          "description": "Whether this integration is enabled"
+        },
+        "config": {
+          "type": "object",
+          "description": "Integration-specific configuration",
+          "additionalProperties": true
+        }
+      },
+      "required": ["type", "use"],
+      "additionalProperties": false
+    },
+    
+    "Comic": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier (UUID v4)",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "title": {
+          "type": "string",
+          "description": "Comic title",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "slug": {
+          "type": "string",
+          "description": "URL-safe unique identifier",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "caption": {
+          "type": "string",
+          "description": "Comic description or text content"
+        },
+        "images": {
+          "type": "array",
+          "description": "Array of comic images",
+          "items": {
+            "$ref": "#/definitions/ComicImage"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "tags": {
+          "type": "array",
+          "description": "Optional tags for categorization",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[a-zA-Z0-9\\s-_]+$"
+          },
+          "maxItems": 50,
+          "uniqueItems": true
+        },
+        "happenedOnDate": {
+          "type": "string",
+          "description": "Date when the comic events occurred (ISO 8601)",
+          "format": "date"
+        },
+        "postedTimestamp": {
+          "type": "string",
+          "description": "When the comic was posted (ISO 8601)",
+          "format": "date-time"
+        },
+        "scrollStyle": {
+          "type": "string",
+          "enum": ["long", "standard"],
+          "description": "Display style for the comic",
+          "default": "standard"
+        },
+        "integrations": {
+          "type": "array",
+          "description": "External integrations configuration",
+          "items": {
+            "$ref": "#/definitions/Integration"
+          }
+        },
+        "uploadDate": {
+          "type": "string",
+          "description": "When the comic was uploaded (ISO 8601, auto-generated)",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "title", 
+        "slug",
+        "caption",
+        "images",
+        "happenedOnDate",
+        "postedTimestamp",
+        "uploadDate"
+      ],
+      "additionalProperties": false
+    },
+    
+    "UploadMetadata": {
+      "type": "object",
+      "description": "Comic metadata for upload (excludes auto-generated fields)",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier (UUID v4)",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "title": {
+          "type": "string",
+          "description": "Comic title",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "slug": {
+          "type": "string",
+          "description": "URL-safe unique identifier",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "caption": {
+          "type": "string",
+          "description": "Comic description or text content"
+        },
+        "images": {
+          "type": "array",
+          "description": "Array of comic images",
+          "items": {
+            "$ref": "#/definitions/ComicImage"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "tags": {
+          "type": "array",
+          "description": "Optional tags for categorization",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[a-zA-Z0-9\\s-_]+$"
+          },
+          "maxItems": 50,
+          "uniqueItems": true
+        },
+        "happenedOnDate": {
+          "type": "string",
+          "description": "Date when the comic events occurred (ISO 8601)",
+          "format": "date"
+        },
+        "postedTimestamp": {
+          "type": "string",
+          "description": "When the comic was posted (ISO 8601)",
+          "format": "date-time"
+        },
+        "scrollStyle": {
+          "type": "string",
+          "enum": ["long", "standard"],
+          "description": "Display style for the comic",
+          "default": "standard"
+        },
+        "integrations": {
+          "type": "array",
+          "description": "External integrations configuration",
+          "items": {
+            "$ref": "#/definitions/Integration"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "slug", 
+        "caption",
+        "images",
+        "happenedOnDate",
+        "postedTimestamp"
+      ],
+      "additionalProperties": false
+    },
+    
+    "ComicsResponse": {
+      "type": "object",
+      "description": "API response for comic listing endpoints",
+      "properties": {
+        "items": {
+          "type": "array",
+          "description": "Array of comics",
+          "items": {
+            "$ref": "#/definitions/Comic"
+          }
+        },
+        "page": {
+          "type": "integer",
+          "description": "Current page number (1-indexed)",
+          "minimum": 1
+        },
+        "hasNextPage": {
+          "type": "boolean",
+          "description": "Whether more pages are available"
+        },
+        "tag": {
+          "type": "string",
+          "description": "Tag filter applied (if any)",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      },
+      "required": ["items", "page", "hasNextPage"],
+      "additionalProperties": false
+    },
+    
+    "ErrorResponse": {
+      "type": "object",
+      "description": "Standardized error response format",
+      "properties": {
+        "error": {
+          "type": "string",
+          "description": "Error message or code",
+          "minLength": 1
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional error details"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "When the error occurred (ISO 8601)",
+          "format": "date-time"
+        }
+      },
+      "required": ["error", "timestamp"],
+      "additionalProperties": false
+    },
+    
+    "AppConfig": {
+      "type": "object",
+      "description": "Application configuration schema",
+      "properties": {
+        "userPoolId": {
+          "type": "string",
+          "description": "Cognito User Pool ID",
+          "pattern": "^[a-z0-9-]+_[a-zA-Z0-9]+$"
+        },
+        "clientId": {
+          "type": "string",
+          "description": "Cognito App Client ID",
+          "minLength": 20,
+          "maxLength": 30
+        },
+        "identityPoolId": {
+          "type": "string",
+          "description": "Cognito Identity Pool ID",
+          "pattern": "^[a-z0-9-]+:[a-f0-9-]+$"
+        },
+        "region": {
+          "type": "string",
+          "description": "AWS region",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "bucketName": {
+          "type": "string",
+          "description": "S3 bucket name",
+          "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$",
+          "minLength": 3,
+          "maxLength": 63
+        },
+        "cognitoDomain": {
+          "type": "string",
+          "description": "Cognito domain for authentication",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "userPoolId",
+        "clientId", 
+        "identityPoolId",
+        "region",
+        "bucketName",
+        "cognitoDomain"
+      ],
+      "additionalProperties": false
+    },
+    
+    "CacheConfig": {
+      "type": "object",
+      "description": "Cache configuration settings",
+      "properties": {
+        "pageSize": {
+          "type": "integer",
+          "description": "Number of comics per page",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 10
+        },
+        "ttl": {
+          "type": "integer",
+          "description": "Cache TTL in minutes",
+          "minimum": 1,
+          "maximum": 10080,
+          "default": 60
+        },
+        "invalidationPaths": {
+          "type": "array",
+          "description": "CloudFront paths to invalidate on updates",
+          "items": {
+            "type": "string",
+            "pattern": "^/.*$"
+          }
+        }
+      },
+      "required": ["pageSize", "ttl", "invalidationPaths"],
+      "additionalProperties": false
+    },
+    
+    "ValidationResult": {
+      "type": "object",
+      "description": "Result of data validation operations",
+      "properties": {
+        "isValid": {
+          "type": "boolean",
+          "description": "Whether the validation passed"
+        },
+        "errors": {
+          "type": "array",
+          "description": "Array of validation error messages",
+          "items": {
+            "type": "string"
+          }
+        },
+        "warnings": {
+          "type": "array", 
+          "description": "Array of validation warnings",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["isValid", "errors"],
+      "additionalProperties": false
+    }
+  }
+}
