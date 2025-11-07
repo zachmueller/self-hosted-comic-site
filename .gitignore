@@ -25,3 +25,6 @@ cdk.context.json
 dist/
 *.js.map
 *.map
+
+# Misc
+.private/
