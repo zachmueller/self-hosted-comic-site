@@ -2,7 +2,7 @@
 
 **Created:** November 8, 2025
 **Status:** Draft
-**Derived From:** specs/1-cdk-comic-site/spec.md
+**Derived From:** Original monolithic comic site specification (refactored November 2025)
 **Related Specs:** 
 - [Core MVP](core-mvp-spec.md) - Prerequisites
 - [Series Management](series-management-spec.md) 
