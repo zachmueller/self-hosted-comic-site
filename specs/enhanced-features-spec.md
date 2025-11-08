@@ -7,6 +7,7 @@
 - [Core MVP](core-mvp-spec.md) - Prerequisites
 - [Series Management](series-management-spec.md) 
 - [Raw Sketches](raw-sketches-spec.md)
+- [Reader Login System](reader-login-spec.md) - Integrates with management interface
 
 ## Overview
 Advanced functionality that enhances the core comic site with bulk operations, advanced management features, responsive image optimization, and improved user experience. These features build upon the MVP foundation to provide a more robust and feature-rich comic publishing platform.
@@ -110,6 +111,8 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 - Content preview before publication with mobile/desktop view simulation
 - Image replacement functionality for updating published comics
 - Management interface optimized for both desktop and iPad usage
+- **Reader Engagement Integration:** Access point to reader moderation dashboard when reader login system is deployed (see [Reader Login System](reader-login-spec.md))
+- **Engagement Analytics Integration:** Comic performance metrics include reader reaction and comment data when available
 
 ### FR-E6: Custom Domain Configuration
 **Description:** Support for custom domain setup with manual DNS configuration to maintain cost efficiency
@@ -227,6 +230,8 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 - Compatible with series management - bulk operations respect series ordering and assignment
 - Integrates with raw sketches - responsive image generation applies to both final and sketch content
 - Extends MVP authentication and upload workflows without disrupting existing functionality
+- **Reader Login System Integration:** Management interface provides access to reader engagement dashboard and includes reader interaction analytics in comic performance metrics
+- Bulk operations can include reader engagement data when exporting analytics or managing content with high reader interaction
 
 ## Out of Scope
 - Advanced analytics requiring third-party services or complex infrastructure

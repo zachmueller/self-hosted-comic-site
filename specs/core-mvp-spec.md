@@ -7,6 +7,7 @@
 - [Series Management](series-management-spec.md)
 - [Raw Sketches](raw-sketches-spec.md) 
 - [Enhanced Features](enhanced-features-spec.md)
+- [Reader Login System](reader-login-spec.md) - Optional engagement features
 
 ## Overview
 Core MVP functionality for a CDK-based package that enables individual comic artists to easily deploy and manage their own AWS-hosted comic website. This spec covers the essential features needed for a functional comic site with artist upload capabilities and reader browsing.
@@ -54,6 +55,7 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 - As a comic reader, I want to browse comics by tags so that I can find content that matches my interests  
 - As a comic reader, I want to see explicitly related comics on individual comic pages so that I can follow artist-intended connections and storylines
 - As a comic reader, I want to view multi-image comics in a carousel format so that I can easily navigate through comic sequences
+- As a comic reader, I want to access all content anonymously so that I can enjoy comics without requiring account creation (Note: Optional reader login system available for enhanced engagement - see [Reader Login System](reader-login-spec.md))
 - As a site administrator (artist), I want simple CDK-based deployment so that I can maintain my site without complex server management
 
 ## Functional Requirements
@@ -127,12 +129,14 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 - Artist can add multiple relationships per comic during upload process
 
 ### FR-5: Reader Homepage and Basic Navigation
-**Description:** Reader-facing homepage displaying latest comics with basic filtering
+**Description:** Reader-facing homepage displaying latest comics with basic filtering, accessible to all visitors without authentication
 **Acceptance Criteria:**
 - Homepage displays 10 most recent comics ordered by "happened on" date (descending)
 - Pagination system for browsing complete comic history
 - Tag-based filtering system for content discovery
 - Responsive design supports mobile and desktop readers
+- Anonymous access to all published content (no authentication required for basic reading experience)
+- Optional integration points for reader engagement features (see [Reader Login System](reader-login-spec.md))
 
 ### FR-6: Multi-Image Comic Display
 **Description:** Configurable display system allowing artists to choose between carousel and long form presentation
@@ -269,6 +273,7 @@ Features explicitly excluded from MVP (see related specs):
 - Bulk upload operations and advanced management (see [Enhanced Features](enhanced-features-spec.md))
 - Advanced image optimization and responsive variants (see [Enhanced Features](enhanced-features-spec.md))
 - Publish/unpublish controls (see [Enhanced Features](enhanced-features-spec.md))
+- Reader authentication, comments, and engagement features (see [Reader Login System](reader-login-spec.md))
 
 ## Implementation Notes
 
