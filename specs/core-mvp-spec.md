@@ -51,6 +51,7 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 - As a comic artist, I want to organize my comics with tags so that readers can discover related content
 - As a comic artist, I want to explicitly connect new comics to existing comics during upload so that readers can follow narrative relationships and thematic connections
 - As a comic artist, I want to specify the type of relationship when connecting comics (sequel, prequel, alternate version, etc.) so that readers understand the connection context
+- As a comic artist, I want to optionally provide alt text descriptions for my comic images so that readers using screen readers and assistive technology can understand my visual content
 - As a comic reader, I want to see the latest comics on the homepage so that I can quickly access new content
 - As a comic reader, I want to browse comics by tags so that I can find content that matches my interests  
 - As a comic reader, I want to see explicitly related comics on individual comic pages so that I can follow artist-intended connections and storylines
@@ -76,7 +77,8 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 - Upload interface renders properly on iPad Safari and Chrome browsers, with full functionality on desktop Chrome
 - Drag-and-drop file upload supports multiple comic images in JPG, PNG, and WebP formats
 - File size validation enforces 20MB maximum per image with clear error messaging
-- Touch-friendly form controls for comic metadata entry including relationship selection
+- Touch-friendly form controls for comic metadata entry including relationship selection and accessibility options
+- **Accessibility Features:** Optional alt text input field for each uploaded image to support screen readers and assistive technology
 - Real-time upload progress indicators for large image files
 - Form validation provides clear error messages for missing required fields
 - Optional relationship selection interface allowing artist to connect new comic to existing comics
@@ -88,7 +90,9 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 **Acceptance Criteria:**
 - **Core Metadata Schema per Post:**
   - `id` (string): Unique identifier serving as DynamoDB partition key
-  - `images` (array): Ordered list of comic panel images with S3 keys
+  - `images` (array): Ordered list of comic panel images with metadata objects
+    - Each image object contains: `s3Key` (string), `altText` (optional string)
+    - Alt text provides accessibility description for screen readers and assistive technology
   - `title` (string): Display title for the post
   - `slug` (string): URL slug portion specific to this post
   - `caption` (string): Text displayed below each comic
@@ -241,12 +245,13 @@ Measurable, constitutional-principle-aligned outcomes:
 ## Key Entities
 
 ### Comic Entity (MVP)
-- **Attributes:** id, title, caption, happenedOnDate, postedTimestamp, imageUrls, tags, slug, scrollStyle, relationships
-- **Validation:** Required title and happenedOnDate, at least one image required
+- **Attributes:** id, title, caption, happenedOnDate, postedTimestamp, images (with s3Key and optional altText), tags, slug, scrollStyle, relationships
+- **Validation:** Required title and happenedOnDate, at least one image required, altText optional but recommended for accessibility
 - **Relationships:** 
   - Has multiple tags for discovery
   - Has multiple explicit relationships to other comics with bidirectional connections
   - Each relationship includes: targetComicId, relationshipType, optional description
+  - Each image includes: s3Key (required), altText (optional for accessibility)
 
 ### Comic Relationship Entity
 - **Attributes:** targetComicId (string), relationshipType (enum), description (optional string)
