@@ -7,6 +7,7 @@
 - [Series Management](series-management-spec.md)
 - [Enhanced Features](enhanced-features-spec.md)
 - [Search Functionality](search-functionality-spec.md)
+- [Random Comic Selection](random-comic-spec.md)
 
 ## Overview
 A responsive, collapsible sidebar navigation system that provides persistent access to core site sections while prioritizing artist content management workflow. The navigation features a sticky positioning system that remains accessible during content scrolling, with responsive behavior optimized for both desktop management and mobile reading experiences.
@@ -67,11 +68,12 @@ A responsive, collapsible sidebar navigation system that provides persistent acc
 - Sidebar positioning remains fixed during page scrolling on both desktop and mobile
 
 ### FR-2: Core Navigation Links
-**Description:** Four primary navigation sections supporting artist content organization and reader discovery
+**Description:** Five primary navigation sections supporting artist content organization and reader discovery
 **Acceptance Criteria:**
 - **About link:** Navigates to `/about` page with artist-customizable content
 - **Series link:** Navigates to `/series` page showing all available comic series
 - **Tags link:** Navigates to `/tags` page displaying tag cloud or list with post counts
+- **Random Comic button:** Instantly navigates to randomly selected comic from published catalog (see [Random Comic Selection](random-comic-spec.md))
 - **Search section:** Search input field with placeholder text "Search comics..."
 - All links maintain visual hierarchy with consistent iconography and typography
 - Active page indicator highlights current section in navigation
