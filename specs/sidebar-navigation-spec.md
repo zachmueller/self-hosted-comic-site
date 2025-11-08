@@ -6,6 +6,7 @@
 - [Core MVP](core-mvp-spec.md)
 - [Series Management](series-management-spec.md)
 - [Enhanced Features](enhanced-features-spec.md)
+- [Search Functionality](search-functionality-spec.md)
 
 ## Overview
 A responsive, collapsible sidebar navigation system that provides persistent access to core site sections while prioritizing artist content management workflow. The navigation features a sticky positioning system that remains accessible during content scrolling, with responsive behavior optimized for both desktop management and mobile reading experiences.
@@ -17,7 +18,7 @@ A responsive, collapsible sidebar navigation system that provides persistent acc
 - Navigation structure designed around artist content organization needs (Series, Tags, About)
 - About page provides artist-customizable space for personal branding and information
 - Series and Tags navigation supports artist's content categorization workflow
-- Search functionality (future) enables artists to quickly locate their own content for management
+- Search functionality enables artists and readers to quickly locate content through metadata search
 - Desktop collapse behavior maintains screen real estate for content management tasks
 
 ### Cost Impact Assessment
@@ -71,7 +72,7 @@ A responsive, collapsible sidebar navigation system that provides persistent acc
 - **About link:** Navigates to `/about` page with artist-customizable content
 - **Series link:** Navigates to `/series` page showing all available comic series
 - **Tags link:** Navigates to `/tags` page displaying tag cloud or list with post counts
-- **Search section (future implementation):** Placeholder UI with "Coming Soon" indicator
+- **Search section:** Search input field with placeholder text "Search comics..."
 - All links maintain visual hierarchy with consistent iconography and typography
 - Active page indicator highlights current section in navigation
 
@@ -154,7 +155,7 @@ A responsive, collapsible sidebar navigation system that provides persistent acc
 
 ### Edge Cases
 - **Small Desktop Screens:** Navigation adapts gracefully to laptop-sized screens
-- **Search Placeholder Interaction:** Future search section provides appropriate user feedback
+- **Search Functionality:** Reader enters search terms to discover comics through title, tags, caption, and alt text matching
 - **Sidebar Animation Interruption:** Smooth handling when user triggers navigation during animations
 
 ## Success Criteria
@@ -191,7 +192,7 @@ Features explicitly excluded to maintain constitutional compliance and focus:
 - Advanced navigation analytics or tracking (prioritizes cost efficiency)
 - Complex nested navigation structures (maintains deployment simplicity)
 - Navigation personalization beyond basic state persistence (artist workflow focus)
-- Search implementation details (deferred to future specification)
+- Search implementation details (covered in Search Functionality specification)
 - Multi-level dropdown menus (preserves mobile usability)
 - Navigation-specific user accounts or permissions (single-artist model)
 
@@ -203,7 +204,7 @@ Features explicitly excluded to maintain constitutional compliance and focus:
 - Series and Tags page integration leverages specifications from related documents
 - Responsive behavior uses existing CSS framework and breakpoint system
 
-### Future Search Integration
-- Search section placeholder designed for future implementation
-- UI space reserved for search input field and results overlay
-- Search functionality integration point defined for future specification development
+### Search Integration
+- Search input field integrated within sidebar navigation
+- Search submission navigates to `/search?q=searchterm` using existing URL routing
+- Search functionality detailed in Search Functionality specification
