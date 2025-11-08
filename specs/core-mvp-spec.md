@@ -103,6 +103,11 @@ Core MVP functionality for a CDK-based package that enables individual comic art
   - `relationships` (array): Explicit connections to other comics with relationship metadata
     - Each relationship contains: `targetComicId`, `relationshipType`, `description` (optional)
     - Supported relationship types: `sequel`, `prequel`, `alternate-version`, `remix`, `inspiration`, `follow-up`, `related`
+  - `integrations` (array): Per-comic social media platform controls (see [Social Media Integration](social-media-integration-spec.md))
+    - Each integration object contains: `type` (string), `use` (boolean)
+    - Supported types: `instagram`, `facebook`
+    - Default value: `[{"type": "instagram", "use": true}, {"type": "facebook", "use": true}]`
+    - Artist can modify `use` values during upload to control per-comic social media posting
 - Tag system supports reader filtering and content discovery with case-insensitive matching
 - Comic slugs generated from titles for SEO-friendly URLs with duplicate detection requiring artist resolution
 - Relationship system supports bidirectional connections with automatic inverse relationship creation
