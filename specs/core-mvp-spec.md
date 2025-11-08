@@ -17,7 +17,7 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 ### Artist-First User Experience
 **How this feature prioritizes the comic artist's workflow:**
 - iPad-optimized upload interface for artists who prefer mobile content creation
-- Single-artist authentication model eliminates complex user management
+- Single-artist authentication model with optional reader engagement features 
 - Artist-centric content management with immediate publish capabilities
 - Upload workflow designed for minimal technical knowledge requirements
 
@@ -43,14 +43,15 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 **Deployment approach:**
 - Single CDK command: `cdk deploy` creates entire infrastructure
 - Environment-specific configuration via CDK context
-- Self-contained deployment with no manual infrastructure setup
+- Minor manual steps for DNS record updates (domain managed by external registrar)
+- Self-contained deployment with minimal manual infrastructure setup
 
 ## User Stories
 - As a comic artist, I want to easily upload my comics from my iPad so that I can publish content anywhere without requiring a computer
 - As a comic artist, I want to authenticate using my Google account so that I don't need to manage separate login credentials
 - As a comic artist, I want to organize my comics with tags so that readers can discover related content
 - As a comic artist, I want to explicitly connect new comics to existing comics during upload so that readers can follow narrative relationships and thematic connections
-- As a comic artist, I want to specify the type of relationship when connecting comics (sequel, prequel, alternate version, etc.) so that readers understand the connection context
+- As a comic artist, I want to define for each comic post whether its multiple images are shown in carousel form or simple long form so that I control the presentation of my content
 - As a comic artist, I want to optionally provide alt text descriptions for my comic images so that readers using screen readers and assistive technology can understand my visual content
 - As a comic reader, I want to see the latest comics on the homepage so that I can quickly access new content
 - As a comic reader, I want to browse comics by tags so that I can find content that matches my interests  
@@ -82,7 +83,7 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 - Real-time upload progress indicators for large image files
 - Form validation provides clear error messages for missing required fields
 - Optional relationship selection interface allowing artist to connect new comic to existing comics
-- Relationship type selection with predefined options and optional description field
+- Simple comic selection without relationship type specification
 - Existing comic search/selection with title-based filtering for relationship connections
 
 ### FR-3: Core Comic Metadata Management
@@ -100,9 +101,9 @@ Core MVP functionality for a CDK-based package that enables individual comic art
   - `happenedOnDate` (date): Date when comic situation occurred
   - `scrollStyle` (string): Display style (`carousel` or `long`)
   - `postedTimestamp` (timestamp): Publication date
-  - `relationships` (array): Explicit connections to other comics with relationship metadata
-    - Each relationship contains: `targetComicId`, `relationshipType`, `description` (optional)
-    - Supported relationship types: `sequel`, `prequel`, `alternate-version`, `remix`, `inspiration`, `follow-up`, `related`
+- `relationships` (array): Simple bidirectional connections to other comics
+    - Each relationship contains: `targetComicId` (string)
+    - All relationships are bidirectional and unlabeled
   - `integrations` (array): Per-comic social media platform controls (see [Social Media Integration](social-media-integration-spec.md))
     - Each integration object contains: `type` (string), `use` (boolean)
     - Supported types: `instagram`, `facebook`
@@ -113,34 +114,19 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 - Relationship system supports bidirectional connections with automatic inverse relationship creation
 
 ### FR-4: Comic Relationship Management
-**Description:** System for creating and managing explicit connections between comics during upload workflow
+**Description:** System for creating and managing simple bidirectional connections between comics during upload workflow
 **Acceptance Criteria:**
 - Artist can search existing comics by title during upload process using live search with partial matching
-- Relationship creation interface supports multiple relationship types with clear labels and descriptions
-- **Supported Relationship Types:**
-  - `sequel`: This comic continues the story from the selected comic
-  - `prequel`: This comic shows events that happened before the selected comic
-  - `alternate-version`: This comic presents a different take or version of the selected comic
-  - `remix`: This comic is a creative reinterpretation of the selected comic
-  - `inspiration`: The selected comic inspired or influenced this comic
-  - `follow-up`: This comic follows up on themes or characters from the selected comic
-  - `related`: This comic is generally related to the selected comic
-- Optional description field allows artist to explain the specific nature of the relationship
-- Bidirectional relationship creation: when artist connects Comic A to Comic B, system automatically creates inverse relationship
-- **Inverse Relationship Mapping:**
-  - `sequel` ↔ `prequel`
-  - `alternate-version` ↔ `alternate-version` 
-  - `remix` ↔ `inspiration` (remix of → inspired)
-  - `inspiration` ↔ `remix` (inspired → remix of)
-  - `follow-up` ↔ `follow-up`
-  - `related` ↔ `related`
+- Simple relationship creation interface allowing artist to connect comics without specifying relationship types
+- Bidirectional relationship creation: when artist connects Comic A to Comic B, system automatically creates inverse connection on Comic B
 - Relationship validation prevents duplicate connections and self-references
 - Artist can add multiple relationships per comic during upload process
+- All relationships are unlabeled and treated equally
 
 ### FR-5: Reader Homepage and Basic Navigation
 **Description:** Reader-facing homepage displaying latest comics with basic filtering, accessible to all visitors without authentication
 **Acceptance Criteria:**
-- Homepage displays 10 most recent comics ordered by "happened on" date (descending)
+- Homepage displays 10 most recent comics ordered by publish date (descending)
 - Pagination system for browsing complete comic history
 - Tag-based filtering system for content discovery
 - Responsive design supports mobile and desktop readers
@@ -161,18 +147,13 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 **Acceptance Criteria:**
 - URL structure: `/comic/{slug}` for direct comic access
 - Full comic metadata display including tags and explicit relationships
-- **Explicit Relationship Display:**
-  - Dedicated "Related Comics" section showing artist-defined connections
-  - Each relationship displays: relationship type, target comic title, optional description
-  - Relationship types shown with clear, reader-friendly labels (e.g., "Sequel to:", "Prequel to:", "Remix of:")
-  - Clickable links to related comics for easy navigation
-  - Relationships grouped by type when multiple connections exist
-- **Fallback Tag-Based Suggestions:**
-  - Additional "You might also like" section for tag-based recommendations
-  - Tag-based suggestions displayed only when explicit relationships exist or when no explicit relationships are available
-  - Clear visual distinction between explicit relationships and tag-based suggestions
+- **Related Comics Display:**
+  - Single "Related Comics" section combining all artist-defined connections and tag-based suggestions
+  - Explicit relationships (artist-defined) displayed first with clickable links to related comics
+  - Tag-based suggestions displayed after explicit relationships when available
+  - All related comics treated equally without relationship type labels
+  - Mobile-optimized relationship navigation with touch-friendly interface
 - Basic chronological next/previous navigation between comics (by "happened on" date)
-- Mobile-optimized relationship navigation with touch-friendly interface
 
 ## Non-Functional Requirements
 
@@ -214,10 +195,9 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 1. Artist opens upload interface on iPad and authenticates via Google
 2. Artist selects multiple comic image files using native file picker
 3. Artist fills out comic metadata (title, happened-on date, tags)
-4. **Optional:** Artist adds explicit relationships to existing comics:
+4. **Optional:** Artist adds simple relationships to existing comics:
    - Searches for existing comics using title-based live search
-   - Selects relationship type from predefined options
-   - Adds optional description to clarify the relationship
+   - Selects comics to create bidirectional connections
    - Can add multiple relationships to the same comic
 5. Artist initiates upload and receives real-time progress feedback
 6. Artist reviews uploaded comic in preview mode, including relationship connections
@@ -226,9 +206,9 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 9. **Automatic:** System creates inverse relationships on connected comics
 
 ### Alternative Flows
-- **Comic Upload with Relationships:** Artist creates sequel to existing comic, system automatically adds prequel relationship to original comic
-- **Relationship Discovery:** Reader finds new comic through explicit relationship link on related comic's page
-- **Complex Relationship Network:** Artist creates multiple interconnected comics with various relationship types
+- **Comic Upload with Relationships:** Artist connects new comic to existing comic, system automatically creates bidirectional relationship
+- **Relationship Discovery:** Reader finds new comic through relationship link on related comic's page
+- **Simple Relationship Network:** Artist creates multiple interconnected comics with bidirectional connections
 - Content modification: Artist updates existing comic metadata, relationships, or replaces images
 - Error recovery: Artist resumes interrupted upload after network disconnection, with relationship selections preserved in browser cache
 - Reader browsing: Reader discovers comics via both tag filtering and explicit relationship navigation
@@ -254,14 +234,14 @@ Measurable, constitutional-principle-aligned outcomes:
 - **Validation:** Required title and happenedOnDate, at least one image required, altText optional but recommended for accessibility
 - **Relationships:** 
   - Has multiple tags for discovery
-  - Has multiple explicit relationships to other comics with bidirectional connections
-  - Each relationship includes: targetComicId, relationshipType, optional description
+  - Has multiple simple bidirectional relationships to other comics
+  - Each relationship includes: targetComicId (string only)
   - Each image includes: s3Key (required), altText (optional for accessibility)
 
 ### Comic Relationship Entity
-- **Attributes:** targetComicId (string), relationshipType (enum), description (optional string)
-- **Validation:** Valid targetComicId must reference existing comic, relationshipType must be from supported list
-- **Business Rules:** No self-references allowed, duplicate relationships to same target prevented
+- **Attributes:** targetComicId (string)
+- **Validation:** Valid targetComicId must reference existing comic
+- **Business Rules:** No self-references allowed, duplicate relationships to same target prevented, all relationships are bidirectional and unlabeled
 
 ### Artist Configuration
 - **Attributes:** siteTitle, siteDescription, googleAuthConfig
