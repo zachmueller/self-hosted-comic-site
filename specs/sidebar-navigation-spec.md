@@ -50,7 +50,6 @@ A responsive sidebar navigation system that provides persistent access to core s
 - As a comic artist, I want fast access to Tags overview so that I can manage my content categorization system
 - As a comic reader, I want consistent navigation access while scrolling so that I can explore different sections without losing my place
 - As a comic reader on mobile, I want navigation that doesn't consume screen space until needed so that I can focus on comic content
-- As a comic reader on desktop, I want visible navigation hints so that I can easily discover site sections
 
 ## Functional Requirements
 
