@@ -84,17 +84,21 @@ Simple, cost-effective search functionality that allows readers to search across
   - Search input field pre-populated with current search term on results page
 
 ### FR-3: Search Results Display
-**Description:** Paginated search results page with consistent site design and helpful user feedback
+**Description:** Search results page with list-type page consistency matching homepage, series pages, and tag pages rendering
 **Acceptance Criteria:**
 - **URL Structure:**
   - Search results: `/search?q=searchterm`
   - Paginated results: `/search?q=searchterm&page=2`
   - Special characters in search terms properly URL-encoded
-- **Results Layout:**
+- **Results Layout (List-Type Page Consistency):**
   - 10 comics per page (consistent with site pagination standards)
-  - Each result shows: comic title, publication date, tags, and first image thumbnail
-  - Search term highlighting within displayed text fields (title, visible tags)
-  - Click on result navigates to individual comic page (`/comic/{slug}`)
+  - **Full Comic Display:** Each search result displays the complete comic content, identical to homepage and other list-type pages:
+    - **Carousel Style Comics:** First panel displayed with remaining panels accessible via reader swiping/navigation through carousel interface
+    - **Long Style Comics:** All comic panels presented sequentially in vertical layout
+  - **Visual Separation:** Each distinct comic post visually separated with appropriate spacing and dividers
+  - **Content Ordering:** Comic title, full comic display, then caption and metadata below
+  - **Interactive Elements:** Full carousel functionality for multi-panel comics, clickable comic titles linking to individual comic pages
+  - Search term highlighting within displayed text fields (title, visible tags, captions)
 - **Result Metadata:**
   - Total results count displayed: "Found X comics matching 'search term'"
   - Clear indication when no results found: "No comics found matching 'search term'"
@@ -168,9 +172,13 @@ Simple, cost-effective search functionality that allows readers to search across
 2. Reader enters search term in search input field (e.g., "dragon")
 3. Reader presses Enter or clicks search button
 4. Browser navigates to `/search?q=dragon`
-5. Search results page displays matching comics with highlighted search terms
-6. Reader browses paginated results and clicks on interesting comic
-7. Reader navigates to individual comic page and can use browser back to return to search
+5. Search results page displays matching comics with full comic content (identical to homepage display):
+   - Comics with `scrollStyle: carousel` show first panel with swipe/navigation for remaining panels
+   - Comics with `scrollStyle: long` show all panels vertically in sequence
+   - Caption and metadata displayed below each complete comic
+   - Search terms highlighted within visible text (titles, tags, captions)
+6. Reader can interact with comics directly on search results page (carousel navigation, reading full content)
+7. Reader can click comic titles to navigate to individual comic pages, or use browser back to return to search
 
 ### Alternative Flows
 - **Multi-word Search:** Reader searches "funny cat" and finds comics matching both terms
@@ -190,9 +198,13 @@ Measurable, constitutional-principle-aligned outcomes:
 - Search execution time: under 3 seconds for typical comic collections
 - Monthly search cost impact: under $0.50 additional Lambda execution costs
 - Search result accuracy: 95%+ of relevant comics found for simple text matching
-- User engagement: Measurable increase in comic page views from search discovery
+- **List-Type Page Consistency:** Search results page rendering identical to homepage and other list-type pages:
+  - Full comic display functionality: 100% feature parity with homepage comic presentation
+  - Carousel functionality: Complete swipe/navigation support for multi-panel comics on search results
+  - Visual consistency: Search results visually indistinguishable from homepage comic layout
+- User engagement: Measurable increase in comic interaction time on search results page (due to full comic display)
 - URL sharing functionality: Search result URLs work correctly when shared between users
-- Mobile usability: 100% search workflow completion rate on mobile devices
+- Mobile usability: 100% search workflow completion rate on mobile devices including full comic interaction
 
 ## Key Entities
 
