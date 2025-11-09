@@ -53,6 +53,7 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 - As a comic artist, I want to reference other comics within my captions using simple link syntax so that readers can discover related content naturally within the context of my writing
 - As a comic artist, I want to define for each comic post whether its multiple images are shown in carousel form or simple long form so that I control the presentation of my content
 - As a comic artist, I want to optionally provide alt text descriptions for my comic images so that readers using screen readers and assistive technology can understand my visual content
+- As a comic artist, I want to reorder the panels of my comics during the upload process so that I can confirm the correct sequence before publication (see [Enhanced Features](enhanced-features-spec.md) for full panel reordering functionality)
 - As a comic reader, I want to see the latest comics on the homepage so that I can quickly access new content
 - As a comic reader, I want to browse comics by tags so that I can find content that matches my interests  
 - As a comic reader, I want to see explicitly related comics on individual comic pages so that I can follow artist-intended connections and storylines

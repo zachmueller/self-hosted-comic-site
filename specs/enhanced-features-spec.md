@@ -145,7 +145,34 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 - Automatic redirect from default CloudFront domain to custom domain
 - Cost-conscious approach: manual CNAME setup avoids Route 53 charges
 
-### FR-E7: Configurable Site Footer Management
+### FR-E7: Panel Reordering System
+**Description:** Comprehensive panel reordering functionality for both comic images and raw sketches, integrated into upload workflow and available for post-publication editing
+**Acceptance Criteria:**
+- **Upload Workflow Integration:**
+  - Panel reordering step appears after image upload but before final publication in new comic creation flow
+  - Artist can reorder both final comic images and raw sketch images independently using drag-and-drop interface on desktop and touch-based reordering on mobile devices
+  - Visual preview shows current panel order with thumbnail representations of each image
+  - Reordering interface works seamlessly on both desktop (mouse-based) and iPad (touch-based) platforms
+  - Artist can skip reordering step to maintain original upload order, or actively reorder panels before publication
+  - Changes to panel order are reflected immediately in preview without requiring form resubmission
+- **Post-Publication Management:**
+  - Panel reordering available through enhanced management interface for any published comic
+  - Artist can access reordering interface from comic edit/management screen at any time after publication
+  - Separate reordering interfaces for final comic images and raw sketch images when both are present
+  - Changes to panel order update live content immediately without affecting other comic metadata
+  - Reordering preserves all existing image metadata including alt text and S3 storage keys
+- **Technical Implementation:**
+  - Panel order stored as array indices in comic metadata (`images` and `sketchImages` arrays)
+  - Drag-and-drop interface supports both mouse interactions (desktop) and touch gestures (mobile/tablet)
+  - Real-time preview updates show how reordered panels will appear in both carousel and long-form display modes
+  - Undo/redo functionality allows artist to revert reordering changes during editing session
+  - Auto-save preserves reordering changes without requiring explicit save action
+- **Constitutional Compliance:**
+  - Panel reordering prioritizes artist creative control over reader convenience
+  - No additional AWS infrastructure costs - uses existing DynamoDB array ordering
+  - Feature deployable via existing CDK deployment process without manual setup
+
+### FR-E8: Configurable Site Footer Management
 **Description:** Artist-configurable footer component with customizable content and external links for professional site branding
 **Acceptance Criteria:**
 - **Footer Configuration Interface:**
@@ -220,6 +247,19 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 5. Artist updates comic content and republishes with preserved metadata
 6. All changes reflected immediately across reader-facing interfaces
 
+### Panel Reordering Workflow Integration
+1. Artist uploads multiple comic images during new comic creation
+2. Upload completes and artist proceeds to panel reordering step
+3. **Upload Integration:** Artist sees thumbnail preview of all uploaded panels in current order
+4. Artist uses drag-and-drop (desktop) or touch gestures (iPad) to reorder panels
+5. **Real-time Preview:** Changes reflect immediately in preview showing both carousel and long-form layouts
+6. Artist confirms panel order or skips to maintain upload order
+7. Artist completes publication with finalized panel sequence
+8. **Post-Publication Management:** Artist later accesses comic management interface
+9. Artist opens panel reordering tool for published comic from edit screen
+10. Artist reorders panels using same drag-and-drop interface with undo/redo support
+11. Changes auto-save and update live content immediately without affecting other metadata
+
 ### Thumbnail and Full Image Delivery Flow
 1. Reader visits comic site on mobile device with slow connection
 2. System serves thumbnail images for homepage browsing (fast loading)
@@ -237,6 +277,14 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 - Enhanced features add less than $1.25/month to hosting costs
 - Error recovery preserves 100% of user-entered metadata during failures
 - Custom domain setup completable in under 30 minutes with provided documentation
+- **Panel Reordering Success Metrics:**
+  - Panel reordering interface loads and displays thumbnails within 2 seconds
+  - Drag-and-drop reordering operations complete with immediate visual feedback (under 100ms response)
+  - Panel reordering workflow adds less than 1 minute to overall upload process when used
+  - Real-time preview updates complete within 500ms of reordering action
+  - Auto-save functionality preserves panel order changes without data loss
+  - Cross-device compatibility: 95%+ success rate for reordering on both desktop and iPad platforms
+  - Post-publication panel reordering changes reflect in live content within 30 seconds
 
 ## Key Entities
 
