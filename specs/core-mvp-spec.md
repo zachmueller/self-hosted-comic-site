@@ -193,7 +193,7 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 **Description:** Performance targets appropriate for independent comic sites without expensive infrastructure, optimized across all device types and network conditions
 **Acceptance Criteria:**
 - Homepage loads in under 3 seconds on standard broadband connections across all device types
-- Comic images load in under 2 seconds via CloudFront CDN with responsive image delivery
+- Comic images load in under 2 seconds via CloudFront CDN
 - Upload interface responds to user actions in under 1 second on both mobile and desktop platforms
 - Pagination and filtering operations complete in under 2 seconds across all screen sizes
 - **Cross-Device Performance Standards:**
@@ -309,7 +309,7 @@ Features explicitly excluded from MVP (see related specs):
 - Series management and navigation (see [Series Management](series-management-spec.md))
 - Raw sketch upload and display functionality (see [Raw Sketches](raw-sketches-spec.md))
 - Bulk upload operations and advanced management (see [Enhanced Features](enhanced-features-spec.md))
-- Advanced image optimization and responsive variants (see [Enhanced Features](enhanced-features-spec.md))
+- Advanced thumbnail generation (see [Enhanced Features](enhanced-features-spec.md))
 - Publish/unpublish controls (see [Enhanced Features](enhanced-features-spec.md))
 - Reader authentication, comments, and engagement features (see [Reader Login System](reader-login-spec.md))
 

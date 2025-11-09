@@ -10,7 +10,7 @@
 - [Reader Login System](reader-login-spec.md) - Integrates with management interface
 
 ## Overview
-Advanced functionality that enhances the core comic site with bulk operations, advanced management features, responsive image optimization, and improved user experience. These features build upon the MVP foundation to provide a more robust and feature-rich comic publishing platform.
+Advanced functionality that enhances the core comic site with bulk operations, advanced management features, thumbnail generation, and improved user experience. These features build upon the MVP foundation to provide a more robust and feature-rich comic publishing platform.
 
 ## Constitutional Alignment
 
@@ -24,10 +24,10 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 
 ### Cost Impact Assessment
 **Estimated cost implications:**
-- Additional Lambda execution for image processing: ~$0.50-1/month
-- Additional S3 storage for responsive image variants: ~$1-2/month
-- CloudFront bandwidth for multiple image sizes: ~$0.50/month
-- **Total monthly cost impact: $2-3.50**
+- Additional Lambda execution for thumbnail processing: ~$0.25-0.50/month
+- Additional S3 storage for thumbnail images: ~$0.25-0.50/month
+- CloudFront bandwidth for thumbnail delivery: ~$0.25/month
+- **Total monthly cost impact: $0.75-1.25**
 - **Validation: Total system cost still under $10/month constitutional target**
 
 ### Serverless Architecture Compliance
@@ -40,17 +40,17 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 ### Deployment Simplicity
 **Deployment approach:**
 - Enhanced features deployable via existing `cdk deploy` command
-- Image processing pipeline configured automatically via CDK
-- No manual setup required for responsive image generation
+- Thumbnail processing pipeline configured automatically via CDK
+- No manual setup required for thumbnail generation
 
 ## User Stories
 - As a comic artist, I want to upload multiple comics in a single session so that I can efficiently publish my backlog
 - As a comic artist, I want to set custom publication dates for historical comics so that I can import my existing collection chronologically
 - As a comic artist, I want to unpublish comics temporarily so that I can make corrections without permanent deletion
-- As a comic artist, I want responsive image variants generated automatically so that readers have optimal loading times
+- As a comic artist, I want thumbnails generated automatically so that homepage and navigation areas load quickly
 - As a comic artist, I want advanced error recovery so that interrupted uploads don't lose my work
 - As a comic artist, I want to edit comic metadata after publication so that I can make corrections and improvements
-- As a comic reader, I want fast-loading images optimized for my device so that browsing is smooth
+- As a comic reader, I want fast-loading thumbnails for browsing so that I can quickly preview content
 - As a site administrator (artist), I want to use a custom domain so that my site has professional branding
 
 ## Functional Requirements
@@ -60,7 +60,7 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 **Acceptance Criteria:**
 - **Stage 1 - Image Bulk Upload:**
   - Upload interface supports selecting and uploading 50+ comic images in single batch
-  - System processes each image through normal optimization pipeline (responsive variants)
+  - System processes each image through thumbnail generation pipeline
   - Upon completion, system generates downloadable CSV mapping original filename to assigned UUID
   - Artist filenames must be unique (system validates and provides clear error messaging)
   - Upload progress tracking shows processing status of each image file
@@ -91,16 +91,15 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 - Unpublished comics remain accessible to artist in management interface
 - Reader-facing interfaces only display comics with 'published' status
 
-### FR-E3: Responsive Image Generation
-**Description:** Automated multi-resolution image processing for optimal performance across devices
+### FR-E3: Thumbnail Generation
+**Description:** Automated thumbnail generation for homepage and navigation areas
 **Acceptance Criteria:**
-- Automatic generation of responsive image variants: thumbnail (300px), mobile (800px), desktop (1200px)
-- Original images preserved alongside generated variants
-- CDN delivery serves appropriate image size based on client context
-- Image processing handled via Lambda functions during upload
-- Generated variants stored with systematic S3 key naming for efficient retrieval
-- Fallback to original images if variant generation fails
-- Both final comic images and sketch images processed for responsive delivery
+- Automatic generation of thumbnail images (300px width) for use in listing and navigation contexts
+- Original full-size images preserved and served for all comic viewing
+- Thumbnail processing handled via Lambda functions during upload
+- Generated thumbnails stored with systematic S3 key naming for efficient retrieval
+- Fallback to original images if thumbnail generation fails
+- Both final comic images and sketch images processed for thumbnail generation
 
 ### FR-E4: Advanced Error Handling and Recovery
 **Description:** Robust error handling that preserves user work and enables recovery from failures
@@ -177,7 +176,7 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 ### NFR-E1: Enhanced Performance
 **Description:** Performance optimizations that build upon MVP targets with advanced features
 **Acceptance Criteria:**
-- Responsive images improve loading times: thumbnails under 500ms, full images under 1.5s
+- Thumbnails improve loading times: thumbnails under 500ms, original images serve at full quality
 - Bulk upload processing completes within reasonable timeframes (10 comics under 15 minutes)
 - Management interface operations (filtering, sorting, editing) complete under 1 second
 - Image processing pipeline completes within 2 minutes of upload completion
@@ -187,7 +186,7 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 **Description:** Enhanced features designed to scale efficiently within cost constraints
 **Acceptance Criteria:**
 - Image processing costs scale predictably with upload volume
-- Responsive image storage overhead remains under 50% of original image storage costs
+- Thumbnail storage overhead remains under 25% of original image storage costs
 - Bulk operations optimized for minimal Lambda execution time
 - Management interface queries designed for cost-effective DynamoDB usage
 - Cost monitoring includes enhanced features in budget tracking and alerting
@@ -199,14 +198,14 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 - Image processing failures don't affect comic publication (fallback to originals)
 - Publish status changes maintain referential integrity across all interfaces
 - Error recovery preserves all user-entered data during system failures
-- Backup and recovery procedures account for enhanced metadata and image variants
+- Backup and recovery procedures account for enhanced metadata and thumbnail images
 
 ## User Scenarios & Testing
 
 ### CSV-Based Historical Comics Migration Flow
 1. Artist prepares 50 historical comic images with unique filenames for import
 2. **Stage 1:** Artist accesses image bulk upload interface and uploads all comic files
-3. System processes each image (optimization, responsive variants) with progress tracking
+3. System processes each image (thumbnail generation) with progress tracking
 4. Upon completion, artist downloads CSV file mapping original filename to system UUID
 5. **Stage 2:** Artist creates metadata CSV using downloaded template, referencing original filenames
 6. Artist uploads metadata CSV - system validates and shows preview of comic creation
@@ -221,21 +220,21 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 5. Artist updates comic content and republishes with preserved metadata
 6. All changes reflected immediately across reader-facing interfaces
 
-### Responsive Image Delivery Flow
+### Thumbnail and Full Image Delivery Flow
 1. Reader visits comic site on mobile device with slow connection
 2. System serves thumbnail images for homepage browsing (fast loading)
-3. Reader opens specific comic - system serves mobile-optimized images
-4. Reader later visits same site on desktop - system serves full-resolution images
+3. Reader opens specific comic - system serves full-resolution original images
+4. Reader later visits same site on desktop - system serves same full-resolution original images
 5. CDN caching ensures subsequent visits load even faster
-6. Original image quality preserved for readers who prefer maximum detail
+6. Original image quality preserved for all readers regardless of device
 
 ## Success Criteria
 - CSV-based migration of 50+ comics completable in under 2 hours end-to-end (both stages)
 - Stage 1 image processing completes within 1 minute per image on average
 - Stage 2 metadata import validates and creates comics from CSV within 5 minutes
-- Responsive image variants reduce mobile loading times by 50% vs. original images
+- Thumbnails improve homepage browsing performance with fast loading times
 - Management interface operations provide sub-second response for all actions
-- Enhanced features add less than $3.50/month to hosting costs
+- Enhanced features add less than $1.25/month to hosting costs
 - Error recovery preserves 100% of user-entered metadata during failures
 - Custom domain setup completable in under 30 minutes with provided documentation
 
@@ -246,8 +245,8 @@ Advanced functionality that enhances the core comic site with bulk operations, a
   - `publishStatus` (string): Publication status ('published', 'unpublished', 'draft')
   - `publishDate` (timestamp): Scheduled or actual publication date
   - `lastModified` (timestamp): Content update tracking
-  - `imageVariants` (object): Generated responsive image URLs for different sizes
-  - `sketchImageVariants` (object): Responsive variants for sketch images (if raw sketches enabled)
+  - `thumbnailUrls` (object): Generated thumbnail image URLs for listing contexts
+  - `sketchThumbnailUrls` (object): Thumbnail URLs for sketch images (if raw sketches enabled)
   - `viewCount` (number, optional): Simple view tracking for analytics
 - **Validation:** Enhanced validation for publish status workflows and scheduling
 - **Relationships:** Same as MVP with additional management metadata
@@ -257,22 +256,22 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 - **Validation:** Tracks bulk operation progress and results
 - **Relationships:** Associated with multiple comics via batch processing
 
-### Image Variant Entity
-- **Attributes:** originalKey, thumbnailKey, mobileKey, desktopKey, processingStatus, createdDate
-- **Validation:** Ensures all variants properly generated and accessible
+### Thumbnail Entity
+- **Attributes:** originalKey, thumbnailKey, processingStatus, createdDate
+- **Validation:** Ensures thumbnails properly generated and accessible
 - **Relationships:** Associated with parent comic images (final or sketch)
 
 ## Implementation Notes
 
 ### Technical Architecture Decisions
-- Responsive image generation uses AWS Lambda with image processing libraries
+- Thumbnail generation uses AWS Lambda with image processing libraries
 - Bulk operations implemented as asynchronous processes with progress tracking
 - Publish status leverages DynamoDB GSI for efficient status-based queries
 - Custom domain configuration integrated into existing CDK stack
 - Error recovery utilizes browser localStorage and server-side transaction handling
 
 ### Clarifications from Original Spec
-- Image optimization: Create responsive image sets (thumbnail, mobile, desktop) for optimal performance while preserving originals
+- Image processing: Generate thumbnails for listing contexts while preserving original full-size images for viewing
 - Custom domain: Manual DNS setup to save costs - artist configures CNAME records pointing to CloudFront distribution
 - **CSV-based bulk migration:** Two-stage process optimized for one-time backlog import rather than regular batch operations
   - Stage 1: Bulk image upload and processing with filename-to-UUID mapping generation
@@ -282,7 +281,7 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 
 ### Integration with Other Features
 - Compatible with series management - bulk operations respect series ordering and assignment
-- Integrates with raw sketches - responsive image generation applies to both final and sketch content
+- Integrates with raw sketches - thumbnail generation applies to both final and sketch content
 - Extends MVP authentication and upload workflows without disrupting existing functionality
 - **Reader Login System Integration:** Management interface provides access to reader engagement dashboard and includes reader interaction analytics in comic performance metrics
 - Bulk operations can include reader engagement data when exporting analytics or managing content with high reader interaction
@@ -290,7 +289,7 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 ## Out of Scope
 - Advanced analytics requiring third-party services or complex infrastructure
 - Multi-user collaboration or workflow management
-- Advanced SEO optimization beyond basic responsive images and custom domains
+- Advanced SEO optimization beyond basic thumbnails and custom domains
 - Complex content versioning or revision history beyond basic edit tracking
 - Advanced image editing or manipulation beyond responsive sizing
 

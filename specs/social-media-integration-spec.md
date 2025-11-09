@@ -116,16 +116,16 @@ Enables automatic cross-posting of published comics to Instagram and Facebook ac
   - Support for Instagram's aspect ratio requirements (1:1 to 4:5 portrait, 16:9 landscape max)
   - Multi-image posts as Instagram carousel (up to 10 images)
   - Image format conversion to platform-supported formats (JPG, PNG)
-  - Image quality optimization for platform file size limits
+  - Image processing for platform file size limits using original images
 - **Facebook Image Requirements:**  
   - Support for Facebook's image posting specifications
   - Multi-image posts as Facebook album or individual posts based on configuration
   - Optimal image sizing for Facebook display
 - **Image Processing Pipeline:**
-  - Automatic image resizing and format optimization for each platform
+  - Automatic image processing to meet platform requirements while preserving original quality
   - Preservation of original image quality while meeting platform constraints
   - Batch processing for multi-panel comics
-  - Fallback handling for images that cannot be automatically optimized
+  - Fallback handling for images that cannot meet platform requirements
 
 ### FR-5: Integration Status Tracking and Management
 **Description:** Artist-accessible interface for monitoring and managing social media integration status
@@ -267,7 +267,7 @@ Features explicitly excluded to maintain constitutional compliance:
 - Automated hashtag generation or social media optimization algorithms
 - Integration with additional platforms beyond Instagram and Facebook
 - Social media content scheduling or delayed posting features
-- Complex image editing or filter application for social media optimization
+- Complex image editing or filter application for social media processing
 
 ## Implementation Notes
 

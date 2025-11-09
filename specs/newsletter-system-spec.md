@@ -328,7 +328,7 @@ Email newsletter system that allows comic artists to engage with their reader co
 
 ### Core MVP Integration
 - Newsletter content selection uses existing comic browsing and filtering
-- Comic thumbnails and metadata reused from existing image optimization
+- Comic thumbnails and metadata reused from existing thumbnail generation system
 - Newsletter emails link back to individual comic pages on site
 - Daily digest automation triggered by comic publication events
 
@@ -338,7 +338,7 @@ Email newsletter system that allows comic artists to engage with their reader co
 - Newsletter composition and sending handled by Lambda functions
 - SES integration with automatic bounce and complaint processing
 - Email template rendering using server-side template engine
-- Image optimization for email thumbnails using existing CDN infrastructure
+- Thumbnail generation for email content using existing CDN infrastructure
 
 ### Subscription Management
 - DynamoDB storage for subscription preferences with efficient querying

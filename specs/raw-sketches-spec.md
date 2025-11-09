@@ -112,7 +112,7 @@ Raw sketch functionality that allows artists to upload sketch versions of their 
 ### NFR-R2: Storage Efficiency
 **Description:** Cost-conscious storage approach for sketch content
 **Acceptance Criteria:**
-- Sketch images stored with same optimization as final images (original quality preserved)
+- Sketch images stored at original quality without additional processing (preserving artist's intended quality)
 - Separate S3 key patterns allow independent management of final vs sketch content
 - CDN caching configured identically for sketch and final images
 - No duplicate storage when sketch and final versions are identical files
