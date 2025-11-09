@@ -95,7 +95,14 @@ Enables automatic cross-posting of published comics to Instagram and Facebook ac
   - Asynchronous processing ensures comic publication completes regardless of social media status
   - Per-comic integration settings respected during posting process
 - **Content Mapping:**
-  - Comic `caption` field used as social media post text/description
+  - Comic `caption` field used as social media post text/description with Obsidian-style reference parsing
+  - **Caption Reference Processing for Social Media:**
+    - **Basic References:** `[[Comic Title]]` converted to plain text showing "Comic Title"
+    - **Alias References:** `[[Comic Title|Display Alias]]` converted to plain text showing "Display Alias"
+    - **Link Removal:** All linking functionality removed for social media posts (references become plain text)
+    - **Example Processing:**
+      - Original caption: "This continues the story from [[Helix pre-bedtime family time|Helix getting ready for bed]]"
+      - Social media version: "This continues the story from Helix getting ready for bed"
   - Comic `title` field used as post title where platform supports it (Facebook)
   - Multi-panel comics: all images posted in same order as comic display
   - Single-panel comics: single image with caption and link

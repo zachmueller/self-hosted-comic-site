@@ -93,9 +93,22 @@ Core MVP functionality for a CDK-based package that enables individual comic art
   - Selection interface works on both desktop (click) and mobile (touch) platforms
 - Real-time upload progress indicators for large image files
 - Form validation provides clear error messages for missing required fields
-- **Caption Reference System:** Support for linking to other comics within caption text using bracket syntax (e.g., "This continues from [[Previous Comic Title]]")
+- **Caption Reference System:** Support for Obsidian-style linking to other comics within caption text:
+  - **Basic Reference Syntax:** `[[Comic Title]]` creates link using comic title as display text
+  - **Alias Reference Syntax:** `[[Comic Title|Display Alias]]` creates link showing alias while linking to comic title
+  - **Web Rendering:** Links display alias text (or comic title if no alias) and navigate to referenced comic page
+  - **Reference Examples:**
+    - `[[Helix pre-bedtime family time]]` → displays "Helix pre-bedtime family time" and links to that comic
+    - `[[Helix pre-bedtime family time|Helix getting ready for bed]]` → displays "Helix getting ready for bed" and links to "Helix pre-bedtime family time" comic
+- **Auto-Complete Functionality:** Real-time comic title search and selection during caption editing:
+  - Triggered when typing `[[` in caption field
+  - Shows dropdown list of matching comic titles as user continues typing
+  - Arrow keys navigate suggestion list, Tab key selects highlighted suggestion
+  - Escape key closes suggestion list
+  - Works on both desktop (keyboard) and mobile (touch-friendly) interfaces
+  - Case-insensitive search matching but preserves original comic title case
+  - Maximum 10 suggestions displayed at once, ordered by relevance/recency
 - Automatic parsing and validation of caption references during upload with real-time feedback for invalid comic titles
-- Live autocomplete suggestions when typing comic references in caption field
 
 ### FR-3: Core Comic Metadata Management
 **Description:** Essential metadata system supporting basic artist content organization and reader discovery
@@ -125,16 +138,30 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 - Comic slugs generated from titles for SEO-friendly URLs with duplicate detection requiring artist resolution
 - Relationship system supports bidirectional connections with automatic inverse relationship creation
 
-### FR-4: Caption-Based Comic Reference System
-**Description:** Automatic relationship derivation from caption references using simple bracket syntax for natural comic linking
+### FR-4: Obsidian-Style Comic Reference System
+**Description:** Automatic relationship derivation from Obsidian-style caption references for natural comic linking with alias support
 **Acceptance Criteria:**
-- **Caption Reference Syntax:** Support for [[Comic Title]] syntax within caption text to create automatic links
-- **Real-time Reference Validation:** During caption editing, system validates referenced comic titles and provides autocomplete suggestions
+- **Obsidian-Style Reference Syntax:** Support for two reference formats within caption text:
+  - **Basic Format:** `[[Comic Title]]` - displays comic title and links to comic
+  - **Alias Format:** `[[Comic Title|Display Alias]]` - displays alias text and links to comic
+  - **Multiple References:** Single caption can contain multiple references in either format
+- **Real-Time Auto-Complete System:** Interactive caption editing with live comic title suggestions:
+  - **Trigger:** Auto-complete activates when user types `[[` in caption field
+  - **Live Search:** As user continues typing, system searches existing comic titles (case-insensitive)
+  - **Suggestion Display:** Dropdown shows up to 10 matching comic titles, ordered by relevance and recency
+  - **Navigation:** Arrow keys (desktop) or touch (mobile) navigate suggestion list
+  - **Selection:** Tab key or touch selects highlighted suggestion and inserts `[[Selected Comic Title]]`
+  - **Cancellation:** Escape key or clicking outside closes suggestion dropdown
+  - **Cross-Device Compatibility:** Auto-complete works on desktop browsers and mobile Safari/Chrome
+- **Reference Parsing and Web Rendering:** System processes references for web display:
+  - **Basic Reference Rendering:** `[[Comic Title]]` renders as clickable link showing "Comic Title"
+  - **Alias Reference Rendering:** `[[Comic Title|Alias]]` renders as clickable link showing "Alias"
+  - **URL Generation:** All references link to `/comic/{slug}` of referenced comic
+  - **Invalid Reference Handling:** References to non-existent comics display as plain text with visual indication
 - **Automatic Relationship Derivation:** System parses caption text on save/publish and creates bidirectional relationships for all valid references
 - **Bidirectional Maintenance:** When Comic A references Comic B in caption, both comics automatically show each other in derived relationships
-- **Reference Cleanup:** When artist edits caption and removes a [[Comic Title]] reference, corresponding bidirectional relationships are automatically removed
-- **Multiple References:** Single caption can contain multiple comic references, all creating separate bidirectional relationships
-- **Reference Validation:** Invalid comic titles in brackets are highlighted with error messaging and don't create relationships
+- **Reference Cleanup:** When artist edits caption and removes a reference, corresponding bidirectional relationships are automatically removed
+- **Reference Validation:** Real-time validation during editing highlights invalid comic titles with error styling
 - **Case-Insensitive Matching:** Comic title matching for references is case-insensitive but preserves original display case
 
 ### FR-5: Reader Homepage and Basic Navigation

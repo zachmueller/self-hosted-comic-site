@@ -30,22 +30,36 @@
       "additionalProperties": false
     },
     
+    "DerivedRelationship": {
+      "type": "object",
+      "description": "Automatically generated relationship between comics",
+      "properties": {
+        "targetComicId": {
+          "type": "string",
+          "description": "ID of the related comic",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "sourceType": {
+          "type": "string",
+          "enum": ["caption", "series", "tag"],
+          "description": "How the relationship was derived"
+        }
+      },
+      "required": ["targetComicId", "sourceType"],
+      "additionalProperties": false
+    },
+    
     "Integration": {
       "type": "object",
       "properties": {
         "type": {
           "type": "string",
-          "enum": ["social", "analytics", "syndication"],
-          "description": "Type of integration"
+          "enum": ["instagram", "facebook"],
+          "description": "Social media platform type"
         },
         "use": {
           "type": "boolean",
-          "description": "Whether this integration is enabled"
-        },
-        "config": {
-          "type": "object",
-          "description": "Integration-specific configuration",
-          "additionalProperties": true
+          "description": "Whether this integration is enabled for this comic"
         }
       },
       "required": ["type", "use"],
@@ -114,12 +128,24 @@
           "description": "Display style for the comic",
           "default": "standard"
         },
+        "derivedRelationships": {
+          "type": "array",
+          "description": "Automatically generated bidirectional relationships from caption references",
+          "items": {
+            "$ref": "#/definitions/DerivedRelationship"
+          },
+          "maxItems": 100
+        },
         "integrations": {
           "type": "array",
-          "description": "External integrations configuration",
+          "description": "Social media platform controls per comic",
           "items": {
             "$ref": "#/definitions/Integration"
-          }
+          },
+          "default": [
+            {"type": "instagram", "use": true}, 
+            {"type": "facebook", "use": true}
+          ]
         },
         "uploadDate": {
           "type": "string",
@@ -203,12 +229,24 @@
           "description": "Display style for the comic",
           "default": "standard"
         },
+        "derivedRelationships": {
+          "type": "array",
+          "description": "Automatically generated bidirectional relationships from caption references",
+          "items": {
+            "$ref": "#/definitions/DerivedRelationship"
+          },
+          "maxItems": 100
+        },
         "integrations": {
           "type": "array",
-          "description": "External integrations configuration",
+          "description": "Social media platform controls per comic",
           "items": {
             "$ref": "#/definitions/Integration"
-          }
+          },
+          "default": [
+            {"type": "instagram", "use": true}, 
+            {"type": "facebook", "use": true}
+          ]
         }
       },
       "required": [
