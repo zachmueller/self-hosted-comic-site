@@ -194,6 +194,32 @@ Core MVP functionality for a CDK-based package that enables individual comic art
   - **Device-Optimized Positioning:** Share button positioned and sized appropriately for touch on mobile and mouse on desktop
   - Fallback behavior for browsers without clipboard API support across all device types
 
+### FR-8: Site-Wide Color Palette Configuration
+**Description:** Artist-configurable color palette system for consistent site branding across all pages and components
+**Acceptance Criteria:**
+- **Color Palette Management Interface:**
+  - Artist-accessible color palette editor available in management dashboard when authenticated
+  - Color picker interface for defining site-wide color scheme with real-time preview
+  - Support for five distinct color categories: Primary, Secondary, Highlight, Text, and Secondary Text colors
+  - Live preview shows color changes applied to sample page elements before saving
+  - Mobile-responsive color management interface works on both desktop and iPad platforms
+- **Color Category Definitions:**
+  - **Primary Color:** Applied to clickable elements like buttons and primary links (default: #007bff blue)
+  - **Secondary Color:** Applied to secondary clickable elements and accent buttons (default: #6c757d gray)
+  - **Highlight Color:** Used for non-clickable emphasis elements like tags and labels (default: #ffc107 yellow)
+  - **Text Color:** Primary text color for body content and headings (default: #000000 black)
+  - **Secondary Text Color:** Lighter text for metadata, captions, and less important content (default: #6c757d dark gray)
+- **Color Application and Validation:**
+  - Color values stored as valid CSS hex codes (#RRGGBB format) with validation during input
+  - All site pages apply configured color palette immediately upon artist configuration changes
+  - Color palette changes update consistently across homepage, comic pages, navigation, and management interfaces
+  - Accessibility validation ensures sufficient contrast ratios between text and background colors
+  - Default color palette provides professional appearance for artists who don't customize colors
+- **Constitutional Compliance:**
+  - Color configuration prioritizes artist branding control and creative expression
+  - No additional AWS infrastructure costs - uses existing DynamoDB for configuration storage
+  - Simple management interface deployable via existing CDK deployment process
+
 ## Non-Functional Requirements
 
 ### NFR-1: Performance
@@ -305,8 +331,14 @@ Measurable, constitutional-principle-aligned outcomes:
 - **Caption Source:** When sourceType is 'caption', relationship is derived from [[Comic Title]] syntax in caption text
 
 ### Artist Configuration
-- **Attributes:** siteTitle, siteDescription, googleAuthConfig
-- **Validation:** Required site title
+- **Attributes:** siteTitle, siteDescription, googleAuthConfig, colorPalette
+- **Color Palette Schema:**
+  - `primaryColor` (string): Hex color for clickable elements like buttons and links (default: #007bff)
+  - `secondaryColor` (string): Hex color for secondary clickable elements (default: #6c757d)
+  - `highlightColor` (string): Hex color for non-clickable emphasis elements (default: #ffc107)
+  - `textColor` (string): Primary text color for body content (default: #000000)
+  - `secondaryTextColor` (string): Secondary text color for metadata and captions (default: #6c757d)
+- **Validation:** Required site title, all color values must be valid CSS hex format (#RRGGBB)
 - **Relationships:** Single artist per deployment model
 
 ## Assumptions

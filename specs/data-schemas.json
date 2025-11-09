@@ -357,6 +357,74 @@
       "additionalProperties": false
     },
     
+    "ColorPalette": {
+      "type": "object",
+      "description": "Site-wide color palette configuration for artist branding",
+      "properties": {
+        "primaryColor": {
+          "type": "string",
+          "description": "Primary color for clickable elements like buttons and links",
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "default": "#007bff"
+        },
+        "secondaryColor": {
+          "type": "string",
+          "description": "Secondary color for secondary clickable elements",
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "default": "#6c757d"
+        },
+        "highlightColor": {
+          "type": "string",
+          "description": "Highlight color for non-clickable emphasis elements",
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "default": "#ffc107"
+        },
+        "textColor": {
+          "type": "string",
+          "description": "Primary text color for body content and headings",
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "default": "#000000"
+        },
+        "secondaryTextColor": {
+          "type": "string",
+          "description": "Secondary text color for metadata and captions",
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "default": "#6c757d"
+        }
+      },
+      "required": ["primaryColor", "secondaryColor", "highlightColor", "textColor", "secondaryTextColor"],
+      "additionalProperties": false
+    },
+    
+    "ArtistConfiguration": {
+      "type": "object",
+      "description": "Artist-specific site configuration settings",
+      "properties": {
+        "siteTitle": {
+          "type": "string",
+          "description": "Site title displayed in navigation and browser tabs",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "siteDescription": {
+          "type": "string",
+          "description": "Site description for SEO and about sections",
+          "maxLength": 500
+        },
+        "googleAuthConfig": {
+          "type": "object",
+          "description": "Google authentication configuration",
+          "additionalProperties": true
+        },
+        "colorPalette": {
+          "$ref": "#/definitions/ColorPalette",
+          "description": "Site-wide color palette for branding"
+        }
+      },
+      "required": ["siteTitle", "colorPalette"],
+      "additionalProperties": false
+    },
+    
     "ValidationResult": {
       "type": "object",
       "description": "Result of data validation operations",
