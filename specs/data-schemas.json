@@ -396,6 +396,129 @@
       "additionalProperties": false
     },
     
+    "AboutPageImage": {
+      "type": "object",
+      "description": "Image data structure for About page content sections",
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "S3 object key for the About page image",
+          "pattern": "^about/[a-zA-Z0-9/_.-]+$",
+          "minLength": 7,
+          "maxLength": 1024
+        },
+        "altText": {
+          "type": "string",
+          "description": "Accessibility description for the image",
+          "maxLength": 500
+        },
+        "thumbnailKey": {
+          "type": "string",
+          "description": "S3 object key for the generated thumbnail",
+          "pattern": "^about/thumbnails/[a-zA-Z0-9/_.-]+$",
+          "maxLength": 1024
+        }
+      },
+      "required": ["key", "altText"],
+      "additionalProperties": false
+    },
+    
+    "AboutPageSection": {
+      "type": "object",
+      "description": "Individual content section within About page",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the section",
+          "pattern": "^[a-zA-Z0-9-_]+$",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        "type": {
+          "type": "string",
+          "enum": ["text", "image", "image-text"],
+          "description": "Type of content section"
+        },
+        "order": {
+          "type": "integer",
+          "description": "Display order within About page",
+          "minimum": 0
+        },
+        "visible": {
+          "type": "boolean",
+          "description": "Whether section is visible to readers",
+          "default": true
+        },
+        "textContent": {
+          "type": "string",
+          "description": "Rich text content (required for text and image-text types)",
+          "maxLength": 5000
+        },
+        "image": {
+          "$ref": "#/definitions/AboutPageImage",
+          "description": "Image data (required for image and image-text types)"
+        },
+        "imagePosition": {
+          "type": "string",
+          "enum": ["left", "right"],
+          "description": "Image position for image-text sections (desktop only)",
+          "default": "left"
+        }
+      },
+      "required": ["id", "type", "order"],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": { "type": { "const": "text" } }
+          },
+          "then": {
+            "required": ["textContent"],
+            "not": { "required": ["image", "imagePosition"] }
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "image" } }
+          },
+          "then": {
+            "required": ["image"],
+            "not": { "required": ["textContent", "imagePosition"] }
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "image-text" } }
+          },
+          "then": {
+            "required": ["textContent", "image", "imagePosition"]
+          }
+        }
+      ]
+    },
+    
+    "AboutPageContent": {
+      "type": "object",
+      "description": "Complete About page content structure with flexible sections",
+      "properties": {
+        "sections": {
+          "type": "array",
+          "description": "Array of content sections in display order",
+          "items": {
+            "$ref": "#/definitions/AboutPageSection"
+          },
+          "maxItems": 20
+        },
+        "lastUpdated": {
+          "type": "string",
+          "description": "When About page was last modified (ISO 8601)",
+          "format": "date-time"
+        }
+      },
+      "required": ["sections"],
+      "additionalProperties": false
+    },
+    
     "ArtistConfiguration": {
       "type": "object",
       "description": "Artist-specific site configuration settings",
@@ -419,6 +542,10 @@
         "colorPalette": {
           "$ref": "#/definitions/ColorPalette",
           "description": "Site-wide color palette for branding"
+        },
+        "aboutPageContent": {
+          "$ref": "#/definitions/AboutPageContent",
+          "description": "Flexible About page content with image and text sections"
         }
       },
       "required": ["siteTitle", "colorPalette"],

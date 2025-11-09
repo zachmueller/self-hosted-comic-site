@@ -79,13 +79,37 @@ A responsive, collapsible sidebar navigation system that provides persistent acc
 - Navigation elements appear in specified order: Home, About, Series, Tags
 
 ### FR-3: About Page Management
-**Description:** Artist-customizable About page accessible through navigation with content management capabilities
+**Description:** Artist-customizable About page with flexible content sections supporting images, text, and mixed layouts with responsive behavior
 **Acceptance Criteria:**
-- About page displays artist-defined content including bio, contact information, and custom sections
-- Artist can edit About page content through existing management interface
-- About page content stored in DynamoDB configuration table alongside other site settings
-- Support for basic markdown formatting in About page content
-- About page responsive design matches site aesthetic and navigation structure
+- **Flexible Content Section System:**
+  - About page supports multiple content sections with configurable layout types
+  - Section types include: text-only, image-only, and image-with-text (side-by-side) layouts
+  - Artists can add, remove, reorder, and configure sections through management interface
+  - Each section maintains independent configuration for layout style and content
+- **Image Integration and Layout Options:**
+  - Artists can upload images specifically for About page use via existing upload infrastructure
+  - Image-with-text sections support artist choice of image positioning (left side or right side of text)
+  - Images stored using existing S3 infrastructure with About-specific key prefixes for organization
+  - Image alt text support for accessibility compliance across all About page images
+  - Image thumbnail generation using existing thumbnail pipeline for optimal loading performance
+- **Responsive Layout Behavior:**
+  - Desktop view (≥768px): Image-with-text sections render side-by-side as configured by artist
+  - Mobile view (<768px): Image-with-text sections automatically stack vertically (image above text) regardless of desktop positioning
+  - Image-only and text-only sections maintain consistent responsive scaling across all devices
+  - Touch-friendly image viewing on mobile with appropriate sizing and spacing
+  - All section types adapt content width and typography for optimal readability on each device
+- **Content Management Features:**
+  - Rich text editor for text content with basic formatting (bold, italic, links, lists)
+  - Drag-and-drop section reordering within About page management interface
+  - Live preview functionality shows desktop and mobile layouts before saving changes
+  - Image management interface allows replacing, cropping, or removing images from About sections
+  - Section-level visibility controls for temporarily hiding content without deletion
+- **Content Storage and Structure:**
+  - About page content stored in DynamoDB configuration table as structured section array
+  - Each section includes: type (text/image/image-text), content, layout configuration, and ordering
+  - Image references stored with S3 keys and metadata similar to comic image system
+  - Version control maintains content history for artist reference and recovery
+- About page responsive design matches site aesthetic and navigation structure with enhanced layout flexibility
 
 ### FR-4: Series and Tags Page Integration
 **Description:** Navigation links integrate with existing series and tags functionality with specific ordering and filtering requirements
