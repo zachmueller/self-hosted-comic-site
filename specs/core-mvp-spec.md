@@ -79,7 +79,7 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 **Description:** Mobile-friendly upload interface optimized for iPad usage and artist workflow, with desktop Chrome support
 **Acceptance Criteria:**
 - Upload interface renders properly on iPad Safari and Chrome browsers, with full functionality on desktop Chrome
-- Drag-and-drop file upload supports multiple comic images in JPG, PNG, and WebP formats
+- System-appropriate file upload interface: drag-and-drop from file explorer on desktop systems, native file picker on mobile platforms for multiple comic images in JPG, PNG, and WebP formats
 - File size validation enforces 20MB maximum per image with clear error messaging
 - Touch-friendly form controls for comic metadata entry including relationship selection and accessibility options
 - **Date Field Pre-population:** `happenedOnDate` field automatically pre-populates with today's date for artist convenience
@@ -230,7 +230,7 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 
 ### Primary Flow: Artist Comic Upload
 1. Artist opens upload interface on iPad and authenticates via Google
-2. Artist selects multiple comic image files using native file picker
+2. Artist selects multiple comic image files using system-appropriate method (native file picker on mobile, drag-and-drop or file picker on desktop)
 3. Artist fills out comic metadata (title, happened-on date, tags)
 4. **Optional:** Artist includes references to existing comics in caption text:
    - Types caption text with comic references using [[Comic Title]] syntax

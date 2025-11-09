@@ -55,7 +55,7 @@ Raw sketch functionality that allows artists to upload sketch versions of their 
 **Description:** Sketch upload functionality integrated into existing comic upload workflow
 **Acceptance Criteria:**
 - Separate 'Raw Sketches' upload field in same form as final comic images
-- Drag-and-drop file upload supports sketch images in JPG, PNG, and WebP formats
+- System-appropriate file upload interface: drag-and-drop from file explorer on desktop systems, native file picker on mobile platforms for sketch images in JPG, PNG, and WebP formats
 - File size validation enforces 20MB maximum per sketch image with clear error messaging
 - Comics can be published with only raw sketches, only final images, or both
 - Sketch upload validates same image format restrictions as final images

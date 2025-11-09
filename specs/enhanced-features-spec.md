@@ -59,7 +59,7 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 **Description:** Two-stage CSV-based system for one-time migration of existing comic backlogs, optimized for artists with large collections published elsewhere
 **Acceptance Criteria:**
 - **Stage 1 - Image Bulk Upload:**
-  - Upload interface supports selecting and uploading 50+ comic images in single batch
+  - System-appropriate file upload interface supports selecting and uploading 50+ comic images in single batch (drag-and-drop from file explorer on desktop systems, native file picker on mobile platforms)
   - System processes each image through thumbnail generation pipeline
   - Upon completion, system generates downloadable CSV mapping original filename to assigned UUID
   - Artist filenames must be unique (system validates and provides clear error messaging)
