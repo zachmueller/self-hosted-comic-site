@@ -110,20 +110,16 @@ Enables automatic cross-posting of published comics to Instagram and Facebook ac
   - Artist notification of posting status via admin interface
 
 ### FR-4: Multi-Platform Image Handling
-**Description:** Optimized image processing and posting for different social media platform requirements
+**Description:** Image posting for different social media platform requirements
 **Acceptance Criteria:**
 - **Instagram Image Requirements:**
   - Support for Instagram's aspect ratio requirements (1:1 to 4:5 portrait, 16:9 landscape max)
   - Multi-image posts as Instagram carousel (up to 10 images)
   - Image format conversion to platform-supported formats (JPG, PNG)
-  - Image processing for platform file size limits using original images
 - **Facebook Image Requirements:**  
   - Support for Facebook's image posting specifications
   - Multi-image posts as Facebook album or individual posts based on configuration
-  - Optimal image sizing for Facebook display
 - **Image Processing Pipeline:**
-  - Automatic image processing to meet platform requirements while preserving original quality
-  - Preservation of original image quality while meeting platform constraints
   - Batch processing for multi-panel comics
   - Fallback handling for images that cannot meet platform requirements
 
@@ -145,19 +141,19 @@ Enables automatic cross-posting of published comics to Instagram and Facebook ac
   - Status indicators for credential validity
   - Test posting functionality to verify configuration
 
-### FR-6: Platform-Specific Optimization
-**Description:** Tailored posting behavior optimized for each social media platform's characteristics and best practices
+### FR-6: Platform-Specific Features
+**Description:** Tailored posting behavior for each social media platform's characteristics and best practices
 **Acceptance Criteria:**
 - **Instagram-Specific Features:**
-  - Caption text optimized for Instagram's character limits and hashtag culture
+  - Caption text formatted for Instagram's character limits and hashtag culture
   - Automatic hashtag generation from comic tags where appropriate
   - Link placement in Instagram bio reference when direct linking not available
   - Instagram Stories posting option for immediate engagement
 - **Facebook-Specific Features:**
-  - Post description optimized for Facebook's text display
-  - Link preview optimization for comic page sharing
+  - Post description formatted for Facebook's text display
+  - Link preview generation for comic page sharing
   - Facebook page posting vs personal profile posting configuration
-  - Optimal posting time scheduling based on platform recommendations
+  - Posting time scheduling based on platform recommendations
 - **Cross-Platform Consistency:**
   - Consistent branding and messaging across platforms
   - Unified link-back strategy driving traffic to self-hosted site
@@ -214,7 +210,7 @@ Enables automatic cross-posting of published comics to Instagram and Facebook ac
 ### Alternative Flows
 - **Selective Platform Posting:** Artist disables Instagram for specific comic, only Facebook posting occurs
 - **Platform Failure Handling:** Instagram API fails but Facebook succeeds, comic still published with partial social media success
-- **Multi-Panel Comic Optimization:** Five-panel comic automatically formatted as Instagram carousel and Facebook album
+- **Multi-Panel Comic Handling:** Five-panel comic automatically formatted as Instagram carousel and Facebook album
 - **Credential Expiry Recovery:** Artist receives notification of expired Facebook token, updates credentials, retries failed posts
 - **Link-Back Traffic:** Social media followers click through to self-hosted site, generating traffic and engagement
 
@@ -264,7 +260,7 @@ Measurable outcomes aligned with constitutional principles:
 Features explicitly excluded to maintain constitutional compliance:
 - Multi-artist social media account management
 - Advanced social media analytics and engagement tracking
-- Automated hashtag generation or social media optimization algorithms
+- Automated hashtag generation or social media algorithms
 - Integration with additional platforms beyond Instagram and Facebook
 - Social media content scheduling or delayed posting features
 - Complex image editing or filter application for social media processing
