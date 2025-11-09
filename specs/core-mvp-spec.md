@@ -50,7 +50,7 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 - As a comic artist, I want to easily upload my comics from my iPad so that I can publish content anywhere without requiring a computer
 - As a comic artist, I want to authenticate using my Google account so that I don't need to manage separate login credentials
 - As a comic artist, I want to organize my comics with tags so that readers can discover related content
-- As a comic artist, I want to explicitly connect new comics to existing comics during upload so that readers can follow narrative relationships and thematic connections
+- As a comic artist, I want to reference other comics within my captions using simple link syntax so that readers can discover related content naturally within the context of my writing
 - As a comic artist, I want to define for each comic post whether its multiple images are shown in carousel form or simple long form so that I control the presentation of my content
 - As a comic artist, I want to optionally provide alt text descriptions for my comic images so that readers using screen readers and assistive technology can understand my visual content
 - As a comic reader, I want to see the latest comics on the homepage so that I can quickly access new content
@@ -85,9 +85,9 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 - **Accessibility Features:** Optional alt text input field for each uploaded image to support screen readers and assistive technology
 - Real-time upload progress indicators for large image files
 - Form validation provides clear error messages for missing required fields
-- Optional relationship selection interface allowing artist to connect new comic to existing comics
-- Simple comic selection without relationship type specification
-- Existing comic search/selection with title-based filtering for relationship connections
+- **Caption Reference System:** Support for linking to other comics within caption text using bracket syntax (e.g., "This continues from [[Previous Comic Title]]")
+- Automatic parsing and validation of caption references during upload with real-time feedback for invalid comic titles
+- Live autocomplete suggestions when typing comic references in caption field
 
 ### FR-3: Core Comic Metadata Management
 **Description:** Essential metadata system supporting basic artist content organization and reader discovery
@@ -104,9 +104,10 @@ Core MVP functionality for a CDK-based package that enables individual comic art
   - `happenedOnDate` (date): Date when comic situation occurred
   - `scrollStyle` (string): Display style (`carousel` or `long`)
   - `postedTimestamp` (timestamp): Publication date
-  - `relationships` (array): Simple bidirectional connections to other comics
-      - Each relationship contains: `targetComicId` (string)
-      - All relationships are bidirectional and unlabeled
+  - `derivedRelationships` (array): Automatically generated bidirectional connections from caption references
+      - Each relationship contains: `targetComicId` (string), `sourceType` ('caption'|'series'|'tag')
+      - Relationships automatically created/updated when caption references are parsed
+      - Bidirectional relationships maintained automatically across referenced comics
   - `integrations` (array): Per-comic social media platform controls (see [Social Media Integration](social-media-integration-spec.md))
     - Each integration object contains: `type` (string), `use` (boolean)
     - Supported types: `instagram`, `facebook`
@@ -116,15 +117,17 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 - Comic slugs generated from titles for SEO-friendly URLs with duplicate detection requiring artist resolution
 - Relationship system supports bidirectional connections with automatic inverse relationship creation
 
-### FR-4: Comic Relationship Management
-**Description:** System for creating and managing simple bidirectional connections between comics during upload workflow
+### FR-4: Caption-Based Comic Reference System
+**Description:** Automatic relationship derivation from caption references using simple bracket syntax for natural comic linking
 **Acceptance Criteria:**
-- Artist can search existing comics by title during upload process using live search with partial matching
-- Simple relationship creation interface allowing artist to connect comics without specifying relationship types
-- Bidirectional relationship creation: when artist connects Comic A to Comic B, system automatically creates inverse connection on Comic B
-- Relationship validation prevents duplicate connections and self-references
-- Artist can add multiple relationships per comic during upload process
-- All relationships are unlabeled and treated equally
+- **Caption Reference Syntax:** Support for [[Comic Title]] syntax within caption text to create automatic links
+- **Real-time Reference Validation:** During caption editing, system validates referenced comic titles and provides autocomplete suggestions
+- **Automatic Relationship Derivation:** System parses caption text on save/publish and creates bidirectional relationships for all valid references
+- **Bidirectional Maintenance:** When Comic A references Comic B in caption, both comics automatically show each other in derived relationships
+- **Reference Cleanup:** When artist edits caption and removes a [[Comic Title]] reference, corresponding bidirectional relationships are automatically removed
+- **Multiple References:** Single caption can contain multiple comic references, all creating separate bidirectional relationships
+- **Reference Validation:** Invalid comic titles in brackets are highlighted with error messaging and don't create relationships
+- **Case-Insensitive Matching:** Comic title matching for references is case-insensitive but preserves original display case
 
 ### FR-5: Reader Homepage and Basic Navigation
 **Description:** Reader-facing homepage displaying latest comics with basic filtering, accessible to all visitors without authentication
@@ -164,10 +167,13 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 - URL structure: `/comic/{slug}` for direct comic access
 - Full comic metadata display including tags and explicit relationships with responsive layout adaptation
 - **Related Comics Display with Responsive Design:**
-  - Single "Related Comics" section combining all artist-defined connections and tag-based suggestions
-  - Explicit relationships (artist-defined) displayed first with clickable links to related comics
-  - Tag-based suggestions displayed after explicit relationships when available
-  - All related comics treated equally without relationship type labels
+  - Single "Related Comics" section with prioritized relationship display in the following order:
+    1. **Explicit Relationships:** Comics referenced in caption text (derived from [[Comic Title]] syntax)
+    2. **Series Relationships:** Other comics in the same Series (when Series system is implemented)  
+    3. **Tag Relationships:** Comics sharing the same non-Series tags
+  - Each relationship type clearly separated with appropriate headings
+  - Clickable links to related comics with responsive thumbnail display
+  - Caption-derived relationships show snippet of referencing text for context
   - **Device-Adaptive Navigation:** Related comic thumbnails and links resize and reflow for optimal display on mobile, tablet, and desktop
   - Touch-friendly interface on mobile devices with appropriate spacing and target sizes
 - **Responsive Navigation Controls:**
@@ -225,23 +231,25 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 1. Artist opens upload interface on iPad and authenticates via Google
 2. Artist selects multiple comic image files using native file picker
 3. Artist fills out comic metadata (title, happened-on date, tags)
-4. **Optional:** Artist adds simple relationships to existing comics:
-   - Searches for existing comics using title-based live search
-   - Selects comics to create bidirectional connections
-   - Can add multiple relationships to the same comic
+4. **Optional:** Artist includes references to existing comics in caption text:
+   - Types caption text with comic references using [[Comic Title]] syntax
+   - System provides real-time autocomplete suggestions for comic titles
+   - System validates references and highlights any invalid comic titles
+   - Can include multiple comic references within single caption
 5. Artist initiates upload and receives real-time progress feedback
-6. Artist reviews uploaded comic in preview mode, including relationship connections
-7. Artist publishes comic with all metadata and relationships
+6. Artist reviews uploaded comic in preview mode, including parsed caption references
+7. Artist publishes comic with all metadata and caption references
 8. Comic appears on homepage within 30 seconds of publication
-9. **Automatic:** System creates inverse relationships on connected comics
+9. **Automatic:** System parses caption references and creates bidirectional relationships
 
 ### Alternative Flows
-- **Comic Upload with Relationships:** Artist connects new comic to existing comic, system automatically creates bidirectional relationship
-- **Relationship Discovery:** Reader finds new comic through relationship link on related comic's page
-- **Simple Relationship Network:** Artist creates multiple interconnected comics with bidirectional connections
-- Content modification: Artist updates existing comic metadata, relationships, or replaces images
-- Error recovery: Artist resumes interrupted upload after network disconnection, with relationship selections preserved in browser cache
-- Reader browsing: Reader discovers comics via both tag filtering and explicit relationship navigation
+- **Comic Upload with Caption References:** Artist includes [[Comic Title]] references in caption, system automatically creates bidirectional relationships
+- **Relationship Discovery:** Reader finds new comic through relationship link on related comic's page, with context from original referencing caption
+- **Caption Reference Network:** Artist creates multiple interconnected comics through natural caption references
+- **Reference Editing:** Artist updates caption text and removes/adds comic references, system automatically maintains bidirectional relationships
+- Content modification: Artist updates existing comic metadata, caption references, or replaces images
+- Error recovery: Artist resumes interrupted upload after network disconnection, with caption text preserved in browser cache
+- Reader browsing: Reader discovers comics via caption-derived relationships, series connections, and tag filtering
 
 ## Success Criteria
 Measurable, constitutional-principle-aligned outcomes:
@@ -267,18 +275,20 @@ Measurable, constitutional-principle-aligned outcomes:
 ## Key Entities
 
 ### Comic Entity (MVP)
-- **Attributes:** id, title, caption, happenedOnDate, postedTimestamp, images (with s3Key and optional altText), tags, slug, scrollStyle, relationships
+- **Attributes:** id, title, caption, happenedOnDate, postedTimestamp, images (with s3Key and optional altText), tags, slug, scrollStyle, derivedRelationships
 - **Validation:** Required title and happenedOnDate, at least one image required, altText optional but recommended for accessibility
+- **Caption Processing:** System automatically parses caption text for [[Comic Title]] references to derive relationships
 - **Relationships:** 
   - Has multiple tags for discovery
-  - Has multiple simple bidirectional relationships to other comics
-  - Each relationship includes: targetComicId (string only)
+  - Has multiple automatically-derived bidirectional relationships to other comics from caption references
+  - Each relationship includes: targetComicId (string), sourceType ('caption'|'series'|'tag')
   - Each image includes: s3Key (required), altText (optional for accessibility)
 
-### Comic Relationship Entity
-- **Attributes:** targetComicId (string)
-- **Validation:** Valid targetComicId must reference existing comic
-- **Business Rules:** No self-references allowed, duplicate relationships to same target prevented, all relationships are bidirectional and unlabeled
+### Comic Derived Relationship Entity
+- **Attributes:** targetComicId (string), sourceType ('caption'|'series'|'tag')
+- **Validation:** Valid targetComicId must reference existing comic, sourceType must be one of allowed values
+- **Business Rules:** No self-references allowed, duplicate relationships to same target prevented within same sourceType, all relationships are bidirectional and automatically managed
+- **Caption Source:** When sourceType is 'caption', relationship is derived from [[Comic Title]] syntax in caption text
 
 ### Artist Configuration
 - **Attributes:** siteTitle, siteDescription, googleAuthConfig
