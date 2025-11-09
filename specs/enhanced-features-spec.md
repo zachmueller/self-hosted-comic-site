@@ -10,17 +10,17 @@
 - [Reader Login System](reader-login-spec.md) - Integrates with management interface
 
 ## Overview
-Advanced functionality that enhances the core comic site with bulk operations, advanced management features, thumbnail generation, and improved user experience. These features build upon the MVP foundation to provide a more robust and feature-rich comic publishing platform.
+Advanced functionality that enhances the core comic site with one-time migration capabilities, advanced management features, thumbnail generation, and improved user experience. These features build upon the MVP foundation to provide a more robust and feature-rich comic publishing platform.
 
 ## Constitutional Alignment
 
 ### Artist-First User Experience
 **How this feature prioritizes the comic artist's workflow:**
-- Bulk upload operations enable efficient management of large comic backlogs
+- One-time bulk migration enables efficient import of existing comic collections
 - Advanced management interface reduces time spent on repetitive tasks
 - Publish/unpublish controls provide flexible content management
 - Error recovery features minimize frustration during upload workflows
-- Historical comic import supports artists migrating existing collections
+- CSV-based migration system supports artists transferring complete comic libraries from other platforms
 
 ### Cost Impact Assessment
 **Estimated cost implications:**
@@ -32,7 +32,7 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 
 ### Serverless Architecture Compliance
 **Serverless services utilized:**
-- Enhanced Lambda functions for image processing and bulk operations
+- Enhanced Lambda functions for image processing and migration operations
 - Extends existing DynamoDB schema with additional management metadata
 - Uses existing S3 and CloudFront infrastructure with optimized delivery
 - No additional infrastructure components required
@@ -44,7 +44,7 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 - No manual setup required for thumbnail generation
 
 ## User Stories
-- As a comic artist, I want to upload multiple comics in a single session so that I can efficiently publish my backlog
+- As a comic artist, I want to perform a one-time bulk import of my existing comic backlog using CSV metadata so that I can efficiently migrate my complete comic history to my new site
 - As a comic artist, I want to set custom publication dates for historical comics so that I can import my existing collection chronologically
 - As a comic artist, I want to unpublish comics temporarily so that I can make corrections without permanent deletion
 - As a comic artist, I want thumbnails generated automatically so that homepage and navigation areas load quickly
@@ -214,14 +214,14 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 **Acceptance Criteria:**
 - Image processing costs scale predictably with upload volume
 - Thumbnail storage overhead remains under 25% of original image storage costs
-- Bulk operations optimized for minimal Lambda execution time
+- Migration operations optimized for minimal Lambda execution time
 - Management interface queries designed for cost-effective DynamoDB usage
 - Cost monitoring includes enhanced features in budget tracking and alerting
 
 ### NFR-E3: Reliability and Data Integrity
 **Description:** Robust system behavior with advanced functionality
 **Acceptance Criteria:**
-- Bulk uploads maintain data consistency even with partial failures
+- Migration uploads maintain data consistency even with partial failures
 - Image processing failures don't affect comic publication (fallback to originals)
 - Publish status changes maintain referential integrity across all interfaces
 - Error recovery preserves all user-entered data during system failures
@@ -299,10 +299,10 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 - **Validation:** Enhanced validation for publish status workflows and scheduling
 - **Relationships:** Same as MVP with additional management metadata
 
-### Bulk Operation Entity
-- **Attributes:** batchId, operationType, status, progress, itemCount, failureCount, createdDate
-- **Validation:** Tracks bulk operation progress and results
-- **Relationships:** Associated with multiple comics via batch processing
+### Migration Operation Entity
+- **Attributes:** migrationId, operationType, status, progress, itemCount, failureCount, createdDate
+- **Validation:** Tracks one-time migration operation progress and results
+- **Relationships:** Associated with multiple comics via migration processing
 
 ### Thumbnail Entity
 - **Attributes:** originalKey, thumbnailKey, processingStatus, createdDate
@@ -313,7 +313,7 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 
 ### Technical Architecture Decisions
 - Thumbnail generation uses AWS Lambda with image processing libraries
-- Bulk operations implemented as asynchronous processes with progress tracking
+- Migration operations implemented as asynchronous processes with progress tracking
 - Publish status leverages DynamoDB GSI for efficient status-based queries
 - Custom domain configuration integrated into existing CDK stack
 - Error recovery utilizes browser localStorage and server-side transaction handling
@@ -328,11 +328,11 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 - **Migration workflow:** Designed specifically for artists moving existing comic collections from other platforms
 
 ### Integration with Other Features
-- Compatible with series management - bulk operations respect series ordering and assignment
+- Compatible with series management - migration operations respect series ordering and assignment
 - Integrates with raw sketches - thumbnail generation applies to both final and sketch content
 - Extends MVP authentication and upload workflows without disrupting existing functionality
 - **Reader Login System Integration:** Management interface provides access to reader engagement dashboard and includes reader interaction analytics in comic performance metrics
-- Bulk operations can include reader engagement data when exporting analytics or managing content with high reader interaction
+- Migration operations can include reader engagement data when exporting analytics or managing content with high reader interaction
 
 ## Out of Scope
 - Advanced analytics requiring third-party services or complex infrastructure
@@ -343,7 +343,7 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 
 ## Dependencies
 - **Required:** Core MVP functionality must be implemented and operational
-- **Recommended:** Raw sketches spec implementation enhances bulk operations
-- **Optional:** Series management functionality benefits from bulk tagging operations
+- **Recommended:** Raw sketches spec implementation enhances migration operations
+- **Optional:** Series management functionality benefits from migration tagging operations
 - **Infrastructure:** Builds upon existing AWS services without additional components
 - **Migration:** Enhanced metadata fields require database schema updates deployable via CDK
