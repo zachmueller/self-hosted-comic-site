@@ -239,10 +239,15 @@ Core MVP functionality for a CDK-based package that enables individual comic art
    - System validates references and highlights any invalid comic titles
    - Can include multiple comic references within single caption
 5. Artist initiates upload and receives real-time progress feedback
-6. Artist reviews uploaded comic in preview mode, including parsed caption references
-7. Artist publishes comic with all metadata and caption references
-8. Comic appears on homepage within 30 seconds of publication
-9. **Automatic:** System parses caption references and creates bidirectional relationships
+6. **Optional Panel Reordering:** Artist proceeds to panel reordering step (see [Enhanced Features](enhanced-features-spec.md) for full functionality):
+   - System displays thumbnail preview of uploaded panels in current order
+   - Artist can reorder panels using drag-and-drop (desktop) or touch gestures (iPad)
+   - Real-time preview shows how reordered panels appear in both carousel and long-form modes
+   - Artist can skip this step to maintain original upload order
+7. Artist reviews uploaded comic in preview mode, including parsed caption references and final panel order
+8. Artist publishes comic with all metadata, caption references, and confirmed panel sequence
+9. Comic appears on homepage within 30 seconds of publication
+10. **Automatic:** System parses caption references and creates bidirectional relationships
 
 ### Alternative Flows
 - **Comic Upload with Caption References:** Artist includes [[Comic Title]] references in caption, system automatically creates bidirectional relationships
