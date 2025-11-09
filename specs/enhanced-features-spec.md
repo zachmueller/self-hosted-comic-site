@@ -123,6 +123,13 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 - Content preview before publication with mobile/desktop view simulation
 - Image replacement functionality for updating published comics
 - Management interface optimized for both desktop and iPad usage
+- **Tag Management Interface:** Comprehensive tag administration including:
+  - View all tags used across comics with usage counts
+  - Edit tag names and descriptions for consistency
+  - Designate tags as series (toggle series status for existing tags)
+  - Merge duplicate or similar tags with bulk reassignment
+  - Delete unused tags with confirmation workflow
+  - Tag categorization and organization tools
 - **Reader Engagement Integration:** Access point to reader moderation dashboard when reader login system is deployed (see [Reader Login System](reader-login-spec.md))
 - **Engagement Analytics Integration:** Comic performance metrics include reader reaction and comment data when available
 
@@ -256,7 +263,6 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 - Advanced analytics requiring third-party services or complex infrastructure
 - Multi-user collaboration or workflow management
 - Advanced SEO optimization beyond basic responsive images and custom domains
-- Automated social media posting or external service integrations
 - Complex content versioning or revision history beyond basic edit tracking
 - Advanced image editing or manipulation beyond responsive sizing
 
