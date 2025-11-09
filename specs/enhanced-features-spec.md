@@ -144,6 +144,32 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 - Automatic redirect from default CloudFront domain to custom domain
 - Cost-conscious approach: manual CNAME setup avoids Route 53 charges
 
+### FR-E7: Configurable Site Footer Management
+**Description:** Artist-configurable footer component with customizable content and external links for professional site branding
+**Acceptance Criteria:**
+- **Footer Configuration Interface:**
+  - Artist-accessible footer editor available in management dashboard when authenticated
+  - Rich text editor for footer content with basic formatting (bold, italic, links)
+  - Multiple external link configuration with title and URL fields
+  - Preview functionality shows footer appearance before saving changes
+  - Mobile-responsive preview for both desktop and mobile footer layouts
+- **Footer Content Management:**
+  - Footer text content supports artist bio, contact information, and call-to-action messaging
+  - External link management allows adding links to other websites (portfolio, social media, shop, etc.)
+  - Link validation ensures URLs are properly formatted before saving
+  - Footer content updates apply immediately across all site pages
+  - Content length limits prevent footer from overwhelming page layout
+- **Footer Display Features:**
+  - Footer appears consistently across all reader-facing pages (homepage, comic pages, search results)
+  - Responsive design ensures footer readability on all device sizes
+  - Professional styling matches overall site aesthetic
+  - External links open in new tabs/windows to retain reader on comic site
+  - Footer remains accessible but unobtrusive to comic content focus
+- **Constitutional Compliance:**
+  - Footer configuration prioritizes artist's professional needs and branding goals
+  - No additional infrastructure costs - uses existing DynamoDB for configuration storage
+  - Simple CDK deployment includes footer functionality without additional manual setup
+
 ## Non-Functional Requirements
 
 ### NFR-E1: Enhanced Performance

@@ -154,6 +154,12 @@ Core MVP functionality for a CDK-based package that enables individual comic art
   - All related comics treated equally without relationship type labels
   - Mobile-optimized relationship navigation with touch-friendly interface
 - Basic chronological next/previous navigation between comics (by "happened on" date)
+- **Share Functionality:**
+  - Share button beneath each comic that copies the direct comic URL to clipboard
+  - Simple one-click sharing without requiring external service integration
+  - Visual feedback confirms successful URL copy (toast notification or button state change)
+  - Mobile-optimized share button positioning and touch targets
+  - Fallback behavior for browsers without clipboard API support
 
 ## Non-Functional Requirements
 
