@@ -55,16 +55,28 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 
 ## Functional Requirements
 
-### FR-E1: Bulk Upload Operations
-**Description:** Advanced upload interface supporting multiple comics with batch metadata management
+### FR-E1: CSV-Based Batch Migration System
+**Description:** Two-stage CSV-based system for one-time migration of existing comic backlogs, optimized for artists with large collections published elsewhere
 **Acceptance Criteria:**
-- Upload interface supports selecting and uploading 10+ comics in single session
-- Batch metadata entry allows setting common fields (tags, series) across multiple comics
-- Individual comic customization available within batch upload workflow
-- Artist-selectable publish dates enable importing historical comics with original chronology
-- Bulk upload progress tracking shows status of each comic in the batch
-- Failed uploads within batch don't affect successfully uploaded comics
-- Bulk operations include both final images and sketches when raw sketch functionality enabled
+- **Stage 1 - Image Bulk Upload:**
+  - Upload interface supports selecting and uploading 50+ comic images in single batch
+  - System processes each image through normal optimization pipeline (responsive variants)
+  - Upon completion, system generates downloadable CSV mapping original filename to assigned UUID
+  - Artist filenames must be unique (system validates and provides clear error messaging)
+  - Upload progress tracking shows processing status of each image file
+  - Failed image processing doesn't affect successfully processed images in batch
+- **Stage 2 - Metadata CSV Import:**
+  - Artist provides CSV with comic metadata (title, description, tags, series, publishDate, etc.)
+  - Each row represents one comic with ordered reference to image filenames from Stage 1
+  - Backend Lambda function joins metadata CSV with filename-to-UUID mapping from Stage 1
+  - System validates all referenced filenames exist in processed image collection
+  - Bulk comic creation respects artist-specified publication dates for chronological import
+  - Error handling provides detailed feedback on CSV format or missing image references
+- **Migration Workflow Features:**
+  - Clear UX messaging explains two-stage process and filename uniqueness requirement
+  - CSV template generation with proper column headers and example data
+  - Comprehensive validation before final import commit with preview functionality
+  - Support for both final comic images and sketch images when raw sketch functionality enabled
 
 ### FR-E2: Publish Status Management
 **Description:** Advanced publication controls for content lifecycle management
@@ -156,13 +168,15 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 
 ## User Scenarios & Testing
 
-### Bulk Import Historical Comics Flow
-1. Artist prepares 20 historical comics for import with original publication dates
-2. Artist accesses bulk upload interface and selects all comic files
-3. Artist sets batch metadata (tags, series) and individual publication dates
-4. System processes uploads in background with progress tracking
-5. Artist reviews and adjusts individual comics before batch publication
-6. All comics published with correct chronological ordering and metadata
+### CSV-Based Historical Comics Migration Flow
+1. Artist prepares 50 historical comic images with unique filenames for import
+2. **Stage 1:** Artist accesses image bulk upload interface and uploads all comic files
+3. System processes each image (optimization, responsive variants) with progress tracking
+4. Upon completion, artist downloads CSV file mapping original filename to system UUID
+5. **Stage 2:** Artist creates metadata CSV using downloaded template, referencing original filenames
+6. Artist uploads metadata CSV - system validates and shows preview of comic creation
+7. Artist confirms import - backend Lambda joins metadata with image UUIDs and creates comics
+8. All comics published with correct chronological ordering and complete metadata
 
 ### Advanced Content Management Flow
 1. Artist reviews published comics in management interface
@@ -181,7 +195,9 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 6. Original image quality preserved for readers who prefer maximum detail
 
 ## Success Criteria
-- Bulk upload of 10 comics completable in under 20 minutes end-to-end
+- CSV-based migration of 50+ comics completable in under 2 hours end-to-end (both stages)
+- Stage 1 image processing completes within 1 minute per image on average
+- Stage 2 metadata import validates and creates comics from CSV within 5 minutes
 - Responsive image variants reduce mobile loading times by 50% vs. original images
 - Management interface operations provide sub-second response for all actions
 - Enhanced features add less than $3.50/month to hosting costs
@@ -223,8 +239,11 @@ Advanced functionality that enhances the core comic site with bulk operations, a
 ### Clarifications from Original Spec
 - Image optimization: Create responsive image sets (thumbnail, mobile, desktop) for optimal performance while preserving originals
 - Custom domain: Manual DNS setup to save costs - artist configures CNAME records pointing to CloudFront distribution
-- Bulk operations: Support uploading 10+ comics efficiently with ability to override publish date for importing historical comics
+- **CSV-based bulk migration:** Two-stage process optimized for one-time backlog import rather than regular batch operations
+  - Stage 1: Bulk image upload and processing with filename-to-UUID mapping generation
+  - Stage 2: CSV metadata import with backend joining of datasets via Lambda function
 - Publish controls: Immediate publish/unpublish capabilities and draft status management
+- **Migration workflow:** Designed specifically for artists moving existing comic collections from other platforms
 
 ### Integration with Other Features
 - Compatible with series management - bulk operations respect series ordering and assignment
