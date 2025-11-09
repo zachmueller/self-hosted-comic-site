@@ -8,6 +8,7 @@
 - [Series Management](series-management-spec.md) 
 - [Raw Sketches](raw-sketches-spec.md)
 - [Reader Login System](reader-login-spec.md) - Integrates with management interface
+- [Newsletter System](newsletter-system-spec.md) - Footer signup form integration
 
 ## Overview
 Advanced functionality that enhances the core comic site with one-time migration capabilities, advanced management features, thumbnail generation, and improved user experience. These features build upon the MVP foundation to provide a more robust and feature-rich comic publishing platform.
@@ -179,28 +180,36 @@ Advanced functionality that enhances the core comic site with one-time migration
   - Feature deployable via existing CDK deployment process without manual setup
 
 ### FR-E8: Configurable Site Footer Management
-**Description:** Artist-configurable footer component with customizable content and external links for professional site branding
+**Description:** Artist-configurable footer component with customizable content and external links for professional site branding, integrated with newsletter signup functionality
 **Acceptance Criteria:**
 - **Footer Configuration Interface:**
   - Artist-accessible footer editor available in management dashboard when authenticated
   - Rich text editor for footer content with basic formatting (bold, italic, links)
   - Multiple external link configuration with title and URL fields
-  - Preview functionality shows footer appearance before saving changes
+  - Preview functionality shows footer appearance before saving changes, including newsletter signup form placement
   - Mobile-responsive preview for both desktop and mobile footer layouts
 - **Footer Content Management:**
   - Footer text content supports artist bio, contact information, and call-to-action messaging
   - External link management allows adding links to other websites (portfolio, social media, shop, etc.)
   - Link validation ensures URLs are properly formatted before saving
   - Footer content updates apply immediately across all site pages
-  - Content length limits prevent footer from overwhelming page layout
+  - Content length limits prevent footer from overwhelming page layout or competing with newsletter signup
 - **Footer Display Features:**
   - Footer appears consistently across all reader-facing pages (homepage, comic pages, search results)
+  - Newsletter signup form integrated prominently within footer layout (see [Newsletter System](newsletter-system-spec.md))
   - Responsive design ensures footer readability on all device sizes
   - Professional styling matches overall site aesthetic
   - External links open in new tabs/windows to retain reader on comic site
+  - Footer layout balances custom content with newsletter signup form for optimal conversion
   - Footer remains accessible but unobtrusive to comic content focus
+- **Newsletter Integration:**
+  - Footer configuration interface includes preview of newsletter signup form placement
+  - Artist can position custom footer content above or below newsletter signup form
+  - Footer styling applies consistently to both custom content and newsletter signup elements
+  - Newsletter signup form uses same visual design language as configured footer styling
 - **Constitutional Compliance:**
   - Footer configuration prioritizes artist's professional needs and branding goals
+  - Newsletter integration enhances artist audience building without additional complexity
   - No additional infrastructure costs - uses existing DynamoDB for configuration storage
   - Simple CDK deployment includes footer functionality without additional manual setup
 
