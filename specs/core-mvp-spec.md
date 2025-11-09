@@ -101,9 +101,9 @@ Core MVP functionality for a CDK-based package that enables individual comic art
   - `happenedOnDate` (date): Date when comic situation occurred
   - `scrollStyle` (string): Display style (`carousel` or `long`)
   - `postedTimestamp` (timestamp): Publication date
-- `relationships` (array): Simple bidirectional connections to other comics
-    - Each relationship contains: `targetComicId` (string)
-    - All relationships are bidirectional and unlabeled
+  - `relationships` (array): Simple bidirectional connections to other comics
+      - Each relationship contains: `targetComicId` (string)
+      - All relationships are bidirectional and unlabeled
   - `integrations` (array): Per-comic social media platform controls (see [Social Media Integration](social-media-integration-spec.md))
     - Each integration object contains: `type` (string), `use` (boolean)
     - Supported types: `instagram`, `facebook`
