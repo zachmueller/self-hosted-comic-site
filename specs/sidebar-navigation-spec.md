@@ -73,7 +73,7 @@ A responsive, collapsible sidebar navigation system that provides persistent acc
 - **Home link:** Navigates to `/` (site home page) providing readers with easy return to main content
 - **About link:** Navigates to `/about` page with artist-customizable content
 - **Series link:** Navigates to `/series` page showing all available comic series ordered reverse-chronologically based on the most recent `happenedOn` date from comics within each series
-- **Tags link:** Navigates to `/tags` page displaying only select tags that the artist has marked for public display (artist-manageable attribute similar to Series designation)
+- **Tags link:** Navigates to `/tags` page displaying only select tags that the artist has marked for navigation highlighting (artist-manageable attribute similar to Series designation)
 - All links maintain visual hierarchy with consistent iconography and typography
 - Active page indicator highlights current section in navigation
 - Navigation elements appear in specified order: Home, About, Series, Tags
@@ -91,8 +91,8 @@ A responsive, collapsible sidebar navigation system that provides persistent acc
 **Description:** Navigation links integrate with existing series and tags functionality with specific ordering and filtering requirements
 **Acceptance Criteria:**
 - **Series page:** Displays organized view of all comic series ordered reverse-chronologically by the most recent `happenedOn` date from comics within each series
-- **Tags page:** Shows only tags that have been marked by the artist for public display (similar to how artists manage Series designation)
-- **Tag management:** Artists can control which tags appear on the public Tags page through the same interface used for Series management
+- **Tags page:** Shows only tags that have been marked by the artist for navigation highlighting (similar to how artists manage Series designation)
+- **Tag management:** Artists can control which tags are highlighted on the Tags navigation page through the same interface used for Series management
 - **Series navigation:** Individual series maintain their internal chronological ordering while the series list itself uses reverse-chronological ordering by latest content
 - Navigation maintains context awareness when browsing within series or tag-filtered content
 - Breadcrumb-style navigation shows current location within series/tag hierarchies
