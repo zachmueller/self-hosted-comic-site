@@ -10,7 +10,7 @@
 - [Random Comic Selection](random-comic-spec.md)
 
 ## Overview
-A responsive, collapsible sidebar navigation system that provides persistent access to core site sections while prioritizing artist content management workflow. The navigation features a sticky positioning system that remains accessible during content scrolling, with responsive behavior optimized for both desktop management and mobile reading experiences.
+A responsive sidebar navigation system that provides persistent access to core site sections while prioritizing artist content management workflow. The navigation features a sticky positioning system that remains accessible during content scrolling, with a permanently visible sidebar on desktop and collapsible overlay behavior on mobile devices.
 
 ## Constitutional Alignment
 
@@ -20,7 +20,7 @@ A responsive, collapsible sidebar navigation system that provides persistent acc
 - About page provides artist-customizable space for personal branding and information
 - Series and Tags navigation supports artist's content categorization workflow
 - Search functionality enables artists and readers to quickly locate content through metadata search
-- Desktop collapse behavior maintains screen real estate for content management tasks
+- Desktop always-visible navigation provides immediate access to content management sections without additional clicks
 
 ### Cost Impact Assessment
 **Estimated cost implications:**
@@ -58,9 +58,10 @@ A responsive, collapsible sidebar navigation system that provides persistent acc
 **Description:** Adaptive sidebar navigation that adjusts behavior based on viewport size while maintaining consistent functionality
 **Acceptance Criteria:**
 - **Desktop behavior (≥768px width):** 
-  - Slim vertical bar (48px width) always visible on left side with hamburger menu icon
-  - Sidebar expands to 280px width when activated, overlaying content with semi-transparent backdrop
-  - Collapse/expand animation duration of 300ms with smooth easing
+  - Full sidebar (280px width) always visible on left side with complete navigation links and labels
+  - Sidebar remains permanently expanded and does not collapse or overlay content
+  - Content area adjusts to accommodate fixed sidebar width (no overlay behavior)
+  - No hamburger menu or collapse/expand functionality on desktop
 - **Mobile behavior (<768px width):**
   - Only hamburger menu icon visible in upper left corner (44px × 44px touch target)
   - Full-width sidebar overlay when expanded with semi-transparent backdrop
@@ -124,12 +125,13 @@ A responsive, collapsible sidebar navigation system that provides persistent acc
 ### FR-5: Interactive Behavior and States
 **Description:** Smooth user interaction patterns with appropriate visual feedback and state management
 **Acceptance Criteria:**
-- Click/tap on hamburger icon toggles sidebar open/closed state
-- Click/tap on backdrop (outside sidebar) closes expanded sidebar
-- Keyboard accessibility: ESC key closes sidebar, Tab navigation works within expanded sidebar
-- Sidebar state persisted in browser localStorage across page visits
-- Hover states and focus indicators meet accessibility standards
-- Touch gestures: swipe left closes expanded sidebar on mobile devices
+- **Mobile behavior:** Click/tap on hamburger icon toggles sidebar open/closed state
+- **Mobile behavior:** Click/tap on backdrop (outside sidebar) closes expanded sidebar
+- **Mobile behavior:** Keyboard accessibility: ESC key closes sidebar, Tab navigation works within expanded sidebar
+- **Mobile behavior:** Touch gestures: swipe left closes expanded sidebar on mobile devices
+- **Desktop behavior:** Direct navigation link interactions with hover states and focus indicators
+- Hover states and focus indicators meet accessibility standards across all devices
+- Active page highlighting provides clear navigation context on both desktop and mobile
 
 ## Non-Functional Requirements
 
@@ -153,7 +155,7 @@ A responsive, collapsible sidebar navigation system that provides persistent acc
 ### NFR-3: Artist Workflow Optimization
 **Description:** Navigation design prioritizing artist content management efficiency
 **Acceptance Criteria:**
-- Desktop collapsed state preserves maximum screen space for content management
+- Desktop always-visible navigation provides immediate access to content management sections
 - About page editing accessible through existing artist management workflow
 - Quick access to Series and Tags management supports content organization tasks
 - Navigation structure reflects artist's mental model of content organization
@@ -169,11 +171,11 @@ A responsive, collapsible sidebar navigation system that provides persistent acc
 ## User Scenarios & Testing
 
 ### Primary Flow: Desktop Artist Content Management
-1. Artist logs into site on desktop and sees slim sidebar with hamburger icon
-2. Artist clicks hamburger to expand sidebar and navigates to Series management
-3. Artist completes series organization task and clicks backdrop to close sidebar
-4. Artist continues content management with maximum screen real estate preserved
-5. Artist clicks hamburger again to access About page for profile updates
+1. Artist logs into site on desktop and sees full sidebar with complete navigation links
+2. Artist directly clicks Series link in always-visible sidebar to access Series management
+3. Artist completes series organization task while sidebar remains visible
+4. Artist continues content management with consistent navigation access
+5. Artist directly clicks About link in sidebar to access About page for profile updates
 
 ### Alternative Flows
 - **Mobile Reader Discovery:** Reader on phone taps hamburger to explore Series and Tags sections
@@ -188,12 +190,12 @@ A responsive, collapsible sidebar navigation system that provides persistent acc
 
 ## Success Criteria
 Measurable, constitutional-principle-aligned outcomes:
-- Navigation interaction response time: under 16ms for expand/collapse actions
+- Navigation interaction response time: under 16ms for direct link navigation actions
 - Monthly hosting costs: $0.00 additional cost (validates constitutional efficiency)
 - About page load time: under 1 second using existing infrastructure
 - Mobile usability: 100% touch target accessibility compliance
-- Desktop space efficiency: Maximum content area preservation with 48px sidebar footprint
-- Artist workflow improvement: Measurable reduction in clicks to access Series/Tags management
+- Desktop navigation efficiency: Always-visible 280px sidebar provides immediate content management access
+- Artist workflow improvement: Zero-click access to Series/Tags management from any page
 
 ## Key Entities
 
