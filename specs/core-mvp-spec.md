@@ -82,6 +82,7 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 - Drag-and-drop file upload supports multiple comic images in JPG, PNG, and WebP formats
 - File size validation enforces 20MB maximum per image with clear error messaging
 - Touch-friendly form controls for comic metadata entry including relationship selection and accessibility options
+- **Date Field Pre-population:** `happenedOnDate` field automatically pre-populates with today's date for artist convenience
 - **Accessibility Features:** Optional alt text input field for each uploaded image to support screen readers and assistive technology
 - Real-time upload progress indicators for large image files
 - Form validation provides clear error messages for missing required fields
