@@ -127,9 +127,11 @@ Advanced functionality that enhances the core comic site with bulk operations, a
   - View all tags used across comics with usage counts
   - Edit tag names and descriptions for consistency
   - Designate tags as series (toggle series status for existing tags)
+  - **Control public tag visibility:** Toggle whether individual tags appear on the public Tags page (similar to Series designation)
   - Merge duplicate or similar tags with bulk reassignment
   - Delete unused tags with confirmation workflow
   - Tag categorization and organization tools
+  - Public display management: artists control which tags show up in reader-facing tag navigation
 - **Reader Engagement Integration:** Access point to reader moderation dashboard when reader login system is deployed (see [Reader Login System](reader-login-spec.md))
 - **Engagement Analytics Integration:** Comic performance metrics include reader reaction and comment data when available
 

@@ -59,13 +59,15 @@ Series management functionality that extends the base tag system to provide orga
 - Tag-to-series conversion preserves all existing comic relationships and URLs
 
 ### FR-S2: Series Navigation Interface
-**Description:** Enhanced navigation that distinguishes between series and regular tags
+**Description:** Enhanced navigation that distinguishes between series and regular tags with reverse-chronological series ordering
 **Acceptance Criteria:**
 - Navigation interface groups tags into two sections: "Series" and "Tags"
 - Series-flagged tags appear under "Series" header with chronological comic count
+- **Series List Ordering:** All series ordered reverse-chronologically based on the most recent `happenedOn` date from comics within each series
 - Regular tags appear under "Tags" header with standard functionality
 - Each tag appears in only one navigation section (either Series or Tags, never both)
 - Series display shows comic count and latest publication date
+- Series with more recent comics appear higher in the series list
 
 ### FR-S3: Series-Based Comic Ordering
 **Description:** Automatic chronological ordering of comics within series based on happenedOnDate
