@@ -4,7 +4,7 @@
 **Status:** Draft
 **Related Specs:** 
 - [Core MVP](core-mvp-spec.md)
-- [Series Management](series-management-spec.md)
+- [Tag Management](tag-management-spec.md)
 - [Enhanced Features](enhanced-features-spec.md)
 - [Search Functionality](search-functionality-spec.md)
 - [Random Comic Selection](random-comic-spec.md)

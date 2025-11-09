@@ -5,7 +5,7 @@
 **Related Specs:** 
 - [Core MVP](core-mvp-spec.md)
 - [Sidebar Navigation System](sidebar-navigation-spec.md)
-- [Series Management](series-management-spec.md)
+- [Tag Management](tag-management-spec.md)
 
 ## Overview
 Simple, cost-effective search functionality that allows readers to search across comic metadata fields including title, tags, caption, and alt text. The search prioritizes simplicity and low cost over sophisticated algorithms, using basic text matching to help readers discover relevant comics through a dedicated search results page.

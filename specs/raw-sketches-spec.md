@@ -5,7 +5,7 @@
 **Derived From:** Original monolithic comic site specification (refactored November 2025)
 **Related Specs:** 
 - [Core MVP](core-mvp-spec.md) - Prerequisites
-- [Series Management](series-management-spec.md) 
+- [Tag Management](tag-management-spec.md)
 - [Enhanced Features](enhanced-features-spec.md)
 
 ## Overview

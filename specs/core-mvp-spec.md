@@ -4,7 +4,7 @@
 **Status:** Draft
 **Derived From:** Original monolithic comic site specification (refactored November 2025)
 **Related Specs:** 
-- [Series Management](series-management-spec.md)
+- [Tag Management](tag-management-spec.md)
 - [Raw Sketches](raw-sketches-spec.md) 
 - [Enhanced Features](enhanced-features-spec.md)
 - [Reader Login System](reader-login-spec.md) - Optional engagement features
@@ -351,7 +351,7 @@ Measurable, constitutional-principle-aligned outcomes:
 
 ## Out of Scope for MVP
 Features explicitly excluded from MVP (see related specs):
-- Series management and navigation (see [Series Management](series-management-spec.md))
+- Series management and navigation (see [Tag Management](tag-management-spec.md))
 - Raw sketch upload and display functionality (see [Raw Sketches](raw-sketches-spec.md))
 - Bulk upload operations and advanced management (see [Enhanced Features](enhanced-features-spec.md))
 - Advanced thumbnail generation (see [Enhanced Features](enhanced-features-spec.md))

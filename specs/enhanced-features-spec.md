@@ -5,7 +5,7 @@
 **Derived From:** Original monolithic comic site specification (refactored November 2025)
 **Related Specs:** 
 - [Core MVP](core-mvp-spec.md) - Prerequisites
-- [Series Management](series-management-spec.md) 
+- [Tag Management](tag-management-spec.md)
 - [Raw Sketches](raw-sketches-spec.md)
 - [Reader Login System](reader-login-spec.md) - Integrates with management interface
 - [Newsletter System](newsletter-system-spec.md) - Footer signup form integration
