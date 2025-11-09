@@ -53,6 +53,7 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 - As a comic artist, I want to reference other comics within my captions using simple link syntax so that readers can discover related content naturally within the context of my writing
 - As a comic artist, I want to define for each comic post whether its multiple images are shown in carousel form or simple long form so that I control the presentation of my content
 - As a comic artist, I want to optionally provide alt text descriptions for my comic images so that readers using screen readers and assistive technology can understand my visual content
+- As a comic artist, I want to select which image serves as the thumbnail for each comic post so that readers see the most representative image in listing contexts
 - As a comic artist, I want to reorder the panels of my comics during the upload process so that I can confirm the correct sequence before publication (see [Enhanced Features](enhanced-features-spec.md) for full panel reordering functionality)
 - As a comic reader, I want to see the latest comics on the homepage so that I can quickly access new content
 - As a comic reader, I want to browse comics by tags so that I can find content that matches my interests  
@@ -85,6 +86,11 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 - Touch-friendly form controls for comic metadata entry including relationship selection and accessibility options
 - **Date Field Pre-population:** `happenedOnDate` field automatically pre-populates with today's date for artist convenience
 - **Accessibility Features:** Optional alt text input field for each uploaded image to support screen readers and assistive technology
+- **Thumbnail Selection:** After image upload, artist can select which image serves as the comic post thumbnail:
+  - System defaults to first uploaded image as thumbnail
+  - Artist can optionally select any other uploaded image as the thumbnail via thumbnail selection interface
+  - Thumbnail preview shows how selected image appears in listing contexts
+  - Selection interface works on both desktop (click) and mobile (touch) platforms
 - Real-time upload progress indicators for large image files
 - Form validation provides clear error messages for missing required fields
 - **Caption Reference System:** Support for linking to other comics within caption text using bracket syntax (e.g., "This continues from [[Previous Comic Title]]")
@@ -282,9 +288,10 @@ Measurable, constitutional-principle-aligned outcomes:
 ## Key Entities
 
 ### Comic Entity (MVP)
-- **Attributes:** id, title, caption, happenedOnDate, postedTimestamp, images (with s3Key and optional altText), tags, slug, scrollStyle, derivedRelationships
+- **Attributes:** id, title, caption, happenedOnDate, postedTimestamp, images (with s3Key and optional altText), tags, slug, scrollStyle, derivedRelationships, thumbnailImageIndex
 - **Validation:** Required title and happenedOnDate, at least one image required, altText optional but recommended for accessibility
 - **Caption Processing:** System automatically parses caption text for [[Comic Title]] references to derive relationships
+- **Thumbnail Selection:** thumbnailImageIndex (number) specifies which image from the images array serves as the post thumbnail (defaults to 0 for first image)
 - **Relationships:** 
   - Has multiple tags for discovery
   - Has multiple automatically-derived bidirectional relationships to other comics from caption references

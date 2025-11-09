@@ -121,6 +121,12 @@ Advanced functionality that enhances the core comic site with one-time migration
 - Quick actions: bulk publish/unpublish, bulk tag management
 - Content preview before publication with mobile/desktop view simulation
 - Image replacement functionality for updating published comics
+- **Thumbnail Selection for Published Comics:** Artists can change thumbnail selection for any published comic:
+  - Comic edit interface displays all images from the comic with current thumbnail highlighted
+  - Artist can select any image as the new thumbnail via click (desktop) or touch (mobile) interface
+  - Thumbnail preview shows how selected image appears in listing contexts before saving changes
+  - Changes apply immediately across homepage, tag pages, and related comic displays
+  - Selection interface matches upload workflow design for consistency
 - Management interface optimized for both desktop and iPad usage
 - **Tag Management Interface:** Comprehensive tag administration including:
   - View all tags used across comics with usage counts
