@@ -68,15 +68,15 @@ A responsive, collapsible sidebar navigation system that provides persistent acc
 - Sidebar positioning remains fixed during page scrolling on both desktop and mobile
 
 ### FR-2: Core Navigation Links
-**Description:** Five primary navigation sections supporting artist content organization and reader discovery
+**Description:** Four primary navigation sections supporting artist content organization and reader discovery, ordered to prioritize essential site navigation
 **Acceptance Criteria:**
+- **Home link:** Navigates to `/` (site home page) providing readers with easy return to main content
 - **About link:** Navigates to `/about` page with artist-customizable content
-- **Series link:** Navigates to `/series` page showing all available comic series
-- **Tags link:** Navigates to `/tags` page displaying tag cloud or list with post counts
-- **Random Comic button:** Instantly navigates to randomly selected comic from published catalog (see [Random Comic Selection](random-comic-spec.md))
-- **Search section:** Search input field with placeholder text "Search comics..."
+- **Series link:** Navigates to `/series` page showing all available comic series ordered reverse-chronologically based on the most recent `happenedOn` date from comics within each series
+- **Tags link:** Navigates to `/tags` page displaying only select tags that the artist has marked for public display (artist-manageable attribute similar to Series designation)
 - All links maintain visual hierarchy with consistent iconography and typography
 - Active page indicator highlights current section in navigation
+- Navigation elements appear in specified order: Home, About, Series, Tags
 
 ### FR-3: About Page Management
 **Description:** Artist-customizable About page accessible through navigation with content management capabilities
@@ -88,10 +88,12 @@ A responsive, collapsible sidebar navigation system that provides persistent acc
 - About page responsive design matches site aesthetic and navigation structure
 
 ### FR-4: Series and Tags Page Integration
-**Description:** Navigation links integrate with existing series and tags functionality from related specifications
+**Description:** Navigation links integrate with existing series and tags functionality with specific ordering and filtering requirements
 **Acceptance Criteria:**
-- Series page displays organized view of all comic series with navigation to individual series
-- Tags page shows comprehensive tag overview with comic counts and filtering capabilities  
+- **Series page:** Displays organized view of all comic series ordered reverse-chronologically by the most recent `happenedOn` date from comics within each series
+- **Tags page:** Shows only tags that have been marked by the artist for public display (similar to how artists manage Series designation)
+- **Tag management:** Artists can control which tags appear on the public Tags page through the same interface used for Series management
+- **Series navigation:** Individual series maintain their internal chronological ordering while the series list itself uses reverse-chronological ordering by latest content
 - Navigation maintains context awareness when browsing within series or tag-filtered content
 - Breadcrumb-style navigation shows current location within series/tag hierarchies
 
