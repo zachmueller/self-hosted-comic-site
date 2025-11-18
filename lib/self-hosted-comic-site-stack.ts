@@ -10,6 +10,9 @@ import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as cloudfront_origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
+import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
+import * as cloudwatch_actions from 'aws-cdk-lib/aws-cloudwatch-actions';
+import * as sns from 'aws-cdk-lib/aws-sns';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
 
@@ -78,6 +81,38 @@ export class ComicSiteStack extends cdk.Stack {
 			sortKey: { name: 'postedTimestamp', type: dynamodb.AttributeType.STRING },
 			projectionType: dynamodb.ProjectionType.ALL
 		});
+
+		// Create SNS topic for monitoring alerts
+		const monitoringTopic = new sns.Topic(this, 'MonitoringTopic', {
+			displayName: 'Comic Site Monitoring Alerts',
+		});
+
+		// DynamoDB Table Monitoring: User Errors
+		const tableUserErrorsAlarm = new cloudwatch.Alarm(this, 'TableUserErrorsAlarm', {
+			metric: comicTable.metricUserErrors({
+				statistic: 'Sum',
+				period: Duration.minutes(5),
+			}),
+			threshold: 10,
+			evaluationPeriods: 2,
+			alarmDescription: 'Alert when DynamoDB table has excessive user errors',
+			treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+		});
+		tableUserErrorsAlarm.addAlarmAction(new cloudwatch_actions.SnsAction(monitoringTopic));
+
+		// DynamoDB Table Monitoring: System Errors
+		const tableSystemErrorsAlarm = new cloudwatch.Alarm(this, 'TableSystemErrorsAlarm', {
+			metric: comicTable.metricSystemErrorsForOperations({
+				operations: [dynamodb.Operation.GET_ITEM, dynamodb.Operation.PUT_ITEM, dynamodb.Operation.QUERY],
+				statistic: 'Sum',
+				period: Duration.minutes(5),
+			}),
+			threshold: 5,
+			evaluationPeriods: 2,
+			alarmDescription: 'Alert when DynamoDB table has system errors',
+			treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+		});
+		tableSystemErrorsAlarm.addAlarmAction(new cloudwatch_actions.SnsAction(monitoringTopic));
 
 		// Read the getComics Lambda function code
 		const getComicsLambdaCode = fs.readFileSync(

@@ -130,7 +130,7 @@
 - [x] Shared validation schemas for client and server
 **Blocked:** Requires `npm install` in shared/ directory (needs approval)
 
-### DATA-003: DynamoDB Table Updates
+### DATA-003: DynamoDB Table Updates ✓ COMPLETE
 **Description:** Update DynamoDB table definition with all required GSIs
 **Files:** `lib/self-hosted-comic-site-stack.ts`
 **Dependencies:** DATA-002
@@ -138,12 +138,12 @@
 - Cost-Conscious: GSI design minimizes query costs
 - Serverless-First: DynamoDB is fully managed
 **Acceptance Criteria:**
-- [ ] Primary key: `id` (partition) + `postedTimestamp` (sort)
-- [ ] GSI-1: `slug` (partition) for direct comic lookups
-- [ ] GSI-2: `title` (partition) + `happenedOnDate` (sort) for autocomplete
-- [ ] GSI-3: `tag` (partition) + `postedTimestamp` (sort) for tag filtering
-- [ ] Pay-per-request billing mode configured
-- [ ] Table capacity alarms configured
+- [x] Primary key: `id` (partition) + `postedTimestamp` (sort)
+- [x] GSI-1: `slug` (partition) for direct comic lookups (SlugIndex)
+- [x] GSI-2: `title` (partition) + `happenedOnDate` (sort) for autocomplete (TitleIndex)
+- [x] GSI-3: `tag` (partition) + `postedTimestamp` (sort) for tag filtering (TagIndex)
+- [x] Pay-per-request billing mode configured
+- [x] Table capacity alarms configured (user errors, system errors)
 
 ### DATA-004 [P]: Data Access Layer
 **Description:** Create utilities for interacting with DynamoDB from Lambda
