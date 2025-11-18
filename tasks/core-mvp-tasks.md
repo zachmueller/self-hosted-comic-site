@@ -115,19 +115,20 @@
 - [x] Configuration types defined (color palette)
 - [x] All types exported from central index
 
-### DATA-002: Zod Validation Schemas
+### DATA-002: Zod Validation Schemas ✓ COMPLETE
 **Description:** Port validation rules from spec to Zod schemas
 **Files:** `frontend/src/validation/comic.schema.ts`, `frontend/src/validation/metadata.schema.ts`, `shared/validation/` (for Lambda use)
 **Dependencies:** DATA-001
 **Constitutional Compliance:**
 - Artist-First: Clear validation errors improve artist experience
 **Acceptance Criteria:**
-- [ ] All validation rules from specs/validation-rules.md implemented
-- [ ] Comic metadata validation (title, caption, dates, tags)
-- [ ] Image validation (file type, size limits)
-- [ ] Reference syntax validation ([[Title]] and [[Title|Alias]])
-- [ ] Validation error messages are artist-friendly
-- [ ] Shared validation schemas for client and server
+- [x] All validation rules from specs/validation-rules.md implemented
+- [x] Comic metadata validation (title, caption, dates, tags)
+- [x] Image validation (file type, size limits)
+- [x] Reference syntax validation ([[Title]] and [[Title|Alias]])
+- [x] Validation error messages are artist-friendly
+- [x] Shared validation schemas for client and server
+**Blocked:** Requires `npm install` in shared/ directory (needs approval)
 
 ### DATA-003: DynamoDB Table Updates
 **Description:** Update DynamoDB table definition with all required GSIs
