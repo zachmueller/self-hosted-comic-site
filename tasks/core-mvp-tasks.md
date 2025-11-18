@@ -162,7 +162,7 @@
 
 ## Phase 2: Authentication & Core Infrastructure
 
-### AUTH-001: Cognito Hosted UI Integration
+### AUTH-001: Cognito Hosted UI Integration ✓ COMPLETE
 **Description:** Implement Cognito authentication flow with Google federation
 **Files:** `frontend/src/auth/AuthContext.tsx`, `frontend/src/auth/cognito.ts`, `frontend/src/auth/useAuth.ts`
 **Dependencies:** DATA-004
@@ -171,40 +171,42 @@
 - Serverless-First: Cognito is fully managed
 - Cost-Conscious: Cognito free tier covers single artist
 **Acceptance Criteria:**
-- [ ] Cognito Hosted UI integration implemented
-- [ ] OAuth callback handling
-- [ ] Token exchange and storage
-- [ ] AWS credentials configuration for authenticated artist
-- [ ] AuthContext provider wraps app
-- [ ] useAuth hook provides auth state and methods
+- [x] Cognito Hosted UI integration implemented
+- [x] OAuth callback handling
+- [x] Token exchange and storage
+- [x] AWS credentials configuration for authenticated artist
+- [x] AuthContext provider wraps app
+- [x] useAuth hook provides auth state and methods
+**Blocked:** Requires `npm install` in frontend for dependencies
 
-### AUTH-002: Session Management
+### AUTH-002: Session Management ✓ COMPLETE
 **Description:** Implement session persistence and token refresh
 **Files:** `frontend/src/auth/AuthContext.tsx`, `frontend/src/auth/tokenManager.ts`
 **Dependencies:** AUTH-001
 **Constitutional Compliance:**
 - Artist-First: Artist stays logged in between sessions
 **Acceptance Criteria:**
-- [ ] JWT tokens stored securely in sessionStorage
-- [ ] Automatic token refresh before expiration
-- [ ] Session validation on app load
-- [ ] Logout functionality clears all tokens
-- [ ] Error handling for expired sessions
+- [x] JWT tokens stored securely in sessionStorage
+- [x] Automatic token refresh before expiration
+- [x] Session validation on app load
+- [x] Logout functionality clears all tokens
+- [x] Error handling for expired sessions
 
-### AUTH-003: Protected Route Components
+### AUTH-003: Protected Route Components ✓ COMPLETE
 **Description:** Create route guards for artist-only pages
 **Files:** `frontend/src/components/ProtectedRoute.tsx`, `frontend/src/auth/useRequireAuth.ts`
 **Dependencies:** AUTH-002
 **Constitutional Compliance:**
 - Artist-First: Upload interface only accessible to artist
 **Acceptance Criteria:**
-- [ ] ProtectedRoute component wraps authenticated routes
-- [ ] Redirects to login if not authenticated
-- [ ] useRequireAuth hook for component-level protection
-- [ ] Loading state during auth check
-- [ ] Preserves intended destination after login
+- [x] ProtectedRoute component wraps authenticated routes
+- [x] Redirects to login if not authenticated
+- [x] useRequireAuth hook for component-level protection
+- [x] Loading state during auth check
+- [x] Preserves intended destination after login
+**Blocked:** Requires `npm install react-router-dom` in frontend
 
-### INFRA-001 [P]: Lambda Function Stubs
+### INFRA-001 [P]: Lambda Function Stubs ✓ COMPLETE
 **Description:** Create Lambda function structure for all API endpoints
 **Files:** `lambda/getComics/index.ts`, `lambda/getComic/index.ts`, `lambda/searchTitles/index.ts`, `lambda/processUpload/index.ts`, `lambda/generatePresignedUrl/index.ts`
 **Dependencies:** DATA-004
@@ -212,12 +214,13 @@
 - Serverless-First: Lambda is fully managed compute
 - Cost-Conscious: Lambda free tier covers typical usage
 **Acceptance Criteria:**
-- [ ] Five Lambda functions created with TypeScript
-- [ ] Basic handler structure for each function
-- [ ] Shared utilities imported from /shared
-- [ ] Error handling structure in place
-- [ ] CloudWatch logging configured
-- [ ] Lambda function definitions in CDK stack
+- [x] Five Lambda functions created with TypeScript
+- [x] Basic handler structure for each function
+- [x] Shared utilities imported from /shared (ready for use)
+- [x] Error handling structure in place
+- [x] CloudWatch logging configured
+- [ ] Lambda function definitions in CDK stack (INFRA-002)
+**Blocked:** Requires `npm install` for AWS SDK dependencies
 
 ### INFRA-002 [P]: API Gateway Configuration
 **Description:** Set up API Gateway or Lambda@Edge for API routing

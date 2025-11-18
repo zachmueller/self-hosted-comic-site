@@ -13,6 +13,7 @@ import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
 import * as cloudwatch_actions from 'aws-cdk-lib/aws-cloudwatch-actions';
 import * as sns from 'aws-cdk-lib/aws-sns';
+import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
 
@@ -114,45 +115,64 @@ export class ComicSiteStack extends cdk.Stack {
 		});
 		tableSystemErrorsAlarm.addAlarmAction(new cloudwatch_actions.SnsAction(monitoringTopic));
 
-		// Read the getComics Lambda function code
-		const getComicsLambdaCode = fs.readFileSync(
-			path.join(__dirname, '..', 'assets', 'lambda', 'getComics', 'index.js.template'),
-			'utf8'
-		);
-
-		// Replace the placeholder with the actual table name
-		const processedCode = getComicsLambdaCode.replace(
-				'{{DYNAMODB_TABLE_NAME}}', comicTable.tableName
-			).replace(
-				'{{COMIC_BUCKET_NAME}}', comicBucket.bucketName
-			);
-
-		// Create Lambda@Edge function for fetching comics
+		// Create Lambda functions for API endpoints
+		// Note: Using regular Lambda functions, not Lambda@Edge for better flexibility
+		
+		// GetComics Lambda function
 		const getComicsLambda = new lambda.Function(this, 'GetComicsLambda', {
-			runtime: lambda.Runtime.NODEJS_18_X,
+			runtime: lambda.Runtime.NODEJS_20_X,
 			handler: 'index.handler',
-			code: lambda.Code.fromInline(processedCode),
-			timeout: Duration.seconds(5),
+			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'lambda', 'getComics')),
+			environment: {
+				COMIC_TABLE_NAME: comicTable.tableName,
+			},
+			timeout: Duration.seconds(10),
+			memorySize: 512,
 		});
 
-		// Grant Lambda@Edge permissions to assume role
-		getComicsLambda.addToRolePolicy(new iam.PolicyStatement({
-			actions: ['sts:AssumeRole'],
-			resources: ['*'],
-		}));
+		// GetComic Lambda function
+		const getComicLambda = new lambda.Function(this, 'GetComicLambda', {
+			runtime: lambda.Runtime.NODEJS_20_X,
+			handler: 'index.handler',
+			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'lambda', 'getComic')),
+			environment: {
+				COMIC_TABLE_NAME: comicTable.tableName,
+			},
+			timeout: Duration.seconds(10),
+			memorySize: 512,
+		});
 
-		// Grant Lambda@Edge permissions to interact with DynamoDB
-		comicBucket.grantRead(getComicsLambda);
+		// SearchTitles Lambda function
+		const searchTitlesLambda = new lambda.Function(this, 'SearchTitlesLambda', {
+			runtime: lambda.Runtime.NODEJS_20_X,
+			handler: 'index.handler',
+			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'lambda', 'searchTitles')),
+			environment: {
+				COMIC_TABLE_NAME: comicTable.tableName,
+			},
+			timeout: Duration.seconds(10),
+			memorySize: 512,
+		});
+
+		// GeneratePresignedUrl Lambda function
+		const generatePresignedUrlLambda = new lambda.Function(this, 'GeneratePresignedUrlLambda', {
+			runtime: lambda.Runtime.NODEJS_20_X,
+			handler: 'index.handler',
+			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'lambda', 'generatePresignedUrl')),
+			environment: {
+				COMIC_BUCKET_NAME: comicBucket.bucketName,
+			},
+			timeout: Duration.seconds(10),
+			memorySize: 256,
+		});
+
+		// Grant DynamoDB permissions to Lambda functions
 		comicTable.grantReadData(getComicsLambda);
-		getComicsLambda.addToRolePolicy(new iam.PolicyStatement({
-			effect: iam.Effect.ALLOW,
-			actions: [
-				'logs:CreateLogGroup',
-				'logs:CreateLogStream',
-				'logs:PutLogEvents'
-			],
-			resources: ['*']
-		}));
+		comicTable.grantReadData(getComicLambda);
+		comicTable.grantReadData(searchTitlesLambda);
+
+		// Grant S3 permissions
+		comicBucket.grantPut(generatePresignedUrlLambda);
 
 		// Create CloudFront Function for image routing
 		const cfFunctionCode = 
