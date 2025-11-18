@@ -63,11 +63,19 @@ export class ComicSiteStack extends cdk.Stack {
 			projectionType: dynamodb.ProjectionType.ALL
 		});
 
-		// Add GSI for title lookups
+		// Add GSI for title lookups (for autocomplete)
 		comicTable.addGlobalSecondaryIndex({
 			indexName: 'TitleIndex',
 			partitionKey: { name: 'title', type: dynamodb.AttributeType.STRING },
 			sortKey: { name: 'happenedOnDate', type: dynamodb.AttributeType.STRING },
+			projectionType: dynamodb.ProjectionType.ALL
+		});
+
+		// Add GSI for tag filtering
+		comicTable.addGlobalSecondaryIndex({
+			indexName: 'TagIndex',
+			partitionKey: { name: 'tag', type: dynamodb.AttributeType.STRING },
+			sortKey: { name: 'postedTimestamp', type: dynamodb.AttributeType.STRING },
 			projectionType: dynamodb.ProjectionType.ALL
 		});
 
@@ -252,9 +260,10 @@ export class ComicSiteStack extends cdk.Stack {
 			}
 		}));
 
-		// Upload static website content
+		// Upload React app build artifacts
+		// NOTE: Run 'cd frontend && npm run build' before deploying
 		new s3deploy.BucketDeployment(this, 'DeployWebsite', {
-			sources: [s3deploy.Source.asset(path.join(__dirname, '..', 'assets', 'website'))],
+			sources: [s3deploy.Source.asset(path.join(__dirname, '..', 'frontend', 'dist'))],
 			destinationBucket: websiteBucket,
 			distribution,
 			distributionPaths: ['/*'],
