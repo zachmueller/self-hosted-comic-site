@@ -496,6 +496,85 @@ export class ComicSiteStack extends cdk.Stack {
 			{ prefix: 'invalidation/' }
 		);
 
+		// Create API Gateway REST API for Lambda functions
+		const api = new apigateway.RestApi(this, 'ComicSiteApi', {
+			restApiName: 'Comic Site API',
+			description: 'API for comic site operations',
+			deployOptions: {
+				stageName: 'prod',
+				loggingLevel: apigateway.MethodLoggingLevel.INFO,
+				dataTraceEnabled: true,
+				metricsEnabled: true,
+			},
+			defaultCorsPreflightOptions: {
+				allowOrigins: apigateway.Cors.ALL_ORIGINS,
+				allowMethods: apigateway.Cors.ALL_METHODS,
+				allowHeaders: ['Content-Type', 'Authorization'],
+			},
+		});
+
+		// Add /api resource
+		const apiResource = api.root.addResource('api');
+
+		// GET /api/comics - List comics with pagination and tag filtering
+		const comicsResource = apiResource.addResource('comics');
+		comicsResource.addMethod('GET', new apigateway.LambdaIntegration(getComicsLambda));
+
+		// GET /api/comic/{slug} - Get single comic by slug
+		const comicResource = apiResource.addResource('comic');
+		const comicBySlugResource = comicResource.addResource('{slug}');
+		comicBySlugResource.addMethod('GET', new apigateway.LambdaIntegration(getComicLambda));
+
+		// GET /api/search/titles - Search comic titles
+		const searchResource = apiResource.addResource('search');
+		const titlesResource = searchResource.addResource('titles');
+		titlesResource.addMethod('GET', new apigateway.LambdaIntegration(searchTitlesLambda));
+
+		// Add Cognito authorizer for protected endpoints
+		const authorizer = new apigateway.CognitoUserPoolsAuthorizer(this, 'ComicApiAuthorizer', {
+			cognitoUserPools: [userPool],
+			authorizerName: 'ComicApiAuthorizer',
+		});
+
+		// POST /api/upload/presigned-url - Generate presigned URL (requires auth)
+		const uploadResource = apiResource.addResource('upload');
+		const presignedUrlResource = uploadResource.addResource('presigned-url');
+		presignedUrlResource.addMethod('POST', new apigateway.LambdaIntegration(generatePresignedUrlLambda), {
+			authorizer,
+			authorizationType: apigateway.AuthorizationType.COGNITO,
+		});
+
+		// ProcessUpload Lambda for comic metadata processing
+		const processUploadLambda = new lambda.Function(this, 'ProcessUploadLambda', {
+			runtime: lambda.Runtime.NODEJS_20_X,
+			handler: 'index.handler',
+			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'lambda', 'processUpload')),
+			environment: {
+				COMIC_TABLE_NAME: comicTable.tableName,
+				COMIC_BUCKET_NAME: comicBucket.bucketName,
+				CLOUDFRONT_DISTRIBUTION_ID: distribution.distributionId,
+			},
+			timeout: Duration.seconds(30),
+			memorySize: 512,
+		});
+
+		// Grant permissions to processUpload Lambda
+		comicTable.grantWriteData(processUploadLambda);
+		comicTable.grantReadData(processUploadLambda);
+		comicBucket.grantRead(processUploadLambda);
+		processUploadLambda.addToRolePolicy(new iam.PolicyStatement({
+			effect: iam.Effect.ALLOW,
+			actions: ['cloudfront:CreateInvalidation'],
+			resources: [`arn:aws:cloudfront::${cdk.Stack.of(this).account}:distribution/${distribution.distributionId}`],
+		}));
+
+		// POST /api/upload/process - Process upload after S3 upload (requires auth)
+		const processUploadResource = uploadResource.addResource('process');
+		processUploadResource.addMethod('POST', new apigateway.LambdaIntegration(processUploadLambda), {
+			authorizer,
+			authorizationType: apigateway.AuthorizationType.COGNITO,
+		});
+
 		// Create IAM role limited to Cognito Identity Pool
 		const presignedUrlRole = new iam.Role(this, 'PresignedUrlRole', {
 			assumedBy: new iam.FederatedPrincipal(
@@ -572,6 +651,11 @@ export class ComicSiteStack extends cdk.Stack {
 		new cdk.CfnOutput(this, 'ComicTableName', {
 			value: comicTable.tableName,
 			description: 'Name of the DynamoDB table for comics'
+		});
+
+		new cdk.CfnOutput(this, 'ApiUrl', {
+			value: api.url,
+			description: 'API Gateway endpoint URL'
 		});
 	}
 }
