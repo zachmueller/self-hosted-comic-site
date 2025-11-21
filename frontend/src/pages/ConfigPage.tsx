@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRequireAuth } from '../auth/useRequireAuth';
+import { useAuth } from '../auth/useAuth';
 import { ColorPaletteEditor } from '../components/config/ColorPaletteEditor';
-import { ColorPalette, DEFAULT_COLOR_PALETTE } from '../types/config';
+import { ColorPalette } from '../types/config';
+import { loadSiteConfig, updateColorPalette, resetColorPalette, defaultColors } from '../styles/theme';
 import './ConfigPage.css';
 
 function ConfigPage() {
   const { isLoading: authLoading } = useRequireAuth();
+  const { tokens } = useAuth();
   const navigate = useNavigate();
   
-  const [colorPalette, setColorPalette] = useState<ColorPalette>(DEFAULT_COLOR_PALETTE);
+  const [colorPalette, setColorPalette] = useState<ColorPalette>(defaultColors);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -22,25 +25,13 @@ function ConfigPage() {
         setIsLoading(true);
         setError(null);
         
-        const apiUrl = import.meta.env.VITE_API_URL;
-        if (!apiUrl) {
-          throw new Error('API URL not configured');
-        }
-
-        const response = await fetch(`${apiUrl}/config`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch configuration');
-        }
-
-        const data = await response.json();
-        if (data.colorPalette) {
-          setColorPalette(data.colorPalette);
-        }
+        const config = await loadSiteConfig();
+        setColorPalette(config.colorPalette);
       } catch (err) {
         console.error('Error fetching config:', err);
         setError(err instanceof Error ? err.message : 'Failed to load configuration');
         // Use default palette on error
-        setColorPalette(DEFAULT_COLOR_PALETTE);
+        setColorPalette(defaultColors);
       } finally {
         setIsLoading(false);
       }
@@ -52,31 +43,19 @@ function ConfigPage() {
   }, [authLoading]);
 
   const handleSave = async (newPalette: ColorPalette) => {
+    if (!tokens?.idToken) {
+      setError('Authentication required. Please log in again.');
+      return;
+    }
+
     try {
       setIsSaving(true);
       setError(null);
       setSuccessMessage(null);
 
-      const apiUrl = import.meta.env.VITE_API_URL;
-      if (!apiUrl) {
-        throw new Error('API URL not configured');
-      }
-
-      const response = await fetch(`${apiUrl}/config`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ colorPalette: newPalette }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to save configuration');
-      }
-
-      const data = await response.json();
-      setColorPalette(data.colorPalette);
-      setSuccessMessage('Color palette saved successfully! Refresh the page to see changes.');
+      const config = await updateColorPalette(newPalette, tokens.idToken);
+      setColorPalette(config.colorPalette);
+      setSuccessMessage('Color palette saved successfully! Changes applied immediately.');
       
       // Auto-dismiss success message after 5 seconds
       setTimeout(() => setSuccessMessage(null), 5000);
@@ -88,10 +67,29 @@ function ConfigPage() {
     }
   };
 
-  const handleReset = () => {
-    setColorPalette(DEFAULT_COLOR_PALETTE);
-    setSuccessMessage(null);
-    setError(null);
+  const handleReset = async () => {
+    if (!tokens?.idToken) {
+      setError('Authentication required. Please log in again.');
+      return;
+    }
+
+    try {
+      setIsSaving(true);
+      setError(null);
+      setSuccessMessage(null);
+
+      const config = await resetColorPalette(tokens.idToken);
+      setColorPalette(config.colorPalette);
+      setSuccessMessage('Color palette reset to defaults!');
+      
+      // Auto-dismiss success message after 5 seconds
+      setTimeout(() => setSuccessMessage(null), 5000);
+    } catch (err) {
+      console.error('Error resetting config:', err);
+      setError(err instanceof Error ? err.message : 'Failed to reset configuration');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   if (authLoading || isLoading) {

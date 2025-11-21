@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext';
 import Layout from './components/Layout';
@@ -8,8 +9,39 @@ import TagsPage from './pages/TagsPage';
 import LoginPage from './pages/LoginPage';
 import UploadPage from './pages/UploadPage';
 import ConfigPage from './pages/ConfigPage';
+import { initializeTheme } from './styles/theme';
 
 function App() {
+  const [themeLoaded, setThemeLoaded] = useState(false);
+
+  // Initialize theme on mount
+  useEffect(() => {
+    initializeTheme()
+      .then(() => {
+        setThemeLoaded(true);
+      })
+      .catch((error) => {
+        console.error('Failed to initialize theme:', error);
+        // Still set loaded to true to prevent blocking the app
+        setThemeLoaded(true);
+      });
+  }, []);
+
+  // Show loading screen while theme initializes
+  if (!themeLoaded) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        fontFamily: 'system-ui, -apple-system, sans-serif'
+      }}>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
   return (
     <BrowserRouter>
       <AuthProvider>

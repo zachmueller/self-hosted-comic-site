@@ -3,6 +3,7 @@ import { ColorPicker } from './ColorPicker';
 import { ContrastWarning } from './ContrastWarning';
 import { ColorPalette } from '../../types/config';
 import { calculateContrastRatio } from '../../utils/contrastChecker';
+import { applyColorPalette } from '../../styles/theme';
 import './ColorPaletteEditor.css';
 
 interface ColorPaletteEditorProps {
@@ -62,20 +63,11 @@ export function ColorPaletteEditor({
     
     if (!showPreview) {
       // Apply preview colors
-      applyColors(editedPalette);
+      applyColorPalette(editedPalette);
     } else {
       // Restore original colors
-      applyColors(colorPalette);
+      applyColorPalette(colorPalette);
     }
-  };
-
-  const applyColors = (palette: ColorPalette) => {
-    const root = document.documentElement;
-    root.style.setProperty('--color-primary', palette.primary);
-    root.style.setProperty('--color-secondary', palette.secondary);
-    root.style.setProperty('--color-highlight', palette.highlight);
-    root.style.setProperty('--color-text', palette.text);
-    root.style.setProperty('--color-text-secondary', palette.textSecondary);
   };
 
   // Calculate contrast ratios for accessibility warnings
@@ -96,35 +88,35 @@ export function ColorPaletteEditor({
             label="Primary Color"
             description="Main brand color for buttons and accents"
             value={editedPalette.primary}
-            onChange={(value) => handleColorChange('primary', value)}
+            onChange={(value: string) => handleColorChange('primary', value)}
           />
 
           <ColorPicker
             label="Secondary Color"
             description="Supporting color for backgrounds and subtle elements"
             value={editedPalette.secondary}
-            onChange={(value) => handleColorChange('secondary', value)}
+            onChange={(value: string) => handleColorChange('secondary', value)}
           />
 
           <ColorPicker
             label="Highlight Color"
             description="Accent color for emphasis and calls-to-action"
             value={editedPalette.highlight}
-            onChange={(value) => handleColorChange('highlight', value)}
+            onChange={(value: string) => handleColorChange('highlight', value)}
           />
 
           <ColorPicker
             label="Text Color"
             description="Primary text color for body content"
             value={editedPalette.text}
-            onChange={(value) => handleColorChange('text', value)}
+            onChange={(value: string) => handleColorChange('text', value)}
           />
 
           <ColorPicker
             label="Secondary Text Color"
             description="Lighter text color for secondary information"
             value={editedPalette.textSecondary}
-            onChange={(value) => handleColorChange('textSecondary', value)}
+            onChange={(value: string) => handleColorChange('textSecondary', value)}
           />
         </div>
 

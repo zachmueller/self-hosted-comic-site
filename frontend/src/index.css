@@ -1,3 +1,13 @@
+:root {
+  /* Color palette CSS variables - fallback values */
+  /* These will be overridden by theme.ts on load */
+  --color-primary: #007bff;
+  --color-secondary: #6c757d;
+  --color-highlight: #ffc107;
+  --color-text: #212529;
+  --color-text-secondary: #6c757d;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -10,6 +20,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: var(--color-text);
 }
 
 code {
