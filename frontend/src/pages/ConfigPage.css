@@ -1,0 +1,128 @@
+.config-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.config-page__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 1rem;
+}
+
+.config-page__spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top-color: var(--color-primary, #007bff);
+  border-radius: 50%;
+  animation: config-spinner-rotate 0.8s linear infinite;
+}
+
+@keyframes config-spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.config-page__header {
+  margin-bottom: 2rem;
+}
+
+.config-page__title-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.config-page__back-button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text, #212529);
+  background: transparent;
+  border: 1px solid var(--color-secondary, #6c757d);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 44px;
+}
+
+.config-page__back-button:hover {
+  background-color: var(--color-secondary, #6c757d);
+  color: white;
+}
+
+.config-page__back-button:focus-visible {
+  outline: 2px solid var(--color-highlight, #ffc107);
+  outline-offset: 2px;
+}
+
+.config-page__title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text, #212529);
+}
+
+.config-page__description {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--color-text-secondary, #6c757d);
+  line-height: 1.6;
+}
+
+.config-page__error,
+.config-page__success {
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  border-left: 4px solid;
+}
+
+.config-page__error {
+  background-color: #fff3cd;
+  border-left-color: #dc3545;
+  color: #721c24;
+}
+
+.config-page__success {
+  background-color: #d4edda;
+  border-left-color: #28a745;
+  color: #155724;
+}
+
+/* Tablet and Desktop */
+@media (min-width: 768px) {
+  .config-page {
+    padding: 3rem 2rem;
+  }
+
+  .config-page__title {
+    font-size: 2.5rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .config-page {
+    padding: 1.5rem 1rem;
+  }
+
+  .config-page__title {
+    font-size: 1.75rem;
+  }
+
+  .config-page__title-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .config-page__back-button {
+    width: 100%;
+  }
+}

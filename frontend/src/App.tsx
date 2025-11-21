@@ -7,6 +7,7 @@ import ComicPage from './pages/ComicPage';
 import TagsPage from './pages/TagsPage';
 import LoginPage from './pages/LoginPage';
 import UploadPage from './pages/UploadPage';
+import ConfigPage from './pages/ConfigPage';
 
 function App() {
   return (
@@ -23,6 +24,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <UploadPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/config" 
+              element={
+                <ProtectedRoute>
+                  <ConfigPage />
                 </ProtectedRoute>
               } 
             />

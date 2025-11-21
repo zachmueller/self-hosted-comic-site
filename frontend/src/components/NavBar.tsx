@@ -27,9 +27,25 @@ function NavBar() {
         </NavLink>
         
         {isAuthenticated && (
-          <button onClick={handleLogout} className="nav-link logout-button">
-            Logout
-          </button>
+          <>
+            <NavLink 
+              to="/upload" 
+              className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
+            >
+              Upload
+            </NavLink>
+            
+            <NavLink 
+              to="/config" 
+              className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
+            >
+              Config
+            </NavLink>
+            
+            <button onClick={handleLogout} className="nav-link logout-button">
+              Logout
+            </button>
+          </>
         )}
       </div>
     </nav>

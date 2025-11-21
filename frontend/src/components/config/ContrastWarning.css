@@ -1,0 +1,120 @@
+.contrast-warning {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 2px solid;
+}
+
+.contrast-warning--aaa {
+  background-color: #d4edda;
+  border-color: #28a745;
+}
+
+.contrast-warning--aa {
+  background-color: #d1ecf1;
+  border-color: #17a2b8;
+}
+
+.contrast-warning--fail {
+  background-color: #fff3cd;
+  border-color: #ffc107;
+}
+
+.contrast-warning__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.contrast-warning__icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.contrast-warning__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.contrast-warning__label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text, #212529);
+}
+
+.contrast-warning__ratio {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary, #6c757d);
+  font-family: 'Courier New', monospace;
+}
+
+.contrast-warning__preview {
+  margin-bottom: 0.75rem;
+}
+
+.contrast-warning__sample {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.contrast-warning__suggestion {
+  padding: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 6px;
+  margin-top: 0.75rem;
+}
+
+.contrast-warning__suggestion-text {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  color: var(--color-text, #212529);
+  line-height: 1.5;
+}
+
+.contrast-warning__threshold {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary, #6c757d);
+  font-family: 'Courier New', monospace;
+}
+
+.contrast-warning__info-text {
+  padding: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 6px;
+  margin-top: 0.75rem;
+}
+
+.contrast-warning__info-text p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #6c757d);
+  line-height: 1.5;
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .contrast-warning {
+    padding: 0.875rem;
+  }
+
+  .contrast-warning__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .contrast-warning__icon {
+    font-size: 1.25rem;
+  }
+
+  .contrast-warning__sample {
+    font-size: 0.9375rem;
+  }
+}

@@ -1,0 +1,216 @@
+.color-palette-editor {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+.color-palette-editor__controls {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.color-palette-editor__section-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text, #212529);
+}
+
+.color-palette-editor__section-description {
+  margin: 0 0 1.5rem 0;
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary, #6c757d);
+  line-height: 1.6;
+}
+
+.color-palette-editor__subsection-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text, #212529);
+}
+
+.color-palette-editor__subsection-description {
+  margin: 0 0 1rem 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #6c757d);
+  line-height: 1.5;
+}
+
+.color-palette-editor__colors {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.color-palette-editor__accessibility {
+  padding-top: 2rem;
+  border-top: 2px solid var(--color-secondary, #e9ecef);
+  margin-bottom: 2rem;
+}
+
+.color-palette-editor__actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-top: 2rem;
+  border-top: 2px solid var(--color-secondary, #e9ecef);
+}
+
+.color-palette-editor__button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 44px;
+}
+
+.color-palette-editor__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.color-palette-editor__button:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.color-palette-editor__button:focus-visible {
+  outline: 2px solid var(--color-highlight, #ffc107);
+  outline-offset: 2px;
+}
+
+.color-palette-editor__button--preview {
+  background-color: var(--color-secondary, #6c757d);
+  color: white;
+}
+
+.color-palette-editor__button--reset {
+  background-color: #dc3545;
+  color: white;
+}
+
+.color-palette-editor__button--cancel {
+  background-color: var(--color-secondary, #6c757d);
+  color: white;
+}
+
+.color-palette-editor__button--save {
+  background-color: var(--color-primary, #007bff);
+  color: white;
+  margin-left: auto;
+}
+
+.color-palette-editor__preview {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.color-palette-editor__preview-card {
+  padding: 2rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.color-palette-editor__preview-card h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+}
+
+.color-palette-editor__preview-card p {
+  margin: 0 0 1.5rem 0;
+  line-height: 1.6;
+}
+
+.color-palette-editor__preview-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-right: 1rem;
+  margin-bottom: 0.5rem;
+  min-height: 44px;
+}
+
+.color-palette-editor__preview-swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.color-palette-editor__swatch {
+  padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 80px;
+}
+
+.color-palette-editor__swatch-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.9;
+}
+
+.color-palette-editor__swatch-value {
+  font-size: 0.875rem;
+  font-family: 'Courier New', monospace;
+  font-weight: 500;
+}
+
+/* Tablet and Desktop */
+@media (min-width: 1024px) {
+  .color-palette-editor {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .color-palette-editor__actions {
+    justify-content: flex-start;
+  }
+
+  .color-palette-editor__button--save {
+    margin-left: auto;
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .color-palette-editor__controls,
+  .color-palette-editor__preview {
+    padding: 1.5rem;
+  }
+
+  .color-palette-editor__section-title {
+    font-size: 1.25rem;
+  }
+
+  .color-palette-editor__actions {
+    flex-direction: column;
+  }
+
+  .color-palette-editor__button {
+    width: 100%;
+  }
+
+  .color-palette-editor__button--save {
+    margin-left: 0;
+    order: -1; /* Move save button to top on mobile */
+  }
+
+  .color-palette-editor__preview-swatches {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+}
