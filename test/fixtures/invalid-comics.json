@@ -1,0 +1,294 @@
+{
+  "comics": [
+    {
+      "description": "Invalid UUID format (not v4)",
+      "id": "invalid-uuid-format",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "Invalid UUID",
+      "slug": "invalid-uuid",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2023-10-15",
+      "images": [{"key": "comics/test.jpg", "order": 0}],
+      "thumbnailIndex": 0
+    },
+    {
+      "description": "Title exceeds 200 characters",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "This is a very long title that exceeds the maximum allowed length of 200 characters which should cause a validation error when we try to create this comic because titles are limited to 200 characters maximum and this one is clearly way over that limit",
+      "slug": "long-title",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2023-10-15",
+      "images": [{"key": "comics/test.jpg", "order": 0}],
+      "thumbnailIndex": 0
+    },
+    {
+      "description": "Empty title",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "",
+      "slug": "empty-title",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2023-10-15",
+      "images": [{"key": "comics/test.jpg", "order": 0}],
+      "thumbnailIndex": 0
+    },
+    {
+      "description": "Invalid slug with uppercase",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "Invalid Slug",
+      "slug": "Invalid-Slug-With-Caps",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2023-10-15",
+      "images": [{"key": "comics/test.jpg", "order": 0}],
+      "thumbnailIndex": 0
+    },
+    {
+      "description": "Invalid slug with special characters",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "Invalid Slug Special",
+      "slug": "comic@special#chars",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2023-10-15",
+      "images": [{"key": "comics/test.jpg", "order": 0}],
+      "thumbnailIndex": 0
+    },
+    {
+      "description": "Slug exceeds 100 characters",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "Long Slug",
+      "slug": "this-is-a-very-long-slug-that-exceeds-the-maximum-allowed-length-of-one-hundred-characters-total-and-should-fail",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2023-10-15",
+      "images": [{"key": "comics/test.jpg", "order": 0}],
+      "thumbnailIndex": 0
+    },
+    {
+      "description": "Invalid scroll style",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "Invalid Scroll",
+      "slug": "invalid-scroll",
+      "scrollStyle": "invalid-style",
+      "happenedOnDate": "2023-10-15",
+      "images": [{"key": "comics/test.jpg", "order": 0}],
+      "thumbnailIndex": 0
+    },
+    {
+      "description": "Invalid date format (not ISO 8601)",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "Invalid Date",
+      "slug": "invalid-date",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "10/15/2023",
+      "images": [{"key": "comics/test.jpg", "order": 0}],
+      "thumbnailIndex": 0
+    },
+    {
+      "description": "Invalid datetime format",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "not-a-valid-datetime",
+      "title": "Invalid DateTime",
+      "slug": "invalid-datetime",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2023-10-15",
+      "images": [{"key": "comics/test.jpg", "order": 0}],
+      "thumbnailIndex": 0
+    },
+    {
+      "description": "Empty images array",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "No Images",
+      "slug": "no-images",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2023-10-15",
+      "images": [],
+      "thumbnailIndex": 0
+    },
+    {
+      "description": "Too many images (21, max is 20)",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "Too Many Images",
+      "slug": "too-many-images",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2023-10-15",
+      "images": [
+        {"key": "comics/img-01.jpg", "order": 0},
+        {"key": "comics/img-02.jpg", "order": 1},
+        {"key": "comics/img-03.jpg", "order": 2},
+        {"key": "comics/img-04.jpg", "order": 3},
+        {"key": "comics/img-05.jpg", "order": 4},
+        {"key": "comics/img-06.jpg", "order": 5},
+        {"key": "comics/img-07.jpg", "order": 6},
+        {"key": "comics/img-08.jpg", "order": 7},
+        {"key": "comics/img-09.jpg", "order": 8},
+        {"key": "comics/img-10.jpg", "order": 9},
+        {"key": "comics/img-11.jpg", "order": 10},
+        {"key": "comics/img-12.jpg", "order": 11},
+        {"key": "comics/img-13.jpg", "order": 12},
+        {"key": "comics/img-14.jpg", "order": 13},
+        {"key": "comics/img-15.jpg", "order": 14},
+        {"key": "comics/img-16.jpg", "order": 15},
+        {"key": "comics/img-17.jpg", "order": 16},
+        {"key": "comics/img-18.jpg", "order": 17},
+        {"key": "comics/img-19.jpg", "order": 18},
+        {"key": "comics/img-20.jpg", "order": 19},
+        {"key": "comics/img-21.jpg", "order": 20}
+      ],
+      "thumbnailIndex": 0
+    },
+    {
+      "description": "Alt text exceeds 500 characters",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "Long Alt Text",
+      "slug": "long-alt-text",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2023-10-15",
+      "images": [{
+        "key": "comics/test.jpg",
+        "altText": "This is an extremely long alt text that exceeds the maximum allowed length of 500 characters which should cause a validation error when we try to create this comic because alt text is limited to 500 characters maximum and this one is clearly way over that limit and keeps going and going and going and going and going and going and going and going and going and going and going and going and going and going and going and going and going and going and going and going and going and going and going and going",
+        "order": 0
+      }],
+      "thumbnailIndex": 0
+    },
+    {
+      "description": "Invalid S3 key with special characters",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "Invalid S3 Key",
+      "slug": "invalid-s3-key",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2023-10-15",
+      "images": [{
+        "key": "comics/test@special#chars!.jpg",
+        "order": 0
+      }],
+      "thumbnailIndex": 0
+    },
+    {
+      "description": "Negative image order",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "Negative Order",
+      "slug": "negative-order",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2023-10-15",
+      "images": [{
+        "key": "comics/test.jpg",
+        "order": -1
+      }],
+      "thumbnailIndex": 0
+    },
+    {
+      "description": "Negative thumbnail index",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "Negative Thumbnail",
+      "slug": "negative-thumbnail",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2023-10-15",
+      "images": [{
+        "key": "comics/test.jpg",
+        "order": 0
+      }],
+      "thumbnailIndex": -1
+    },
+    {
+      "description": "Too many tags (51, max is 50)",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "Too Many Tags",
+      "slug": "too-many-tags",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2023-10-15",
+      "tags": [
+        "tag-01", "tag-02", "tag-03", "tag-04", "tag-05",
+        "tag-06", "tag-07", "tag-08", "tag-09", "tag-10",
+        "tag-11", "tag-12", "tag-13", "tag-14", "tag-15",
+        "tag-16", "tag-17", "tag-18", "tag-19", "tag-20",
+        "tag-21", "tag-22", "tag-23", "tag-24", "tag-25",
+        "tag-26", "tag-27", "tag-28", "tag-29", "tag-30",
+        "tag-31", "tag-32", "tag-33", "tag-34", "tag-35",
+        "tag-36", "tag-37", "tag-38", "tag-39", "tag-40",
+        "tag-41", "tag-42", "tag-43", "tag-44", "tag-45",
+        "tag-46", "tag-47", "tag-48", "tag-49", "tag-50",
+        "tag-51"
+      ],
+      "images": [{
+        "key": "comics/test.jpg",
+        "order": 0
+      }],
+      "thumbnailIndex": 0
+    },
+    {
+      "description": "Tag exceeds 100 characters",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "Long Tag",
+      "slug": "long-tag",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2023-10-15",
+      "tags": ["this-is-a-very-long-tag-that-exceeds-the-maximum-allowed-length-of-one-hundred-characters-total-should-fail"],
+      "images": [{
+        "key": "comics/test.jpg",
+        "order": 0
+      }],
+      "thumbnailIndex": 0
+    },
+    {
+      "description": "Tag with invalid characters",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "Invalid Tag Chars",
+      "slug": "invalid-tag-chars",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2023-10-15",
+      "tags": ["tag@special#chars!"],
+      "images": [{
+        "key": "comics/test.jpg",
+        "order": 0
+      }],
+      "thumbnailIndex": 0
+    },
+    {
+      "description": "Duplicate tags",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "Duplicate Tags",
+      "slug": "duplicate-tags",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2023-10-15",
+      "tags": ["humor", "cats", "humor"],
+      "images": [{
+        "key": "comics/test.jpg",
+        "order": 0
+      }],
+      "thumbnailIndex": 0
+    },
+    {
+      "description": "Invalid relationship sourceType",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "Invalid Relationship",
+      "slug": "invalid-relationship",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2023-10-15",
+      "images": [{
+        "key": "comics/test.jpg",
+        "order": 0
+      }],
+      "thumbnailIndex": 0,
+      "derivedRelationships": [{
+        "targetComicId": "550e8400-e29b-41d4-a716-446655440001",
+        "sourceType": "invalid-source"
+      }]
+    }
+  ]
+}

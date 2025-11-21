@@ -1,485 +1,547 @@
-/**
- * Unit tests for comic validation schema
- * Tests all validation rules from specs/validation-rules.md
- */
+import { describe, it, expect } from 'vitest'
+import {
+  comicSchema,
+  comicListItemSchema,
+  relatedComicSchema,
+  comicWithRelationshipsSchema,
+  uploadComicRequestSchema,
+  uploadComicResponseSchema,
+  presignedUrlRequestSchema,
+  presignedUrlResponseSchema,
+  getComicsParamsSchema,
+  getComicsResponseSchema,
+  getComicResponseSchema,
+  searchTitlesRequestSchema,
+  searchResultSchema,
+  searchTitlesResponseSchema,
+  updateConfigRequestSchema,
+  updateConfigResponseSchema,
+  getConfigResponseSchema,
+  apiErrorSchema,
+  parseReferences,
+} from '../comic.schema'
+import validComics from '../../../../test/fixtures/valid-comics.json'
+import invalidComics from '../../../../test/fixtures/invalid-comics.json'
 
-import { describe, it, expect } from 'vitest';
-import { comicSchema } from '../comic.schema';
-import type { z } from 'zod';
+describe('comicSchema', () => {
+  describe('valid comics', () => {
+    it('should validate all valid comics from fixture', () => {
+      validComics.comics.forEach((comic) => {
+        const result = comicSchema.safeParse(comic)
+        expect(result.success).toBe(true)
+      })
+    })
 
-type Comic = z.infer<typeof comicSchema>;
-
-describe('Comic Schema Validation', () => {
-  // Valid baseline comic for testing
-  const validComic: Comic = {
-    id: 'test-comic-123',
-    slug: 'test-comic',
-    title: 'Test Comic',
-    postedTimestamp: '2024-01-15T12:00:00Z',
-    happenedOnDate: '2024-01-15',
-    images: ['https://example.com/image1.jpg'],
-    caption: 'Test caption',
-    tags: ['test', 'comic'],
-    scrollStyle: 'carousel',
-    thumbnailIndex: 0,
-    derivedRelationships: [],
-  };
-
-  describe('Required Fields', () => {
-    it('should accept valid comic with all required fields', () => {
-      const result = comicSchema.safeParse(validComic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject comic without id', () => {
-      const { id, ...comicWithoutId } = validComic;
-      const result = comicSchema.safeParse(comicWithoutId);
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        expect(result.error.issues[0].message).toContain('id');
+    it('should validate comic with all fields', () => {
+      const comic = validComics.comics[0]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(true)
+      if (result.success) {
+        expect(result.data.id).toBe(comic.id)
+        expect(result.data.title).toBe(comic.title)
+        expect(result.data.slug).toBe(comic.slug)
       }
-    });
+    })
 
-    it('should reject comic without slug', () => {
-      const { slug, ...comicWithoutSlug } = validComic;
-      const result = comicSchema.safeParse(comicWithoutSlug);
-      expect(result.success).toBe(false);
-    });
+    it('should validate comic with minimal fields', () => {
+      const comic = validComics.comics[2] // Minimal Comic
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(true)
+    })
 
-    it('should reject comic without title', () => {
-      const { title, ...comicWithoutTitle } = validComic;
-      const result = comicSchema.safeParse(comicWithoutTitle);
-      expect(result.success).toBe(false);
-    });
+    it('should validate comic with 20 images (maximum)', () => {
+      const comic = validComics.comics[3] // Maximum Comic
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(true)
+      if (result.success) {
+        expect(result.data.images.length).toBe(20)
+      }
+    })
 
-    it('should reject comic without publishDate', () => {
-      const { publishDate, ...comicWithoutDate } = validComic;
-      const result = comicSchema.safeParse(comicWithoutDate);
-      expect(result.success).toBe(false);
-    });
+    it('should validate comic with 50 tags (maximum)', () => {
+      const comic = validComics.comics[4] // Maximum Tags
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(true)
+      if (result.success) {
+        expect(result.data.tags?.length).toBe(50)
+      }
+    })
 
-    it('should reject comic without images', () => {
-      const { images, ...comicWithoutImages } = validComic;
-      const result = comicSchema.safeParse(comicWithoutImages);
-      expect(result.success).toBe(false);
-    });
-  });
+    it('should validate comic with optional caption', () => {
+      const comic = validComics.comics[1] // No caption field
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(true)
+    })
 
-  describe('Title Validation', () => {
-    it('should accept title with minimum length (1 character)', () => {
-      const comic = { ...validComic, title: 'A' };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
+    it('should validate comic with derivedRelationships', () => {
+      const comic = validComics.comics[0]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(true)
+      if (result.success) {
+        expect(result.data.derivedRelationships).toBeDefined()
+        expect(result.data.derivedRelationships?.length).toBeGreaterThan(0)
+      }
+    })
+  })
 
-    it('should accept title with maximum length (200 characters)', () => {
-      const comic = { ...validComic, title: 'A'.repeat(200) };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
+  describe('invalid comics', () => {
+    it('should reject invalid UUID format', () => {
+      const comic = invalidComics.comics[0]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0].message).toContain('UUID')
+      }
+    })
 
     it('should reject title exceeding 200 characters', () => {
-      const comic = { ...validComic, title: 'A'.repeat(201) };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
+      const comic = invalidComics.comics[1]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
       if (!result.success) {
-        expect(result.error.issues[0].message).toMatch(/200|length|long/i);
+        expect(result.error.issues[0].message).toContain('200')
       }
-    });
+    })
 
     it('should reject empty title', () => {
-      const comic = { ...validComic, title: '' };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
-    });
+      const comic = invalidComics.comics[2]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0].message).toContain('empty')
+      }
+    })
 
-    it('should accept title with special characters', () => {
-      const comic = { ...validComic, title: 'Comic #1: The Beginning!' };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-  });
-
-  describe('Slug Validation', () => {
-    it('should accept valid URL-safe slug', () => {
-      const comic = { ...validComic, slug: 'my-comic-2024' };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept slug with underscores', () => {
-      const comic = { ...validComic, slug: 'my_comic_2024' };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject slug with spaces', () => {
-      const comic = { ...validComic, slug: 'my comic' };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
-    });
+    it('should reject slug with uppercase letters', () => {
+      const comic = invalidComics.comics[3]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0].message).toContain('lowercase')
+      }
+    })
 
     it('should reject slug with special characters', () => {
-      const comic = { ...validComic, slug: 'my-comic!' };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
-    });
+      const comic = invalidComics.comics[4]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
+    })
 
-    it('should reject empty slug', () => {
-      const comic = { ...validComic, slug: '' };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
-    });
-  });
-
-  describe('Publish Date Validation', () => {
-    it('should accept valid ISO date format', () => {
-      const comic = { ...validComic, publishDate: '2024-12-25' };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept dates from year 2000', () => {
-      const comic = { ...validComic, publishDate: '2000-01-01' };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept dates up to 10 years in future', () => {
-      const futureDate = new Date();
-      futureDate.setFullYear(futureDate.getFullYear() + 9);
-      const comic = { 
-        ...validComic, 
-        publishDate: futureDate.toISOString().split('T')[0] 
-      };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject dates before year 2000', () => {
-      const comic = { ...validComic, publishDate: '1999-12-31' };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
-    });
-
-    it('should reject invalid date format', () => {
-      const comic = { ...validComic, publishDate: '12/25/2024' };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
-    });
-
-    it('should reject non-existent dates', () => {
-      const comic = { ...validComic, publishDate: '2024-02-30' };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
-    });
-  });
-
-  describe('Images Array Validation', () => {
-    it('should accept single image', () => {
-      const comic = { ...validComic, images: ['https://example.com/img.jpg'] };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept multiple images (up to 50)', () => {
-      const images = Array(50).fill('https://example.com/img.jpg');
-      const comic = { ...validComic, images };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject empty images array', () => {
-      const comic = { ...validComic, images: [] };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
-    });
-
-    it('should reject more than 50 images', () => {
-      const images = Array(51).fill('https://example.com/img.jpg');
-      const comic = { ...validComic, images };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
+    it('should reject slug exceeding 100 characters', () => {
+      const comic = invalidComics.comics[5]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
       if (!result.success) {
-        expect(result.error.issues[0].message).toMatch(/50|maximum|limit/i);
+        expect(result.error.issues[0].message).toContain('100')
       }
-    });
-
-    it('should reject invalid URL in images', () => {
-      const comic = { ...validComic, images: ['not-a-url'] };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
-    });
-  });
-
-  describe('Captions Validation', () => {
-    it('should accept empty captions (optional)', () => {
-      const comic = { ...validComic, captions: [] };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept captions matching images count', () => {
-      const comic = {
-        ...validComic,
-        images: ['img1.jpg', 'img2.jpg'],
-        captions: ['Caption 1', 'Caption 2'],
-      };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept caption with maximum length (1000 characters)', () => {
-      const comic = { ...validComic, captions: ['A'.repeat(1000)] };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject caption exceeding 1000 characters', () => {
-      const comic = { ...validComic, captions: ['A'.repeat(1001)] };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
-    });
-
-    it('should accept caption with reference syntax', () => {
-      const comic = { ...validComic, captions: ['This references [[Other Comic]]'] };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept multiple references in single caption', () => {
-      const comic = { 
-        ...validComic, 
-        captions: ['References [[Comic A]] and [[Comic B]]'] 
-      };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-  });
-
-  describe('Alt Texts Validation', () => {
-    it('should accept empty alt texts (optional)', () => {
-      const comic = { ...validComic, altTexts: [] };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept alt texts matching images count', () => {
-      const comic = {
-        ...validComic,
-        images: ['img1.jpg', 'img2.jpg'],
-        altTexts: ['Alt 1', 'Alt 2'],
-      };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept alt text with maximum length (500 characters)', () => {
-      const comic = { ...validComic, altTexts: ['A'.repeat(500)] };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject alt text exceeding 500 characters', () => {
-      const comic = { ...validComic, altTexts: ['A'.repeat(501)] };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
-    });
-  });
-
-  describe('Tags Validation', () => {
-    it('should accept empty tags array', () => {
-      const comic = { ...validComic, tags: [] };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept multiple tags (up to 20)', () => {
-      const tags = Array(20).fill('tag');
-      const comic = { ...validComic, tags };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject more than 20 tags', () => {
-      const tags = Array(21).fill('tag');
-      const comic = { ...validComic, tags };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
-    });
-
-    it('should accept tag with maximum length (50 characters)', () => {
-      const comic = { ...validComic, tags: ['A'.repeat(50)] };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject tag exceeding 50 characters', () => {
-      const comic = { ...validComic, tags: ['A'.repeat(51)] };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
-    });
-
-    it('should normalize tags to lowercase', () => {
-      const comic = { ...validComic, tags: ['TestTag', 'ANOTHER'] };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.data.tags).toEqual(['testtag', 'another']);
-      }
-    });
-  });
-
-  describe('Scroll Style Validation', () => {
-    it('should accept carousel scroll style', () => {
-      const comic = { ...validComic, scrollStyle: 'carousel' as const };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept long-form scroll style', () => {
-      const comic = { ...validComic, scrollStyle: 'long-form' as const };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
+    })
 
     it('should reject invalid scroll style', () => {
-      const comic = { ...validComic, scrollStyle: 'invalid' };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
-    });
-  });
+      const comic = invalidComics.comics[6]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
+    })
 
-  describe('Series Validation', () => {
-    it('should accept valid series name', () => {
-      const comic = { ...validComic, series: 'My Series' };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept undefined series', () => {
-      const { series, ...comicWithoutSeries } = validComic;
-      const result = comicSchema.safeParse(comicWithoutSeries);
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept series with maximum length (100 characters)', () => {
-      const comic = { ...validComic, series: 'A'.repeat(100) };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject series exceeding 100 characters', () => {
-      const comic = { ...validComic, series: 'A'.repeat(101) };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
-    });
-  });
-
-  describe('References Validation', () => {
-    it('should accept empty references array', () => {
-      const comic = { ...validComic, references: [] };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept valid reference with all fields', () => {
-      const comic = {
-        ...validComic,
-        references: [{
-          targetId: 'other-comic-id',
-          targetTitle: 'Other Comic',
-          sourceType: 'caption',
-          context: 'This references other comic',
-        }],
-      };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept multiple references', () => {
-      const comic = {
-        ...validComic,
-        references: [
-          {
-            targetId: 'comic-1',
-            targetTitle: 'Comic 1',
-            sourceType: 'caption',
-            context: 'Context 1',
-          },
-          {
-            targetId: 'comic-2',
-            targetTitle: 'Comic 2',
-            sourceType: 'series',
-            context: 'Context 2',
-          },
-        ],
-      };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept valid sourceType values', () => {
-      const sourceTypes = ['caption', 'series', 'tag'] as const;
-      sourceTypes.forEach(sourceType => {
-        const comic = {
-          ...validComic,
-          references: [{
-            targetId: 'id',
-            targetTitle: 'Title',
-            sourceType,
-            context: 'Context',
-          }],
-        };
-        const result = comicSchema.safeParse(comic);
-        expect(result.success).toBe(true);
-      });
-    });
-
-    it('should reject reference with invalid sourceType', () => {
-      const comic = {
-        ...validComic,
-        references: [{
-          targetId: 'id',
-          targetTitle: 'Title',
-          sourceType: 'invalid',
-          context: 'Context',
-        }],
-      };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
-    });
-  });
-
-  describe('Error Messages', () => {
-    it('should provide artist-friendly error message for missing required field', () => {
-      const { title, ...comic } = validComic;
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
+    it('should reject invalid date format', () => {
+      const comic = invalidComics.comics[7]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
       if (!result.success) {
-        const errorMessage = result.error.issues[0].message.toLowerCase();
-        expect(errorMessage).toMatch(/title|required/i);
+        expect(result.error.issues[0].message).toContain('ISO 8601')
       }
-    });
+    })
 
-    it('should provide clear error for invalid date format', () => {
-      const comic = { ...validComic, publishDate: 'invalid-date' };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        const errorMessage = result.error.issues[0].message.toLowerCase();
-        expect(errorMessage).toMatch(/date|format|yyyy-mm-dd/i);
-      }
-    });
+    it('should reject invalid datetime format', () => {
+      const comic = invalidComics.comics[8]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
+    })
 
-    it('should provide helpful error for exceeding character limits', () => {
-      const comic = { ...validComic, title: 'A'.repeat(201) };
-      const result = comicSchema.safeParse(comic);
-      expect(result.success).toBe(false);
+    it('should reject empty images array', () => {
+      const comic = invalidComics.comics[9]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
       if (!result.success) {
-        const errorMessage = result.error.issues[0].message.toLowerCase();
-        expect(errorMessage).toMatch(/200|characters|length/i);
+        expect(result.error.issues[0].message).toContain('At least one')
       }
-    });
-  });
-});
+    })
+
+    it('should reject more than 20 images', () => {
+      const comic = invalidComics.comics[10]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0].message).toContain('20')
+      }
+    })
+
+    it('should reject alt text exceeding 500 characters', () => {
+      const comic = invalidComics.comics[11]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0].message).toContain('500')
+      }
+    })
+
+    it('should reject invalid S3 key', () => {
+      const comic = invalidComics.comics[12]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
+    })
+
+    it('should reject negative image order', () => {
+      const comic = invalidComics.comics[13]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0].message).toContain('non-negative')
+      }
+    })
+
+    it('should reject negative thumbnail index', () => {
+      const comic = invalidComics.comics[14]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0].message).toContain('non-negative')
+      }
+    })
+
+    it('should reject more than 50 tags', () => {
+      const comic = invalidComics.comics[15]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0].message).toContain('50')
+      }
+    })
+
+    it('should reject tag exceeding 100 characters', () => {
+      const comic = invalidComics.comics[16]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0].message).toContain('100')
+      }
+    })
+
+    it('should reject tag with invalid characters', () => {
+      const comic = invalidComics.comics[17]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
+    })
+
+    it('should reject duplicate tags', () => {
+      const comic = invalidComics.comics[18]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0].message).toContain('unique')
+      }
+    })
+
+    it('should reject invalid relationship sourceType', () => {
+      const comic = invalidComics.comics[19]
+      const result = comicSchema.safeParse(comic)
+      expect(result.success).toBe(false)
+    })
+  })
+})
+
+describe('comicListItemSchema', () => {
+  it('should validate minimal comic list item', () => {
+    const item = {
+      id: '550e8400-e29b-41d4-a716-446655440000',
+      title: 'Test Comic',
+      slug: 'test-comic',
+      postedTimestamp: '2023-10-16T10:30:00.000Z',
+      thumbnailUrl: 'https://example.com/thumbnail.jpg',
+      tags: ['humor', 'cats'],
+    }
+    const result = comicListItemSchema.safeParse(item)
+    expect(result.success).toBe(true)
+  })
+
+  it('should reject invalid thumbnail URL', () => {
+    const item = {
+      id: '550e8400-e29b-41d4-a716-446655440000',
+      title: 'Test Comic',
+      slug: 'test-comic',
+      postedTimestamp: '2023-10-16T10:30:00.000Z',
+      thumbnailUrl: 'not-a-valid-url',
+      tags: [],
+    }
+    const result = comicListItemSchema.safeParse(item)
+    expect(result.success).toBe(false)
+  })
+})
+
+describe('uploadComicRequestSchema', () => {
+  it('should validate valid upload request', () => {
+    const request = {
+      title: 'New Comic',
+      caption: 'Test caption',
+      happenedOnDate: '2023-10-15',
+      postedTimestamp: '2023-10-16T10:30:00.000Z',
+      tags: ['humor'],
+      scrollStyle: 'carousel' as const,
+      images: [
+        {
+          s3Key: 'comics/2023/test.jpg',
+          altText: 'Test image',
+          order: 0,
+        },
+      ],
+      thumbnailIndex: 0,
+    }
+    const result = uploadComicRequestSchema.safeParse(request)
+    expect(result.success).toBe(true)
+  })
+
+  it('should reject upload without images', () => {
+    const request = {
+      title: 'New Comic',
+      caption: 'Test caption',
+      happenedOnDate: '2023-10-15',
+      postedTimestamp: '2023-10-16T10:30:00.000Z',
+      tags: [],
+      scrollStyle: 'carousel' as const,
+      images: [],
+      thumbnailIndex: 0,
+    }
+    const result = uploadComicRequestSchema.safeParse(request)
+    expect(result.success).toBe(false)
+  })
+})
+
+describe('presignedUrlRequestSchema', () => {
+  it('should validate JPEG request', () => {
+    const request = {
+      fileName: 'test.jpg',
+      contentType: 'image/jpeg' as const,
+      fileSize: 1024 * 1024, // 1MB
+    }
+    const result = presignedUrlRequestSchema.safeParse(request)
+    expect(result.success).toBe(true)
+  })
+
+  it('should validate PNG request', () => {
+    const request = {
+      fileName: 'test.png',
+      contentType: 'image/png' as const,
+      fileSize: 1024 * 1024,
+    }
+    const result = presignedUrlRequestSchema.safeParse(request)
+    expect(result.success).toBe(true)
+  })
+
+  it('should validate WebP request', () => {
+    const request = {
+      fileName: 'test.webp',
+      contentType: 'image/webp' as const,
+      fileSize: 1024 * 1024,
+    }
+    const result = presignedUrlRequestSchema.safeParse(request)
+    expect(result.success).toBe(true)
+  })
+
+  it('should reject file exceeding 20MB', () => {
+    const request = {
+      fileName: 'large.jpg',
+      contentType: 'image/jpeg' as const,
+      fileSize: 21 * 1024 * 1024, // 21MB
+    }
+    const result = presignedUrlRequestSchema.safeParse(request)
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues[0].message).toContain('20MB')
+    }
+  })
+
+  it('should reject invalid content type', () => {
+    const request = {
+      fileName: 'test.gif',
+      contentType: 'image/gif' as any,
+      fileSize: 1024 * 1024,
+    }
+    const result = presignedUrlRequestSchema.safeParse(request)
+    expect(result.success).toBe(false)
+  })
+})
+
+describe('getComicsParamsSchema', () => {
+  it('should validate params with page and tag', () => {
+    const params = {
+      page: 2,
+      tag: 'humor',
+    }
+    const result = getComicsParamsSchema.safeParse(params)
+    expect(result.success).toBe(true)
+  })
+
+  it('should validate params with only page', () => {
+    const params = {
+      page: 1,
+    }
+    const result = getComicsParamsSchema.safeParse(params)
+    expect(result.success).toBe(true)
+  })
+
+  it('should validate empty params', () => {
+    const params = {}
+    const result = getComicsParamsSchema.safeParse(params)
+    expect(result.success).toBe(true)
+  })
+
+  it('should reject negative page number', () => {
+    const params = {
+      page: 0,
+    }
+    const result = getComicsParamsSchema.safeParse(params)
+    expect(result.success).toBe(false)
+  })
+})
+
+describe('apiErrorSchema', () => {
+  it('should validate error with all fields', () => {
+    const error = {
+      error: 'Not Found',
+      details: 'Comic with ID xyz not found',
+      timestamp: '2023-10-16T10:30:00.000Z',
+    }
+    const result = apiErrorSchema.safeParse(error)
+    expect(result.success).toBe(true)
+  })
+
+  it('should validate error without details', () => {
+    const error = {
+      error: 'Internal Server Error',
+      timestamp: '2023-10-16T10:30:00.000Z',
+    }
+    const result = apiErrorSchema.safeParse(error)
+    expect(result.success).toBe(true)
+  })
+
+  it('should reject empty error message', () => {
+    const error = {
+      error: '',
+      timestamp: '2023-10-16T10:30:00.000Z',
+    }
+    const result = apiErrorSchema.safeParse(error)
+    expect(result.success).toBe(false)
+  })
+})
+
+describe('parseReferences', () => {
+  it('should extract simple reference', () => {
+    const caption = 'Check out [[Another Comic]] for more!'
+    const refs = parseReferences(caption)
+    expect(refs.length).toBe(1)
+    expect(refs[0].title).toBe('Another Comic')
+    expect(refs[0].alias).toBeUndefined()
+  })
+
+  it('should extract reference with alias', () => {
+    const caption = 'See [[Full Title|Short Name]] here'
+    const refs = parseReferences(caption)
+    expect(refs.length).toBe(1)
+    expect(refs[0].title).toBe('Full Title')
+    expect(refs[0].alias).toBe('Short Name')
+  })
+
+  it('should extract multiple references', () => {
+    const caption =
+      'Related to [[Comic A]] and [[Comic B|B]] and [[Comic C]]'
+    const refs = parseReferences(caption)
+    expect(refs.length).toBe(3)
+    expect(refs[0].title).toBe('Comic A')
+    expect(refs[1].title).toBe('Comic B')
+    expect(refs[1].alias).toBe('B')
+    expect(refs[2].title).toBe('Comic C')
+  })
+
+  it('should return empty array for caption without references', () => {
+    const caption = 'Just a normal caption with no references'
+    const refs = parseReferences(caption)
+    expect(refs.length).toBe(0)
+  })
+
+  it('should handle caption with incomplete reference syntax', () => {
+    const caption = 'This has [[incomplete reference'
+    const refs = parseReferences(caption)
+    expect(refs.length).toBe(0)
+  })
+
+  it('should trim whitespace from titles and aliases', () => {
+    const caption = '[[  Spaced Title  |  Spaced Alias  ]]'
+    const refs = parseReferences(caption)
+    expect(refs.length).toBe(1)
+    expect(refs[0].title).toBe('Spaced Title')
+    expect(refs[0].alias).toBe('Spaced Alias')
+  })
+
+  it('should handle empty caption', () => {
+    const caption = ''
+    const refs = parseReferences(caption)
+    expect(refs.length).toBe(0)
+  })
+})
+
+describe('updateConfigRequestSchema', () => {
+  it('should validate valid color palette', () => {
+    const request = {
+      colorPalette: {
+        primary: '#FF5733',
+        secondary: '#33FF57',
+        highlight: '#3357FF',
+        text: '#000000',
+        textSecondary: '#666666',
+      },
+    }
+    const result = updateConfigRequestSchema.safeParse(request)
+    expect(result.success).toBe(true)
+  })
+
+  it('should reject invalid hex color', () => {
+    const request = {
+      colorPalette: {
+        primary: 'not-a-color',
+        secondary: '#33FF57',
+        highlight: '#3357FF',
+        text: '#000000',
+        textSecondary: '#666666',
+      },
+    }
+    const result = updateConfigRequestSchema.safeParse(request)
+    expect(result.success).toBe(false)
+  })
+
+  it('should reject hex color without hash', () => {
+    const request = {
+      colorPalette: {
+        primary: 'FF5733',
+        secondary: '#33FF57',
+        highlight: '#3357FF',
+        text: '#000000',
+        textSecondary: '#666666',
+      },
+    }
+    const result = updateConfigRequestSchema.safeParse(request)
+    expect(result.success).toBe(false)
+  })
+
+  it('should reject short hex color', () => {
+    const request = {
+      colorPalette: {
+        primary: '#FFF',
+        secondary: '#33FF57',
+        highlight: '#3357FF',
+        text: '#000000',
+        textSecondary: '#666666',
+      },
+    }
+    const result = updateConfigRequestSchema.safeParse(request)
+    expect(result.success).toBe(false)
+  })
+})

@@ -1,0 +1,126 @@
+{
+  "comics": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "postedTimestamp": "2023-10-16T10:30:00.000Z",
+      "title": "My First Comic",
+      "slug": "my-first-comic",
+      "scrollStyle": "carousel",
+      "caption": "This is a test comic with some references to [[Another Comic]] and [[Third Comic|alias]]",
+      "happenedOnDate": "2023-10-15",
+      "tags": ["humor", "cats", "adventure"],
+      "images": [
+        {
+          "key": "comics/2023/panel-01.jpg",
+          "altText": "A cat sitting on a windowsill",
+          "order": 0
+        },
+        {
+          "key": "comics/2023/panel-02.png",
+          "altText": "The cat jumps down",
+          "order": 1
+        }
+      ],
+      "thumbnailIndex": 0,
+      "derivedRelationships": [
+        {
+          "targetComicId": "660e8400-e29b-41d4-a716-446655440001",
+          "sourceType": "caption",
+          "context": "references to [[Another Comic]]"
+        }
+      ]
+    },
+    {
+      "id": "660e8400-e29b-41d4-a716-446655440001",
+      "postedTimestamp": "2023-11-20T14:22:33.123Z",
+      "title": "Adventure in Space",
+      "slug": "adventure-in-space",
+      "scrollStyle": "longForm",
+      "happenedOnDate": "2023-11-19",
+      "tags": ["sci-fi", "space-adventure", "epic"],
+      "images": [
+        {
+          "key": "comics/2023-11/space-ship.webp",
+          "order": 0
+        }
+      ],
+      "thumbnailIndex": 0
+    },
+    {
+      "id": "770e8400-e29b-41d4-a716-446655440002",
+      "postedTimestamp": "2024-01-01T00:00:00.000Z",
+      "title": "Minimal Comic",
+      "slug": "minimal-comic",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2024-01-01",
+      "images": [
+        {
+          "key": "comics/2024/minimal.jpg",
+          "altText": "Simple image",
+          "order": 0
+        }
+      ],
+      "thumbnailIndex": 0
+    },
+    {
+      "id": "880e8400-e29b-41d4-a716-446655440003",
+      "postedTimestamp": "2024-02-14T12:00:00.000Z",
+      "title": "Maximum Comic With Twenty Images",
+      "slug": "maximum-comic-with-twenty-images",
+      "scrollStyle": "longForm",
+      "caption": "This comic has the maximum number of images allowed",
+      "happenedOnDate": "2024-02-14",
+      "tags": ["test", "max-images"],
+      "images": [
+        {"key": "comics/2024/img-01.jpg", "altText": "Image 1", "order": 0},
+        {"key": "comics/2024/img-02.jpg", "altText": "Image 2", "order": 1},
+        {"key": "comics/2024/img-03.jpg", "altText": "Image 3", "order": 2},
+        {"key": "comics/2024/img-04.jpg", "altText": "Image 4", "order": 3},
+        {"key": "comics/2024/img-05.jpg", "altText": "Image 5", "order": 4},
+        {"key": "comics/2024/img-06.jpg", "altText": "Image 6", "order": 5},
+        {"key": "comics/2024/img-07.jpg", "altText": "Image 7", "order": 6},
+        {"key": "comics/2024/img-08.jpg", "altText": "Image 8", "order": 7},
+        {"key": "comics/2024/img-09.jpg", "altText": "Image 9", "order": 8},
+        {"key": "comics/2024/img-10.jpg", "altText": "Image 10", "order": 9},
+        {"key": "comics/2024/img-11.jpg", "altText": "Image 11", "order": 10},
+        {"key": "comics/2024/img-12.jpg", "altText": "Image 12", "order": 11},
+        {"key": "comics/2024/img-13.jpg", "altText": "Image 13", "order": 12},
+        {"key": "comics/2024/img-14.jpg", "altText": "Image 14", "order": 13},
+        {"key": "comics/2024/img-15.jpg", "altText": "Image 15", "order": 14},
+        {"key": "comics/2024/img-16.jpg", "altText": "Image 16", "order": 15},
+        {"key": "comics/2024/img-17.jpg", "altText": "Image 17", "order": 16},
+        {"key": "comics/2024/img-18.jpg", "altText": "Image 18", "order": 17},
+        {"key": "comics/2024/img-19.jpg", "altText": "Image 19", "order": 18},
+        {"key": "comics/2024/img-20.jpg", "altText": "Image 20", "order": 19}
+      ],
+      "thumbnailIndex": 5
+    },
+    {
+      "id": "990e8400-e29b-41d4-a716-446655440004",
+      "postedTimestamp": "2024-03-15T08:30:00.000Z",
+      "title": "Comic with Maximum Tags",
+      "slug": "comic-with-maximum-tags",
+      "scrollStyle": "carousel",
+      "happenedOnDate": "2024-03-15",
+      "tags": [
+        "tag-01", "tag-02", "tag-03", "tag-04", "tag-05",
+        "tag-06", "tag-07", "tag-08", "tag-09", "tag-10",
+        "tag-11", "tag-12", "tag-13", "tag-14", "tag-15",
+        "tag-16", "tag-17", "tag-18", "tag-19", "tag-20",
+        "tag-21", "tag-22", "tag-23", "tag-24", "tag-25",
+        "tag-26", "tag-27", "tag-28", "tag-29", "tag-30",
+        "tag-31", "tag-32", "tag-33", "tag-34", "tag-35",
+        "tag-36", "tag-37", "tag-38", "tag-39", "tag-40",
+        "tag-41", "tag-42", "tag-43", "tag-44", "tag-45",
+        "tag-46", "tag-47", "tag-48", "tag-49", "tag-50"
+      ],
+      "images": [
+        {
+          "key": "comics/2024/many-tags.jpg",
+          "order": 0
+        }
+      ],
+      "thumbnailIndex": 0
+    }
+  ]
+}
