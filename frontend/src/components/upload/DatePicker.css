@@ -1,0 +1,75 @@
+.date-picker {
+  width: 100%;
+}
+
+.date-picker-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.date-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  min-height: 44px;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: var(--color-primary, #3498db);
+}
+
+.date-input.error {
+  border-color: #e74c3c;
+}
+
+.date-clear-button {
+  position: absolute;
+  right: 0.5rem;
+  background-color: transparent;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.date-clear-button:hover {
+  background-color: #f0f0f0;
+  color: #666;
+}
+
+.date-clear-button:active {
+  transform: scale(0.95);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .date-input {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+}
+
+/* Touch-friendly for iPad */
+@media (hover: none) and (pointer: coarse) {
+  .date-input {
+    min-height: 48px;
+    padding: 0.875rem;
+  }
+
+  .date-clear-button {
+    min-width: 48px;
+    min-height: 48px;
+  }
+}

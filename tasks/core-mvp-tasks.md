@@ -267,22 +267,22 @@
 - [x] Remove file functionality
 - [x] Visual feedback for valid/invalid files
 
-### UPLOAD-003: Metadata Form Components
+### UPLOAD-003: Metadata Form Components ✓ COMPLETE
 **Description:** Create form inputs for comic metadata
 **Files:** `frontend/src/components/upload/ComicMetadataForm.tsx`, `frontend/src/components/upload/DatePicker.tsx`, `frontend/src/components/upload/TagInput.tsx`, `frontend/src/components/upload/ScrollStyleToggle.tsx`
 **Dependencies:** UPLOAD-002, DATA-002
 **Constitutional Compliance:**
 - Artist-First: Pre-filled date, touch-friendly inputs
 **Acceptance Criteria:**
-- [ ] Title input with validation feedback
-- [ ] DatePicker pre-populated with today's date
-- [ ] happenedOnDate optional field
-- [ ] TagInput with add/remove functionality
-- [ ] Tag validation (lowercase, hyphens only)
-- [ ] ScrollStyleToggle (carousel vs long form)
-- [ ] Touch-friendly form controls for iPad
-- [ ] Real-time validation using Zod schemas
-- [ ] Clear validation error messages
+- [x] Title input with validation feedback
+- [x] DatePicker pre-populated with today's date
+- [x] happenedOnDate optional field
+- [x] TagInput with add/remove functionality
+- [x] Tag validation (lowercase, hyphens only)
+- [x] ScrollStyleToggle (carousel vs long form)
+- [x] Touch-friendly form controls for iPad
+- [x] Real-time validation using Zod schemas
+- [x] Clear validation error messages
 
 ### UPLOAD-004: Caption Editor with Autocomplete
 **Description:** Obsidian-style reference editor with autocomplete

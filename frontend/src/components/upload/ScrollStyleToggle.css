@@ -1,0 +1,93 @@
+.scroll-style-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.toggle-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 120px;
+  font-family: inherit;
+}
+
+.toggle-button:hover {
+  border-color: var(--color-primary, #3498db);
+  background-color: #f8f9fa;
+}
+
+.toggle-button.active {
+  border-color: var(--color-primary, #3498db);
+  background-color: #e3f2fd;
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+}
+
+.toggle-button svg {
+  color: var(--color-secondary, #666);
+}
+
+.toggle-button.active svg {
+  color: var(--color-primary, #3498db);
+}
+
+.toggle-button span:first-of-type {
+  font-weight: 600;
+  color: var(--color-text, #333);
+  font-size: 1rem;
+}
+
+.toggle-description {
+  font-size: 0.813rem;
+  color: var(--color-text-secondary, #666);
+  text-align: center;
+}
+
+.toggle-button.active .toggle-description {
+  color: var(--color-primary, #2980b9);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .scroll-style-toggle {
+    grid-template-columns: 1fr;
+  }
+
+  .toggle-button {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 1rem;
+    min-height: 80px;
+  }
+
+  .toggle-button svg {
+    flex-shrink: 0;
+  }
+
+  .toggle-button > div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+/* Touch-friendly for iPad */
+@media (hover: none) and (pointer: coarse) {
+  .toggle-button {
+    min-height: 140px;
+    padding: 1.25rem;
+  }
+
+  .toggle-button svg {
+    width: 32px;
+    height: 32px;
+  }
+}
