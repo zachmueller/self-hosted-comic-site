@@ -1,0 +1,223 @@
+.related-comics {
+  max-width: 1200px;
+  margin: 3rem auto;
+  padding: 0 1rem;
+}
+
+.related-comics__heading {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text, #2c3e50);
+  margin: 0 0 2rem 0;
+  text-align: center;
+}
+
+.related-comics__section {
+  margin-bottom: 3rem;
+}
+
+.related-comics__section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text, #2c3e50);
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-primary, #2c3e50);
+}
+
+.related-comics__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.related-comics__card {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-secondary, #ecf0f1);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.related-comics__card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.related-comics__card:focus-visible {
+  outline: 3px solid var(--color-highlight, #3498db);
+  outline-offset: 2px;
+}
+
+.related-comics__thumbnail-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--color-text-secondary, #7f8c8d);
+  overflow: hidden;
+}
+
+.related-comics__thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.related-comics__card:hover .related-comics__thumbnail {
+  transform: scale(1.05);
+}
+
+.related-comics__info {
+  padding: 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.related-comics__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text, #2c3e50);
+  margin: 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.related-comics__context {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #7f8c8d);
+  margin: 0;
+  line-height: 1.5;
+  font-style: italic;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Tablet and desktop */
+@media (min-width: 768px) {
+  .related-comics {
+    padding: 0 2rem;
+  }
+
+  .related-comics__heading {
+    font-size: 2.5rem;
+  }
+
+  .related-comics__section-title {
+    font-size: 1.75rem;
+  }
+
+  .related-comics__grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+}
+
+/* Mobile optimization */
+@media (max-width: 767px) {
+  .related-comics {
+    margin: 2rem auto;
+  }
+
+  .related-comics__heading {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .related-comics__section {
+    margin-bottom: 2rem;
+  }
+
+  .related-comics__section-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .related-comics__grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .related-comics__title {
+    font-size: 1rem;
+  }
+
+  .related-comics__context {
+    font-size: 0.8rem;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .related-comics__heading,
+  .related-comics__section-title {
+    color: var(--color-text, #ecf0f1);
+  }
+
+  .related-comics__card {
+    background: var(--color-secondary, #34495e);
+  }
+
+  .related-comics__title {
+    color: var(--color-text, #ecf0f1);
+  }
+
+  .related-comics__context {
+    color: var(--color-text-secondary, #95a5a6);
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .related-comics__section-title {
+    border-bottom-width: 3px;
+  }
+
+  .related-comics__card {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .related-comics__card {
+    transition: none;
+  }
+
+  .related-comics__card:hover {
+    transform: none;
+  }
+
+  .related-comics__thumbnail {
+    transition: none;
+  }
+
+  .related-comics__card:hover .related-comics__thumbnail {
+    transform: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .related-comics__card {
+    background: white;
+    border: 1px solid #000;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .related-comics__card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}

@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ComicHeader } from '../components/comic/ComicHeader';
 import { ComicImages } from '../components/comic/ComicImages';
+import { ComicCaption } from '../components/comic/ComicCaption';
+import { RelatedComics } from '../components/comic/RelatedComics';
 import './ComicPage.css';
 
 interface Comic {
@@ -129,12 +131,12 @@ function ComicPage() {
         title={comic.title}
       />
 
-      {/* Placeholder for READER-006: Caption and Relationships */}
       {comic.caption && (
-        <div className="comic-page__caption-placeholder">
-          <h3 className="comic-page__placeholder-heading">Caption</h3>
-          <p className="comic-page__placeholder-text">{comic.caption}</p>
-        </div>
+        <ComicCaption caption={comic.caption} />
+      )}
+
+      {comic.derivedRelationships && comic.derivedRelationships.length > 0 && (
+        <RelatedComics relationships={comic.derivedRelationships as any} />
       )}
 
       {/* Placeholder for READER-007: Share Button */}

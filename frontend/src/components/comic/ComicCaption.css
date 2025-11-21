@@ -1,0 +1,119 @@
+.comic-caption {
+  max-width: 900px;
+  margin: 3rem auto 2rem;
+  padding: 2rem;
+  background: var(--color-secondary, #ecf0f1);
+  border-radius: 8px;
+}
+
+.comic-caption__heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text, #2c3e50);
+  margin: 0 0 1rem 0;
+}
+
+.comic-caption__text {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: var(--color-text, #2c3e50);
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.comic-caption__link {
+  color: var(--color-primary, #2c3e50);
+  text-decoration: underline;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.comic-caption__link:hover {
+  color: var(--color-highlight, #3498db);
+  text-decoration: none;
+}
+
+.comic-caption__link:focus-visible {
+  outline: 2px solid var(--color-highlight, #3498db);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Tablet and desktop */
+@media (min-width: 768px) {
+  .comic-caption {
+    padding: 2.5rem 3rem;
+  }
+
+  .comic-caption__heading {
+    font-size: 1.75rem;
+  }
+
+  .comic-caption__text {
+    font-size: 1.25rem;
+  }
+}
+
+/* Mobile optimization */
+@media (max-width: 767px) {
+  .comic-caption {
+    margin: 2rem 1rem 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .comic-caption__heading {
+    font-size: 1.25rem;
+  }
+
+  .comic-caption__text {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .comic-caption {
+    background: var(--color-secondary, #34495e);
+  }
+
+  .comic-caption__heading,
+  .comic-caption__text {
+    color: var(--color-text, #ecf0f1);
+  }
+
+  .comic-caption__link {
+    color: var(--color-highlight, #3498db);
+  }
+
+  .comic-caption__link:hover {
+    color: var(--color-primary, #5dade2);
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .comic-caption {
+    border: 2px solid currentColor;
+  }
+
+  .comic-caption__link {
+    text-decoration-thickness: 2px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .comic-caption {
+    background: white;
+    border: 1px solid #000;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .comic-caption__link {
+    color: #000;
+    text-decoration: underline;
+  }
+}
