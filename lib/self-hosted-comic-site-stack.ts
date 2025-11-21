@@ -538,8 +538,8 @@ export class ComicSiteStack extends cdk.Stack {
 		// GetConfig Lambda function (defined after distribution)
 		const getConfigLambda = new lambda.Function(this, 'GetConfigLambda', {
 			runtime: lambda.Runtime.NODEJS_20_X,
-			handler: 'index.handler',
-			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'lambda', 'getConfig')),
+			handler: 'lambda/getConfig/index.handler',
+			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'lambda', 'getConfig', 'dist')),
 			environment: {
 				COMIC_TABLE_NAME: comicTable.tableName,
 			},
@@ -550,8 +550,8 @@ export class ComicSiteStack extends cdk.Stack {
 		// UpdateConfig Lambda function (defined after distribution)
 		const updateConfigLambda = new lambda.Function(this, 'UpdateConfigLambda', {
 			runtime: lambda.Runtime.NODEJS_20_X,
-			handler: 'index.handler',
-			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'lambda', 'updateConfig')),
+			handler: 'lambda/updateConfig/index.handler',
+			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'lambda', 'updateConfig', 'dist')),
 			environment: {
 				COMIC_TABLE_NAME: comicTable.tableName,
 				CLOUDFRONT_DISTRIBUTION_ID: distribution.distributionId,
