@@ -88,6 +88,26 @@ export class ComicSiteStack extends cdk.Stack {
 			displayName: 'Comic Site Monitoring Alerts',
 		});
 
+		// Constitutional Cost Monitoring: $8/month threshold alarm
+		// This alarm triggers at $8/month to provide early warning before hitting $10 target
+		const costAlarm = new cloudwatch.Alarm(this, 'MonthlyCostAlarm', {
+			metric: new cloudwatch.Metric({
+				namespace: 'AWS/Billing',
+				metricName: 'EstimatedCharges',
+				statistic: 'Maximum',
+				period: Duration.hours(6),
+				dimensionsMap: {
+					Currency: 'USD',
+				},
+			}),
+			threshold: 8.0, // Alert at $8 (80% of $10 constitutional target)
+			evaluationPeriods: 1,
+			comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+			alarmDescription: 'Alert when monthly AWS costs exceed $8 (constitutional limit: $10/month)',
+			treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+		});
+		costAlarm.addAlarmAction(new cloudwatch_actions.SnsAction(monitoringTopic));
+
 		// DynamoDB Table Monitoring: User Errors
 		const tableUserErrorsAlarm = new cloudwatch.Alarm(this, 'TableUserErrorsAlarm', {
 			metric: comicTable.metricUserErrors({
