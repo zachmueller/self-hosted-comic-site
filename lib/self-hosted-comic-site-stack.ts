@@ -250,8 +250,6 @@ export class ComicSiteStack extends cdk.Stack {
 			queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
 			headerBehavior: cloudfront.CacheHeaderBehavior.none(),
 			cookieBehavior: cloudfront.CacheCookieBehavior.none(),
-			enableAcceptEncodingGzip: true,
-			enableAcceptEncodingBrotli: true,
 			comment: 'No cache policy for index.html',
 		});
 
@@ -320,32 +318,6 @@ export class ComicSiteStack extends cdk.Stack {
 			],
 			priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
 			additionalBehaviors: {
-				'/api/getComics*': {
-					origin: websiteBucketS3Origin, // Dummy origin, will be overridden by Lambda@Edge
-					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-					edgeLambdas: [{
-						functionVersion: getComicsLambda.currentVersion,
-						eventType: cloudfront.LambdaEdgeEventType.ORIGIN_REQUEST,
-						includeBody: false,
-					}],
-					allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
-					cachePolicy: apiCachePolicy, // 5 minute cache for API responses
-					originRequestPolicy: apiOriginRequestPolicy,
-					compress: true,
-				},
-				'/api/getComic*': {
-					origin: websiteBucketS3Origin, // Dummy origin, will be overridden by Lambda@Edge
-					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-					edgeLambdas: [{
-						functionVersion: getComicLambda.currentVersion,
-						eventType: cloudfront.LambdaEdgeEventType.ORIGIN_REQUEST,
-						includeBody: false,
-					}],
-					allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
-					cachePolicy: apiCachePolicy, // 5 minute cache for API responses
-					originRequestPolicy: apiOriginRequestPolicy,
-					compress: true,
-				},
 				'/api/images/*': {
 					origin: comicBucketS3Origin,
 					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
