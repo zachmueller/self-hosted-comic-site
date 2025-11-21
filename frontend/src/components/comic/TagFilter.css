@@ -14,6 +14,10 @@
   gap: 1rem;
 }
 
+.tag-filter__mobile-toggle {
+  display: none; /* Hidden on desktop */
+}
+
 .tag-filter__title {
   font-size: 1.25rem;
   font-weight: 600;
@@ -95,28 +99,94 @@
   border-color: var(--primary-dark);
 }
 
+/* Mobile hamburger menu styles */
+.tag-filter__mobile-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 44px;
+  width: 100%;
+  text-align: left;
+  color: var(--text-primary);
+}
+
+.tag-filter__hamburger-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: var(--text-primary);
+}
+
+.tag-filter__active-indicator {
+  font-size: 0.875rem;
+  color: var(--primary-color);
+  font-weight: 500;
+  margin-left: auto;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .tag-filter {
     padding: 1rem;
   }
 
+  /* Show mobile toggle button */
+  .tag-filter__mobile-toggle {
+    display: flex;
+  }
+
+  /* Hide desktop title */
   .tag-filter__header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    margin-bottom: 0;
+  }
+
+  .tag-filter__header > .tag-filter__title {
+    display: none;
+  }
+
+  /* Collapsible tags section */
+  .tag-filter__tags {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
+    margin-top: 0;
+    gap: 0.5rem;
+  }
+
+  .tag-filter__tags--expanded {
+    max-height: 1000px; /* Large enough for any reasonable tag list */
+    opacity: 1;
+    margin-top: 1rem;
   }
 
   .tag-filter__clear-button {
     width: 100%;
-  }
-
-  .tag-filter__tags {
-    gap: 0.5rem;
+    margin-top: 0.75rem;
   }
 
   .tag-filter__tag {
     font-size: 0.8125rem;
     padding: 0.5rem 0.875rem;
+  }
+}
+
+/* Desktop: always show tags, no toggle */
+@media (min-width: 769px) {
+  .tag-filter__mobile-toggle {
+    display: none;
+  }
+
+  .tag-filter__tags {
+    display: flex !important;
+    max-height: none !important;
+    opacity: 1 !important;
   }
 }
 

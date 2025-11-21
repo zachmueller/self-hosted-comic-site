@@ -128,14 +128,15 @@
   border: 2px solid var(--color-text-secondary, #7f8c8d);
   cursor: pointer;
   transition: all 0.2s ease;
-  padding: 0;
-  min-width: 12px;
-  min-height: 12px;
+  /* Transparent padding creates 44px touch target without visual change */
+  padding: 16px;
+  background-clip: content-box;
+  box-sizing: content-box;
 }
 
 .carousel-view__dot:hover {
-  transform: scale(1.2);
   border-color: var(--color-primary, #2c3e50);
+  background-color: var(--color-secondary, #dfe6e9);
 }
 
 .carousel-view__dot:focus-visible {
@@ -146,7 +147,7 @@
 .carousel-view__dot--active {
   background: var(--color-primary, #2c3e50);
   border-color: var(--color-primary, #2c3e50);
-  transform: scale(1.3);
+  transform: scale(1.2);
 }
 
 .carousel-view__hint {
@@ -206,8 +207,7 @@
   .carousel-view__dot {
     width: 10px;
     height: 10px;
-    min-width: 10px;
-    min-height: 10px;
+    padding: 17px; /* Maintains 44px touch target with smaller dot */
   }
 }
 
@@ -241,7 +241,10 @@
     transform: translateY(-50%);
   }
 
-  .carousel-view__dot:hover,
+  .carousel-view__dot:hover {
+    background-color: var(--color-secondary, #ecf0f1);
+  }
+
   .carousel-view__dot--active {
     transform: none;
   }
