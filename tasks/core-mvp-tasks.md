@@ -128,7 +128,6 @@
 - [x] Reference syntax validation ([[Title]] and [[Title|Alias]])
 - [x] Validation error messages are artist-friendly
 - [x] Shared validation schemas for client and server
-**Blocked:** Requires `npm install` in shared/ directory (needs approval)
 
 ### DATA-003: DynamoDB Table Updates ✓ COMPLETE
 **Description:** Update DynamoDB table definition with all required GSIs
@@ -158,7 +157,6 @@
 - [x] Relationship resolution utilities
 - [x] Error handling for DynamoDB operations
 - [x] TypeScript types for all operations
-**Blocked:** Requires `npm install` in shared/ directory (needs approval)
 
 ## Phase 2: Authentication & Core Infrastructure
 
@@ -177,7 +175,6 @@
 - [x] AWS credentials configuration for authenticated artist
 - [x] AuthContext provider wraps app
 - [x] useAuth hook provides auth state and methods
-**Blocked:** Requires `npm install` in frontend for dependencies
 
 ### AUTH-002: Session Management ✓ COMPLETE
 **Description:** Implement session persistence and token refresh
@@ -204,7 +201,6 @@
 - [x] useRequireAuth hook for component-level protection
 - [x] Loading state during auth check
 - [x] Preserves intended destination after login
-**Blocked:** Requires `npm install react-router-dom` in frontend
 
 ### INFRA-001 [P]: Lambda Function Stubs ✓ COMPLETE
 **Description:** Create Lambda function structure for all API endpoints
@@ -220,7 +216,6 @@
 - [x] Error handling structure in place
 - [x] CloudWatch logging configured
 - [ ] Lambda function definitions in CDK stack (INFRA-002)
-**Blocked:** Requires `npm install` for AWS SDK dependencies
 
 ### INFRA-002 [P]: API Gateway Configuration
 **Description:** Set up API Gateway or Lambda@Edge for API routing
