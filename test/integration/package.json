@@ -1,0 +1,17 @@
+{
+  "name": "integration-tests",
+  "version": "1.0.0",
+  "description": "Integration tests for API Lambda functions",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.490.0",
+    "@aws-sdk/lib-dynamodb": "^3.490.0",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.3",
+    "vitest": "^4.0.13"
+  }
+}
