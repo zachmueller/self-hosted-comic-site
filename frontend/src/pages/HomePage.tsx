@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ComicGrid } from '../components/comic/ComicGrid';
+import { Pagination } from '../components/comic/Pagination';
+import { usePagination } from '../hooks/usePagination';
 import './HomePage.css';
 
 interface Comic {
@@ -16,13 +18,21 @@ function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const pagination = usePagination({ itemsPerPage: 20 });
+
   useEffect(() => {
     const fetchComics = async () => {
       try {
         setIsLoading(true);
         setError(null);
 
-        const response = await fetch('/api/getComics');
+        // Build query params with pagination
+        const params = new URLSearchParams({
+          page: pagination.currentPage.toString(),
+          limit: pagination.itemsPerPage.toString(),
+        });
+
+        const response = await fetch(`/api/getComics?${params}`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch comics');
@@ -30,6 +40,9 @@ function HomePage() {
 
         const data = await response.json();
         setComics(data.items || []);
+        
+        // Update pagination state based on API response
+        pagination.setHasNextPage(data.hasNextPage || false);
       } catch (err) {
         console.error('Error fetching comics:', err);
         setError(err instanceof Error ? err.message : 'Failed to load comics');
@@ -39,7 +52,7 @@ function HomePage() {
     };
 
     fetchComics();
-  }, []);
+  }, [pagination.currentPage]); // Re-fetch when page changes
 
   return (
     <div className="home-page">
@@ -51,6 +64,18 @@ function HomePage() {
       </div>
 
       <ComicGrid comics={comics} isLoading={isLoading} error={error} />
+
+      {!isLoading && !error && comics.length > 0 && (
+        <Pagination
+          currentPage={pagination.currentPage}
+          hasNextPage={pagination.hasNextPage}
+          isLoading={isLoading}
+          onPreviousPage={pagination.goToPreviousPage}
+          onNextPage={pagination.goToNextPage}
+          isFirstPage={pagination.isFirstPage}
+          isLastPage={pagination.isLastPage}
+        />
+      )}
     </div>
   );
 }
