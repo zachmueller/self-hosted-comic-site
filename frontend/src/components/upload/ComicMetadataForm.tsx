@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import DatePicker from './DatePicker';
 import TagInput from './TagInput';
 import ScrollStyleToggle from './ScrollStyleToggle';
+import { CaptionEditor } from './CaptionEditor';
 import { 
   titleSchema,
   isoDateSchema,
@@ -13,6 +14,7 @@ import './ComicMetadataForm.css';
 
 export interface ComicMetadata {
   title: string;
+  caption?: string;
   postedDate: string;
   happenedOnDate?: string;
   tags: string[];
@@ -31,6 +33,7 @@ function ComicMetadataForm({
   initialMetadata 
 }: ComicMetadataFormProps) {
   const [title, setTitle] = useState(initialMetadata?.title || '');
+  const [caption, setCaption] = useState(initialMetadata?.caption || '');
   const [postedDate, setPostedDate] = useState(
     initialMetadata?.postedDate || new Date().toISOString().split('T')[0]
   );
@@ -46,6 +49,7 @@ function ComicMetadataForm({
   useEffect(() => {
     const metadata: ComicMetadata = {
       title,
+      caption: caption || undefined,
       postedDate,
       happenedOnDate: happenedOnDate || undefined,
       tags,
@@ -55,6 +59,7 @@ function ComicMetadataForm({
     // Create a validation schema for the metadata
     const metadataSchema = z.object({
       title: titleSchema,
+      caption: z.string().max(10000).optional(),
       postedDate: isoDateSchema,
       happenedOnDate: isoDateSchema.optional(),
       tags: tagsArraySchema,
@@ -77,7 +82,7 @@ function ComicMetadataForm({
         onValidationChange(false);
       }
     }
-  }, [title, postedDate, happenedOnDate, tags, scrollStyle, onMetadataChange, onValidationChange]);
+  }, [title, caption, postedDate, happenedOnDate, tags, scrollStyle, onMetadataChange, onValidationChange]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -105,6 +110,11 @@ function ComicMetadataForm({
 
   const handleScrollStyleChange = (style: 'carousel' | 'long-form') => {
     setScrollStyle(style);
+  };
+
+  const handleCaptionChange = (newCaption: string) => {
+    setCaption(newCaption);
+    setTouched({ ...touched, caption: true });
   };
 
   return (
@@ -162,6 +172,16 @@ function ComicMetadataForm({
             When events in the comic took place
           </div>
         </div>
+      </div>
+
+      <div className="form-group">
+        <label className="form-label">
+          Caption (Optional)
+        </label>
+        <CaptionEditor
+          value={caption}
+          onChange={handleCaptionChange}
+        />
       </div>
 
       <div className="form-group">
