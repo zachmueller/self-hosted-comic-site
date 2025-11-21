@@ -30,6 +30,12 @@ function HomePage() {
         setIsLoading(true);
         setError(null);
 
+        // Get API endpoint from environment
+        const apiUrl = import.meta.env.VITE_API_URL;
+        if (!apiUrl) {
+          throw new Error('API URL not configured');
+        }
+
         // Build query params with pagination and tag filter
         const params = new URLSearchParams({
           page: pagination.currentPage.toString(),
@@ -40,7 +46,12 @@ function HomePage() {
           params.set('tag', selectedTag);
         }
 
-        const response = await fetch(`/api/getComics?${params}`);
+        const response = await fetch(`${apiUrl}/get-comics?${params}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
         
         if (!response.ok) {
           throw new Error('Failed to fetch comics');

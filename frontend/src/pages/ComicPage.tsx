@@ -44,7 +44,18 @@ function ComicPage() {
         setIsLoading(true);
         setError(null);
 
-        const response = await fetch(`/api/getComic?slug=${encodeURIComponent(slug)}`);
+        // Get API endpoint from environment
+        const apiUrl = import.meta.env.VITE_API_URL;
+        if (!apiUrl) {
+          throw new Error('API URL not configured');
+        }
+
+        const response = await fetch(`${apiUrl}/get-comic?slug=${encodeURIComponent(slug)}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
         if (response.status === 404) {
           setError('Comic not found');
@@ -57,7 +68,7 @@ function ComicPage() {
         }
 
         const data = await response.json();
-        setComic(data);
+        setComic(data.comic || data);
       } catch (err) {
         console.error('Error fetching comic:', err);
         setError(err instanceof Error ? err.message : 'Failed to load comic');

@@ -1,6 +1,6 @@
 # Phase 4: Reader Experience - Comic Display
 
-**Status:** 🔄 25% Complete (2/8 tasks)  
+**Status:** 🔄 88% Complete (7/8 tasks)  
 **Dependencies:** [Phase 3: Artist Upload Workflow](./phase-3-upload.md)  
 **Next Phase:** [Phase 5: Color Palette Configuration](./phase-5-config.md)
 
@@ -10,104 +10,91 @@ This phase implements the reader-facing comic viewing experience, including home
 
 ## Tasks
 
-### READER-001: Homepage Components ⏳ TODO
+### READER-001: Homepage Components ✅ COMPLETE
 **Description:** Comic listing page with grid layout  
 **Files:** `frontend/src/pages/HomePage.tsx`, `frontend/src/components/comic/ComicGrid.tsx`, `frontend/src/components/comic/ComicCard.tsx`  
 **Dependencies:** UPLOAD-011, INFRA-002  
-**Status:** ⏳ TODO
+**Status:** ✅ COMPLETE
 
 **Constitutional Compliance:**
 - Artist-First: Reader features implemented after artist tools
 - Cost-Conscious: Efficient querying and caching
 
 **Acceptance Criteria:**
-- [ ] HomePage fetches comics from API
-- [ ] ComicGrid displays comics in responsive grid
-- [ ] ComicCard shows thumbnail, title, postedDate
-- [ ] Loading state during API fetch
-- [ ] Error state for failed API calls
-- [ ] Empty state when no comics exist
-- [ ] Link to single comic page from card
-
-**Implementation Notes:**
-- Components exist but need API integration with getComics Lambda
-- Grid layout is already responsive
-- ComicCard structure is complete
+- [x] HomePage fetches comics from API using VITE_API_URL environment variable
+- [x] ComicGrid displays comics in responsive grid
+- [x] ComicCard shows thumbnail, title, postedDate
+- [x] Loading state during API fetch
+- [x] Error state for failed API calls
+- [x] Empty state when no comics exist
+- [x] Link to single comic page from card
+- [x] Pagination and tag filtering integrated
 
 ---
 
-### READER-002: Pagination Component ⏳ TODO
+### READER-002: Pagination Component ✅ COMPLETE
 **Description:** Pagination controls for comic listing  
 **Files:** `frontend/src/components/comic/Pagination.tsx`, `frontend/src/hooks/usePagination.ts`  
 **Dependencies:** READER-001  
-**Status:** ⏳ TODO
+**Status:** ✅ COMPLETE
 
 **Constitutional Compliance:**
 - Cost-Conscious: Pagination reduces DynamoDB query costs
 
 **Acceptance Criteria:**
-- [ ] Next/Previous page buttons
-- [ ] Page number display
-- [ ] Disable next button on last page
-- [ ] URL parameter handling for current page
-- [ ] Maintain page state on navigation
-- [ ] Keyboard navigation support
-- [ ] Loading state during page change
-
-**Implementation Notes:**
-- Component structure exists
-- usePagination hook is implemented
-- Needs connection to getComics API with pagination params
+- [x] Next/Previous page buttons
+- [x] Page number display
+- [x] Disable next button on last page
+- [x] URL parameter handling for current page
+- [x] Maintain page state on navigation
+- [x] Keyboard navigation support
+- [x] Loading state during page change
+- [x] Connected to getComics API with pagination params
+- [x] Dynamically updates hasNextPage based on API response
 
 ---
 
-### READER-003: Tag Filtering ⏳ TODO
+### READER-003: Tag Filtering ✅ COMPLETE
 **Description:** Filter comics by tag  
 **Files:** `frontend/src/components/comic/TagFilter.tsx`, `frontend/src/hooks/useTagFilter.ts`  
 **Dependencies:** READER-002  
-**Status:** ⏳ TODO
+**Status:** ✅ COMPLETE
 
 **Constitutional Compliance:**
 - Cost-Conscious: Tag filtering uses efficient GSI queries
 
 **Acceptance Criteria:**
-- [ ] Display all available tags
-- [ ] Click tag to filter comics
-- [ ] Active tag visual indicator
-- [ ] Clear filter button
-- [ ] URL parameter handling for selected tag
-- [ ] Combine with pagination
-- [ ] Responsive design (desktop sidebar, mobile dropdown)
-
-**Implementation Notes:**
-- Component structure exists
-- useTagFilter hook is implemented
-- Needs API integration to fetch available tags and filtered results
+- [x] Display all available tags extracted from comics
+- [x] Click tag to filter comics
+- [x] Active tag visual indicator
+- [x] Clear filter button
+- [x] URL parameter handling for selected tag
+- [x] Combine with pagination
+- [x] Responsive design (desktop sidebar, mobile dropdown)
+- [x] API integration passes tag parameter to getComics Lambda
+- [x] HomePage updates when tag filter changes
 
 ---
 
-### READER-004: Single Comic Page Structure ⏳ TODO
+### READER-004: Single Comic Page Structure ✅ COMPLETE
 **Description:** Comic detail page layout and data fetching  
 **Files:** `frontend/src/pages/ComicPage.tsx`, `frontend/src/components/comic/ComicHeader.tsx`  
 **Dependencies:** READER-003  
-**Status:** ⏳ TODO
+**Status:** ✅ COMPLETE
 
 **Constitutional Compliance:**
 - Artist-First: Reader experience adequate but not prioritized
 
 **Acceptance Criteria:**
-- [ ] ComicPage fetches single comic by slug
-- [ ] ComicHeader displays title, dates, tags
-- [ ] Loading state during API fetch
-- [ ] Error state for 404 or failed fetch
-- [ ] Metadata display (postedTimestamp, happenedOnDate)
-- [ ] Tag list with links to tag filter page
-- [ ] Responsive layout
-
-**Implementation Notes:**
-- ComicPage exists with basic structure
-- ComicHeader component is complete
-- Needs API integration with getComic Lambda
+- [x] ComicPage fetches single comic by slug using VITE_API_URL
+- [x] ComicHeader displays title, dates, tags
+- [x] Loading state during API fetch
+- [x] Error state for 404 or failed fetch
+- [x] Metadata display (postedTimestamp, happenedOnDate)
+- [x] Tag list with links to tag filter page
+- [x] Responsive layout
+- [x] API integration with getComic Lambda complete
+- [x] Handles response format with data.comic fallback
 
 ---
 
@@ -132,29 +119,26 @@ This phase implements the reader-facing comic viewing experience, including home
 
 ---
 
-### READER-006: Caption and Relationships Display ⏳ TODO
+### READER-006: Caption and Relationships Display ✅ COMPLETE
 **Description:** Display comic caption with parsed references  
 **Files:** `frontend/src/components/comic/ComicCaption.tsx`, `frontend/src/components/comic/RelatedComics.tsx`  
 **Dependencies:** READER-005  
-**Status:** ⏳ TODO
+**Status:** ✅ COMPLETE
 
 **Constitutional Compliance:**
 - Artist-First: Relationships respect artist's Obsidian syntax
 
 **Acceptance Criteria:**
-- [ ] ComicCaption displays parsed caption text
-- [ ] [[Title]] references rendered as links to target comics
-- [ ] [[Title|Alias]] references use alias text for link
-- [ ] RelatedComics section below caption
-- [ ] Group relationships by sourceType (caption, series, tag)
-- [ ] Display context snippets for caption references
-- [ ] Thumbnail grid for related comics
-- [ ] Clickable links to related comics
-
-**Implementation Notes:**
-- Components exist with structure
-- Needs API data integration from getComic Lambda (includes resolved relationships)
-- Reference parsing for display can reuse caption validation logic
+- [x] ComicCaption displays parsed caption text
+- [x] [[Title]] references rendered as links to target comics
+- [x] [[Title|Alias]] references use alias text for link
+- [x] RelatedComics section below caption
+- [x] Group relationships by sourceType (caption, series, tag)
+- [x] Display context snippets for caption references
+- [x] Thumbnail grid for related comics
+- [x] Clickable links to related comics
+- [x] Integrated in ComicPage with API data from getComic Lambda
+- [x] Components conditionally rendered based on data availability
 
 ---
 
@@ -208,53 +192,42 @@ This phase implements the reader-facing comic viewing experience, including home
 ## Phase Summary
 
 ### Completion Status
-🔄 2/8 tasks complete (25%)
+🔄 7/8 tasks complete (88%)
 
 ### Completed Tasks
+- ✅ READER-001: Homepage Components (API integration)
+- ✅ READER-002: Pagination Component
+- ✅ READER-003: Tag Filtering
+- ✅ READER-004: Single Comic Page Structure
 - ✅ READER-005: Comic Image Display (CarouselView, LongFormView)
+- ✅ READER-006: Caption and Relationships Display
 - ✅ READER-007: Share Functionality
 
-### TODO (Priority Order)
-1. ⏳ READER-001: Homepage Components (API integration)
-2. ⏳ READER-002: Pagination Component
-3. ⏳ READER-003: Tag Filtering
-4. ⏳ READER-004: Single Comic Page Structure
-5. ⏳ READER-006: Caption and Relationships Display
-6. ⏳ READER-008: Responsive Design Implementation
+### TODO
+- ⏳ READER-008: Responsive Design Implementation
 
 ### Key Achievements
-- Image display components complete with both viewing modes
+- Complete API integration with getComics and getComic Lambda endpoints
+- Homepage with paginated comic grid and tag filtering
+- Single comic pages with full metadata display
+- Image display components with both carousel and long-form viewing modes
 - Carousel with touch gestures and keyboard navigation
-- Long form scrolling for comics
+- Caption display with Obsidian-style reference links
+- Related comics display grouped by source type
 - Share button with clipboard functionality
-- All reader components have basic structure in place
+- All loading, error, and empty states implemented
+- Comprehensive error handling (404s, network failures)
 
 ### Remaining Work
 
-#### High Priority (API Integration)
-All reader components need API integration to fetch data:
-
-1. **READER-001**: Connect HomePage to getComics Lambda
-   - Fetch paginated comic list
-   - Display comics in grid
-   - Handle loading and error states
-
-2. **READER-004**: Connect ComicPage to getComic Lambda
-   - Fetch single comic by slug
-   - Display comic metadata and images
-   - Handle 404 and errors
-
-3. **READER-006**: Display relationships from API
-   - Parse resolved relationships from getComic response
-   - Render reference links in caption
-   - Display related comics grid
-
-#### Medium Priority
-4. **READER-002**: Add pagination controls
-5. **READER-003**: Implement tag filtering
-
-#### Lower Priority
-6. **READER-008**: Responsive design polish
+#### READER-008: Responsive Design Polish
+Final responsive design testing and refinement:
+- Comprehensive testing across devices (iPad, iPhone, Android, desktop)
+- Fine-tune breakpoints and responsive behaviors
+- Ensure all touch targets meet 44px minimum on mobile
+- Validate hamburger menu behavior on mobile
+- Test hover states on desktop
+- Performance testing on actual devices
 
 ### Parallel Execution Notes
 - READER-002, READER-004 could be executed in parallel after READER-001
@@ -269,6 +242,5 @@ All reader components need API integration to fetch data:
 Once Phase 4 is complete, proceed to [Phase 5: Color Palette Configuration](./phase-5-config.md) to implement artist color customization.
 
 ### Estimated Time to Complete Phase 4
-- API integrations (READER-001, 002, 003, 004, 006): ~6-8 hours
-- Responsive design polish (READER-008): ~3-4 hours
-- **Total:** ~2-3 days of focused work
+- READER-008: Responsive design polish and device testing: ~3-4 hours
+- **Total:** ~Half day of focused work remaining
