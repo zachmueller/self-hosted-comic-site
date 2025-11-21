@@ -4,6 +4,7 @@ import { ComicHeader } from '../components/comic/ComicHeader';
 import { ComicImages } from '../components/comic/ComicImages';
 import { ComicCaption } from '../components/comic/ComicCaption';
 import { RelatedComics } from '../components/comic/RelatedComics';
+import { ShareButton } from '../components/comic/ShareButton';
 import './ComicPage.css';
 
 interface Comic {
@@ -139,10 +140,7 @@ function ComicPage() {
         <RelatedComics relationships={comic.derivedRelationships as any} />
       )}
 
-      {/* Placeholder for READER-007: Share Button */}
-      <div className="comic-page__share-placeholder">
-        <p className="comic-page__placeholder-text">Share button will appear here</p>
-      </div>
+      <ShareButton title={comic.title} />
     </div>
   );
 }
