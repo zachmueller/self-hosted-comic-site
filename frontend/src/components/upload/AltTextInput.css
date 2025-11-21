@@ -1,0 +1,313 @@
+.alt-text-input {
+  padding: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fafafa;
+  margin-bottom: 16px;
+  transition: border-color 0.2s ease;
+}
+
+.alt-text-input:hover {
+  border-color: #ccc;
+}
+
+.alt-text-input:focus-within {
+  border-color: #007bff;
+  background-color: #fff;
+}
+
+/* Header */
+.alt-text-header {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+  align-items: flex-start;
+}
+
+.alt-text-image-preview {
+  position: relative;
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid #ddd;
+  background-color: #fff;
+}
+
+.alt-text-image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-number {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 4px 6px;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+.alt-text-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.alt-text-label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.alt-text-description {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* Textarea */
+.alt-text-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #333;
+  background-color: #fff;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  resize: vertical;
+  min-height: 72px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.alt-text-textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.alt-text-textarea::placeholder {
+  color: #999;
+}
+
+/* Footer */
+.alt-text-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  padding: 0 4px;
+}
+
+.character-count {
+  font-size: 13px;
+  color: #666;
+}
+
+.optional-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+  background-color: #e9ecef;
+  border-radius: 12px;
+}
+
+/* Help section */
+.alt-text-help {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  background-color: #e7f3ff;
+  border-radius: 6px;
+  border: 1px solid #b3d9ff;
+}
+
+.help-icon {
+  flex-shrink: 0;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.help-text {
+  flex: 1;
+  font-size: 13px;
+  color: #004085;
+  line-height: 1.5;
+}
+
+/* iPad optimization */
+@media (max-width: 1024px) {
+  .alt-text-input {
+    padding: 14px;
+  }
+
+  .alt-text-image-preview {
+    width: 70px;
+    height: 70px;
+  }
+
+  .alt-text-label {
+    font-size: 15px;
+  }
+
+  .alt-text-textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+    padding: 10px 12px;
+  }
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .alt-text-input {
+    padding: 12px;
+  }
+
+  .alt-text-header {
+    gap: 12px;
+  }
+
+  .alt-text-image-preview {
+    width: 60px;
+    height: 60px;
+  }
+
+  .image-number {
+    font-size: 10px;
+    padding: 3px 4px;
+  }
+
+  .alt-text-label {
+    font-size: 14px;
+  }
+
+  .alt-text-description {
+    font-size: 13px;
+  }
+
+  .alt-text-textarea {
+    padding: 10px;
+    min-height: 60px;
+  }
+
+  .alt-text-help {
+    padding: 8px 10px;
+  }
+
+  .help-text {
+    font-size: 12px;
+  }
+}
+
+/* Touch device optimization */
+@media (hover: none) and (pointer: coarse) {
+  .alt-text-textarea {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  .alt-text-input {
+    border-width: 2px;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .alt-text-input {
+    border-width: 3px;
+  }
+
+  .alt-text-textarea:focus {
+    border-width: 3px;
+  }
+
+  .alt-text-image-preview {
+    border-width: 3px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .alt-text-input {
+    background-color: #2d2d2d;
+    border-color: #555;
+  }
+
+  .alt-text-input:hover {
+    border-color: #666;
+  }
+
+  .alt-text-input:focus-within {
+    background-color: #1a1a1a;
+    border-color: #4a9eff;
+  }
+
+  .alt-text-label {
+    color: #e0e0e0;
+  }
+
+  .alt-text-description {
+    color: #aaa;
+  }
+
+  .alt-text-textarea {
+    background-color: #1a1a1a;
+    border-color: #555;
+    color: #e0e0e0;
+  }
+
+  .alt-text-textarea:focus {
+    border-color: #4a9eff;
+  }
+
+  .alt-text-textarea::placeholder {
+    color: #888;
+  }
+
+  .character-count {
+    color: #aaa;
+  }
+
+  .optional-badge {
+    background-color: #3a3a3a;
+    color: #aaa;
+  }
+
+  .alt-text-help {
+    background-color: #1e3a5f;
+    border-color: #2a4a70;
+  }
+
+  .help-text {
+    color: #b3d9ff;
+  }
+
+  .alt-text-image-preview {
+    border-color: #555;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .alt-text-input,
+  .alt-text-textarea {
+    transition: none;
+  }
+}
