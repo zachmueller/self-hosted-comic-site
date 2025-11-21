@@ -332,21 +332,21 @@
 - [x] Save draft functionality (localStorage)
 - [x] Clear all functionality
 
-### UPLOAD-007: Panel Reordering Interface
+### UPLOAD-007: Panel Reordering Interface ✓ COMPLETE
 **Description:** Drag-and-drop panel reordering with touch support
 **Files:** `frontend/src/components/upload/PanelReorderScreen.tsx`, `frontend/src/components/upload/DraggablePanel.tsx`
 **Dependencies:** UPLOAD-006
 **Constitutional Compliance:**
 - Artist-First: Easy corrections before publish
 **Acceptance Criteria:**
-- [ ] React-beautiful-dnd integration for reordering
-- [ ] Touch gesture support for iPad
-- [ ] Visual feedback during drag operations
-- [ ] Preview of final order in carousel mode
-- [ ] Preview of final order in long form mode
-- [ ] Skip option to maintain upload order
-- [ ] Apply order button
-- [ ] Large touch targets for panel manipulation
+- [x] React-beautiful-dnd integration for reordering (@hello-pangea/dnd)
+- [x] Touch gesture support for iPad
+- [x] Visual feedback during drag operations
+- [x] Preview of final order in carousel mode
+- [x] Preview of final order in long form mode
+- [x] Skip option to maintain upload order
+- [x] Apply order button
+- [x] Large touch targets for panel manipulation
 
 ### UPLOAD-008: S3 Presigned URL Generation
 **Description:** Lambda function to generate presigned URLs for image upload
@@ -398,19 +398,19 @@
 - [ ] Handle errors with clear error messages
 - [ ] Return published comic slug and ID
 
-### UPLOAD-011 [P]: Upload Success Screen
+### UPLOAD-011 [P]: Upload Success Screen ✓ COMPLETE
 **Description:** Post-upload confirmation and next actions
 **Files:** `frontend/src/components/upload/UploadSuccess.tsx`
 **Dependencies:** UPLOAD-010
 **Constitutional Compliance:**
 - Artist-First: Clear confirmation and next steps
 **Acceptance Criteria:**
-- [ ] Success confirmation message
-- [ ] Link to published comic page
-- [ ] Note about CloudFront cache delay (~5 minutes)
-- [ ] "Upload Another Comic" button
-- [ ] Clear form state on upload another
-- [ ] Error display if cache invalidation fails
+- [x] Success confirmation message
+- [x] Link to published comic page
+- [x] Note about CloudFront cache delay (~5 minutes)
+- [x] "Upload Another Comic" button
+- [x] Clear form state on upload another
+- [x] Error display if cache invalidation fails (handled in UploadPage)
 
 ## Phase 4: Reader Experience - Comic Display
 
