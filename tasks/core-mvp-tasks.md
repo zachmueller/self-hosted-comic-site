@@ -217,7 +217,7 @@
 - [x] CloudWatch logging configured
 - [ ] Lambda function definitions in CDK stack (INFRA-002)
 
-### INFRA-002 [P]: API Gateway Configuration
+### INFRA-002 [P]: API Gateway Configuration ✓ COMPLETE
 **Description:** Set up API Gateway or Lambda@Edge for API routing
 **Files:** `lib/self-hosted-comic-site-stack.ts`
 **Dependencies:** INFRA-001
@@ -225,28 +225,28 @@
 - Serverless-First: API Gateway is fully managed
 - Cost-Conscious: API Gateway free tier covers typical usage
 **Acceptance Criteria:**
-- [ ] API Gateway REST API created or Lambda@Edge configured
-- [ ] Routes defined for all five endpoints
-- [ ] CORS configuration for CloudFront domain
-- [ ] Request/response transformation configured
-- [ ] Integration with Lambda functions
-- [ ] API Gateway logging enabled
+- [x] API Gateway REST API created or Lambda@Edge configured
+- [x] Routes defined for all five endpoints
+- [x] CORS configuration for CloudFront domain
+- [x] Request/response transformation configured
+- [x] Integration with Lambda functions
+- [x] API Gateway logging enabled
 
 ## Phase 3: Artist Upload Workflow (PRIORITY)
 
-### UPLOAD-001: App Router and Layout
+### UPLOAD-001: App Router and Layout ✓ COMPLETE
 **Description:** Set up React Router and basic app layout
 **Files:** `frontend/src/App.tsx`, `frontend/src/components/Layout.tsx`, `frontend/src/components/Header.tsx`, `frontend/src/components/NavBar.tsx`
 **Dependencies:** AUTH-003, INFRA-002
 **Constitutional Compliance:**
 - Artist-First: Navigation optimized for artist workflow
 **Acceptance Criteria:**
-- [ ] React Router v6 configured with routes
-- [ ] Layout component with header and navigation
-- [ ] Header shows auth status and upload link
-- [ ] NavBar with Home, Tags, Login/Logout links
-- [ ] Responsive layout for mobile and desktop
-- [ ] Loading states for route transitions
+- [x] React Router v6 configured with routes
+- [x] Layout component with header and navigation
+- [x] Header shows auth status and upload link
+- [x] NavBar with Home, Tags, Login/Logout links
+- [x] Responsive layout for mobile and desktop
+- [x] Loading states for route transitions
 
 ### UPLOAD-002: Image Dropzone Component
 **Description:** iPad-optimized file upload interface with drag-and-drop
