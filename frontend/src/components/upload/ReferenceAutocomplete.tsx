@@ -39,14 +39,26 @@ export const ReferenceAutocomplete: React.FC<ReferenceAutocompleteProps> = ({
       setError(null);
 
       try {
-        // TODO: Replace with actual API endpoint when API is implemented
-        // For now, use mock data
-        const mockSuggestions = getMockSuggestions(searchQuery);
-        
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 200));
-        
-        setSuggestions(mockSuggestions);
+        // Get API endpoint from environment
+        const apiUrl = import.meta.env.VITE_API_URL;
+        if (!apiUrl) {
+          throw new Error('API URL not configured');
+        }
+
+        // Call searchTitles Lambda endpoint
+        const response = await fetch(`${apiUrl}/search-titles?query=${encodeURIComponent(searchQuery)}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch comic suggestions');
+        }
+
+        const data = await response.json();
+        setSuggestions(data.comics || []);
         setSelectedIndex(0);
       } catch (err) {
         console.error('Error fetching comic suggestions:', err);
@@ -61,22 +73,6 @@ export const ReferenceAutocomplete: React.FC<ReferenceAutocompleteProps> = ({
     const timeoutId = setTimeout(fetchSuggestions, 150);
     return () => clearTimeout(timeoutId);
   }, [searchQuery]);
-
-  // Mock data function (will be replaced with actual API call)
-  const getMockSuggestions = (query: string): ComicSuggestion[] => {
-    const mockComics: ComicSuggestion[] = [
-      { id: '1', title: 'First Comic Adventure', slug: 'first-comic-adventure', happenedOnDate: '2024-01-15' },
-      { id: '2', title: 'Second Chapter', slug: 'second-chapter', happenedOnDate: '2024-02-20' },
-      { id: '3', title: 'The Beginning', slug: 'the-beginning', happenedOnDate: '2024-03-10' },
-      { id: '4', title: 'Epic Quest', slug: 'epic-quest', happenedOnDate: '2024-04-05' },
-      { id: '5', title: 'Final Showdown', slug: 'final-showdown', happenedOnDate: '2024-05-12' },
-    ];
-
-    const lowerQuery = query.toLowerCase();
-    return mockComics
-      .filter(comic => comic.title.toLowerCase().includes(lowerQuery))
-      .slice(0, 10);
-  };
 
   // Handle keyboard navigation
   useEffect(() => {
