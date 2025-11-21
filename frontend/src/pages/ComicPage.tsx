@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ComicHeader } from '../components/comic/ComicHeader';
+import { ComicImages } from '../components/comic/ComicImages';
 import './ComicPage.css';
 
 interface Comic {
@@ -121,15 +122,12 @@ function ComicPage() {
         tags={comic.tags}
       />
 
-      {/* Placeholder for READER-005: Comic Images Component */}
-      <div className="comic-page__images-placeholder">
-        <p className="comic-page__placeholder-text">
-          Comic images will be displayed here ({comic.scrollStyle} mode)
-        </p>
-        <p className="comic-page__placeholder-info">
-          {comic.imageUrls.length} image{comic.imageUrls.length !== 1 ? 's' : ''}
-        </p>
-      </div>
+      <ComicImages
+        imageUrls={comic.imageUrls}
+        altTexts={comic.altTexts}
+        scrollStyle={comic.scrollStyle}
+        title={comic.title}
+      />
 
       {/* Placeholder for READER-006: Caption and Relationships */}
       {comic.caption && (

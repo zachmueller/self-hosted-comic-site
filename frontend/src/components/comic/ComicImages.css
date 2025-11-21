@@ -1,0 +1,32 @@
+.comic-images {
+  margin: 0 auto;
+  padding: 0;
+}
+
+.comic-images__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 2rem;
+  background: var(--color-secondary, #ecf0f1);
+  border-radius: 8px;
+  margin: 2rem 1rem;
+}
+
+.comic-images__empty p {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary, #7f8c8d);
+  text-align: center;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .comic-images__empty {
+    background: var(--color-secondary, #34495e);
+  }
+
+  .comic-images__empty p {
+    color: var(--color-text-secondary, #95a5a6);
+  }
+}
