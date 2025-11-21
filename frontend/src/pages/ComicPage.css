@@ -1,0 +1,192 @@
+.comic-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* Loading state */
+.comic-page__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  gap: 1.5rem;
+  padding: 2rem 1rem;
+}
+
+.comic-page__spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid var(--color-secondary, #ecf0f1);
+  border-top-color: var(--color-primary, #2c3e50);
+  border-radius: 50%;
+  animation: comic-spinner-rotate 0.8s linear infinite;
+}
+
+@keyframes comic-spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.comic-page__loading p {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary, #7f8c8d);
+  margin: 0;
+}
+
+/* Error state */
+.comic-page__error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  gap: 1.5rem;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.comic-page__error-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text, #2c3e50);
+  margin: 0;
+}
+
+.comic-page__error-message {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary, #7f8c8d);
+  margin: 0;
+  max-width: 500px;
+  line-height: 1.6;
+}
+
+.comic-page__error-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 2rem;
+  background: var(--color-primary, #2c3e50);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  min-height: 48px;
+  margin-top: 1rem;
+}
+
+.comic-page__error-button:hover {
+  background: var(--color-primary-dark, #1a252f);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.comic-page__error-button:active {
+  transform: translateY(0);
+}
+
+.comic-page__error-button:focus-visible {
+  outline: 2px solid var(--color-highlight, #3498db);
+  outline-offset: 2px;
+}
+
+/* Placeholder sections (temporary until READER-005, 006, 007 implemented) */
+.comic-page__images-placeholder,
+.comic-page__caption-placeholder,
+.comic-page__share-placeholder {
+  padding: 3rem 1rem;
+  margin: 2rem 0;
+  background: var(--color-secondary, #ecf0f1);
+  border: 2px dashed var(--color-text-secondary, #7f8c8d);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.comic-page__placeholder-text {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary, #7f8c8d);
+  margin: 0;
+}
+
+.comic-page__placeholder-info {
+  font-size: 1rem;
+  color: var(--color-text-secondary, #7f8c8d);
+  margin: 1rem 0 0 0;
+  font-weight: 500;
+}
+
+.comic-page__placeholder-heading {
+  font-size: 1.5rem;
+  color: var(--color-text, #2c3e50);
+  margin: 0 0 1rem 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .comic-page__error-title {
+    font-size: 1.5rem;
+  }
+
+  .comic-page__error-message {
+    font-size: 1rem;
+  }
+
+  .comic-page__images-placeholder,
+  .comic-page__caption-placeholder,
+  .comic-page__share-placeholder {
+    padding: 2rem 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .comic-page__placeholder-text {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .comic-page__error-title {
+    font-size: 1.25rem;
+  }
+
+  .comic-page__spinner {
+    width: 48px;
+    height: 48px;
+    border-width: 3px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .comic-page__loading p,
+  .comic-page__error-message,
+  .comic-page__placeholder-text,
+  .comic-page__placeholder-info {
+    color: var(--color-text-secondary, #95a5a6);
+  }
+
+  .comic-page__error-title,
+  .comic-page__placeholder-heading {
+    color: var(--color-text, #ecf0f1);
+  }
+
+  .comic-page__images-placeholder,
+  .comic-page__caption-placeholder,
+  .comic-page__share-placeholder {
+    background: var(--color-secondary, #34495e);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .comic-page__spinner {
+    animation-duration: 1.5s;
+  }
+
+  .comic-page__error-button:hover {
+    transform: none;
+  }
+}

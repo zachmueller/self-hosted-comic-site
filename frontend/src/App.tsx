@@ -3,6 +3,7 @@ import { AuthProvider } from './auth/AuthContext';
 import Layout from './components/Layout';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import HomePage from './pages/HomePage';
+import ComicPage from './pages/ComicPage';
 import TagsPage from './pages/TagsPage';
 import LoginPage from './pages/LoginPage';
 import UploadPage from './pages/UploadPage';
@@ -14,6 +15,7 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/comic/:slug" element={<ComicPage />} />
             <Route path="/tags" element={<TagsPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route 
