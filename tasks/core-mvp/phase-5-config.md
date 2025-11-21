@@ -1,6 +1,6 @@
 # Phase 5: Color Palette Configuration
 
-**Status:** ⏳ 0% Complete (0/5 tasks)  
+**Status:** ⏳ 60% Complete (3/5 tasks)
 **Dependencies:** [Phase 4: Reader Experience - Comic Display](./phase-4-reader.md)  
 **Next Phase:** [Phase 6: API Implementation](./phase-6-api.md)
 
@@ -65,29 +65,30 @@ This phase implements the color palette customization system, allowing artists t
 
 ---
 
-### CONFIG-003: Lambda Functions for Config ⏳ TODO
+### CONFIG-003: Lambda Functions for Config ✅ COMPLETE
 **Description:** API endpoints to read and write configuration  
-**Files:** `lambda/getConfig/index.ts`, `lambda/updateConfig/index.ts`  
+**Files:** `lambda/getConfig/index.ts`, `lambda/updateConfig/index.ts`, `lambda/getConfig/package.json`, `lambda/updateConfig/package.json`, `lambda/getConfig/tsconfig.json`, `lambda/updateConfig/tsconfig.json`, `lib/self-hosted-comic-site-stack.ts`  
 **Dependencies:** CONFIG-001, INFRA-002  
-**Status:** ⏳ TODO
+**Status:** ✅ COMPLETE
 
 **Constitutional Compliance:**
 - Cost-Conscious: Minimal Lambda invocations (config rarely changes)
 
 **Acceptance Criteria:**
-- [ ] getConfig Lambda function to retrieve configuration
-- [ ] updateConfig Lambda function with artist authentication
-- [ ] Validation of color values (hex format)
-- [ ] DynamoDB read/write operations
-- [ ] CloudFront cache invalidation on config update
-- [ ] Error handling for invalid input
-- [ ] CloudWatch logging
+- [x] getConfig Lambda function to retrieve configuration
+- [x] updateConfig Lambda function with artist authentication
+- [x] Validation of color values (hex format)
+- [x] DynamoDB read/write operations
+- [x] CloudFront cache invalidation on config update
+- [x] Error handling for invalid input
+- [x] CloudWatch logging
 
 **Implementation Notes:**
-- getConfig should be publicly accessible (no auth required)
-- updateConfig must require Cognito authentication
-- Add routes to API Gateway for both functions
-- Consider caching config response for cost efficiency
+- getConfig is publicly accessible (no auth required)
+- updateConfig requires Cognito authentication via API Gateway
+- Routes added to API Gateway: GET /api/config (public), PUT /api/config (authenticated)
+- CloudFront cache invalidation triggers on config update to apply changes immediately
+- Both functions use shared config.repository.ts for DynamoDB operations
 
 ---
 
@@ -147,7 +148,7 @@ This phase implements the color palette customization system, allowing artists t
 ## Phase Summary
 
 ### Completion Status
-🔄 2/5 tasks complete (40%)
+🔄 3/5 tasks complete (60%)
 
 ### Key Features
 - Artist-customizable color palette

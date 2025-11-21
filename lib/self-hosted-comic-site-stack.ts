@@ -543,6 +543,42 @@ export class ComicSiteStack extends cdk.Stack {
 			{ prefix: 'invalidation/' }
 		);
 
+		// GetConfig Lambda function (defined after distribution)
+		const getConfigLambda = new lambda.Function(this, 'GetConfigLambda', {
+			runtime: lambda.Runtime.NODEJS_20_X,
+			handler: 'index.handler',
+			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'lambda', 'getConfig')),
+			environment: {
+				COMIC_TABLE_NAME: comicTable.tableName,
+			},
+			timeout: Duration.seconds(10),
+			memorySize: 256,
+		});
+
+		// UpdateConfig Lambda function (defined after distribution)
+		const updateConfigLambda = new lambda.Function(this, 'UpdateConfigLambda', {
+			runtime: lambda.Runtime.NODEJS_20_X,
+			handler: 'index.handler',
+			code: lambda.Code.fromAsset(path.join(__dirname, '..', 'lambda', 'updateConfig')),
+			environment: {
+				COMIC_TABLE_NAME: comicTable.tableName,
+				CLOUDFRONT_DISTRIBUTION_ID: distribution.distributionId,
+			},
+			timeout: Duration.seconds(10),
+			memorySize: 256,
+		});
+
+		// Grant DynamoDB permissions to config Lambdas
+		comicTable.grantReadData(getConfigLambda);
+		comicTable.grantReadWriteData(updateConfigLambda);
+
+		// Grant CloudFront invalidation permission to updateConfig Lambda
+		updateConfigLambda.addToRolePolicy(new iam.PolicyStatement({
+			effect: iam.Effect.ALLOW,
+			actions: ['cloudfront:CreateInvalidation'],
+			resources: [`arn:aws:cloudfront::${cdk.Stack.of(this).account}:distribution/${distribution.distributionId}`],
+		}));
+
 		// Create API Gateway REST API for Lambda functions
 		const api = new apigateway.RestApi(this, 'ComicSiteApi', {
 			restApiName: 'Comic Site API',
@@ -618,6 +654,16 @@ export class ComicSiteStack extends cdk.Stack {
 		// POST /api/upload/process - Process upload after S3 upload (requires auth)
 		const processUploadResource = uploadResource.addResource('process');
 		processUploadResource.addMethod('POST', new apigateway.LambdaIntegration(processUploadLambda), {
+			authorizer,
+			authorizationType: apigateway.AuthorizationType.COGNITO,
+		});
+
+		// GET /api/config - Get site configuration (public)
+		const configResource = apiResource.addResource('config');
+		configResource.addMethod('GET', new apigateway.LambdaIntegration(getConfigLambda));
+
+		// PUT /api/config - Update site configuration (requires auth)
+		configResource.addMethod('PUT', new apigateway.LambdaIntegration(updateConfigLambda), {
 			authorizer,
 			authorizationType: apigateway.AuthorizationType.COGNITO,
 		});
