@@ -14,6 +14,7 @@
     "build-schemas": "json2ts specs/data-schemas.json > specs/data-schemas-generated.ts"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.1",
     "@types/fs-extra": "^11.0.4",
     "@types/jest": "^29.5.14",
     "@types/node": "22.7.9",
