@@ -187,15 +187,54 @@ export class ComicSiteStack extends cdk.Stack {
 			code: cloudfront.FunctionCode.fromInline(cfFunctionCode),
 		});
 
-		// Create CloudFront distribution
-		const apiCachePolicyBase = new cloudfront.CachePolicy(this, 'ComicsApiCachePolicy', {
-			defaultTtl: Duration.minutes(10),
+		// Create CloudFront distribution with optimized cache policies
+
+		// API Cache Policy: 5 minute cache for API responses (cost-conscious)
+		const apiCachePolicy = new cloudfront.CachePolicy(this, 'ComicsApiCachePolicy', {
+			defaultTtl: Duration.minutes(5),
 			minTtl: Duration.seconds(0),
-			maxTtl: Duration.minutes(300),
+			maxTtl: Duration.minutes(10),
 			queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
 			enableAcceptEncodingGzip: true,
 			enableAcceptEncodingBrotli: true,
+			comment: 'Cache policy for API endpoints - 5 minute TTL',
 		});
+
+		// Static Assets Cache Policy: 1 year cache for immutable assets
+		const staticAssetsCachePolicy = new cloudfront.CachePolicy(this, 'StaticAssetsCachePolicy', {
+			defaultTtl: Duration.days(365),
+			minTtl: Duration.days(365),
+			maxTtl: Duration.days(365),
+			queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
+			enableAcceptEncodingGzip: true,
+			enableAcceptEncodingBrotli: true,
+			comment: 'Cache policy for static assets (JS, CSS) - 1 year TTL',
+		});
+
+		// Image Cache Policy: 1 day cache for comic images
+		const imageCachePolicy = new cloudfront.CachePolicy(this, 'ImageCachePolicy', {
+			defaultTtl: Duration.days(1),
+			minTtl: Duration.hours(1),
+			maxTtl: Duration.days(7),
+			queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
+			enableAcceptEncodingGzip: false, // Images are already compressed
+			enableAcceptEncodingBrotli: false,
+			comment: 'Cache policy for comic images - 1 day TTL',
+		});
+
+		// No Cache Policy: For index.html (SPA routing)
+		const noCachePolicy = new cloudfront.CachePolicy(this, 'NoCachePolicy', {
+			defaultTtl: Duration.seconds(0),
+			minTtl: Duration.seconds(0),
+			maxTtl: Duration.seconds(0),
+			queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
+			headerBehavior: cloudfront.CacheHeaderBehavior.none(),
+			cookieBehavior: cloudfront.CacheCookieBehavior.none(),
+			enableAcceptEncodingGzip: true,
+			enableAcceptEncodingBrotli: true,
+			comment: 'No cache policy for index.html',
+		});
+
 		const apiOriginRequestPolicy = new cloudfront.OriginRequestPolicy(this, 'ComicsApiOriginRequestPolicy', {
 			queryStringBehavior: cloudfront.OriginRequestQueryStringBehavior.all(),
 			headerBehavior: cloudfront.OriginRequestHeaderBehavior.none(),
@@ -242,7 +281,9 @@ export class ComicSiteStack extends cdk.Stack {
 				viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
 				allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
 				cachedMethods: cloudfront.CachedMethods.CACHE_GET_HEAD,
-				responseHeadersPolicy: responseHeadersPolicy
+				cachePolicy: noCachePolicy, // index.html should not be cached
+				responseHeadersPolicy: responseHeadersPolicy,
+				compress: true,
 			},
 			defaultRootObject: 'index.html',
 			errorResponses: [
@@ -268,20 +309,22 @@ export class ComicSiteStack extends cdk.Stack {
 						includeBody: false,
 					}],
 					allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
-					cachePolicy: apiCachePolicyBase,
+					cachePolicy: apiCachePolicy, // 5 minute cache for API responses
 					originRequestPolicy: apiOriginRequestPolicy,
+					compress: true,
 				},
 				'/api/getComic*': {
 					origin: websiteBucketS3Origin, // Dummy origin, will be overridden by Lambda@Edge
 					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
 					edgeLambdas: [{
-						functionVersion: getComicsLambda.currentVersion,
+						functionVersion: getComicLambda.currentVersion,
 						eventType: cloudfront.LambdaEdgeEventType.ORIGIN_REQUEST,
 						includeBody: false,
 					}],
 					allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
-					cachePolicy: apiCachePolicyBase,
+					cachePolicy: apiCachePolicy, // 5 minute cache for API responses
 					originRequestPolicy: apiOriginRequestPolicy,
+					compress: true,
 				},
 				'/api/images/*': {
 					origin: comicBucketS3Origin,
@@ -290,10 +333,14 @@ export class ComicSiteStack extends cdk.Stack {
 						function: imageRouterFunction,
 						eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
 					}],
+					cachePolicy: imageCachePolicy, // 1 day cache for comic images
+					compress: false, // Images already compressed
 				},
 				'/assets/*': {
 					origin: websiteBucketS3Origin,
 					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+					cachePolicy: staticAssetsCachePolicy, // 1 year cache for static assets
+					compress: true,
 				}
 			}
 		});
