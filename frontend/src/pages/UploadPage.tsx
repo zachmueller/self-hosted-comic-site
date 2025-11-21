@@ -1,13 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useRequireAuth } from '../auth/useRequireAuth';
+import { useAuth } from '../auth/useAuth';
 import ImageDropzone from '../components/upload/ImageDropzone';
 import ComicMetadataForm, { ComicMetadata } from '../components/upload/ComicMetadataForm';
 import ThumbnailSelector from '../components/upload/ThumbnailSelector';
+import { PanelReorderScreen } from '../components/upload/PanelReorderScreen';
+import { UploadSuccess } from '../components/upload/UploadSuccess';
+import { useS3Upload } from '../hooks/useS3Upload';
 import './UploadPage.css';
 
-type UploadStep = 'files' | 'metadata' | 'reorder' | 'publish';
+type UploadStep = 'files' | 'metadata' | 'reorder' | 'publish' | 'uploading' | 'success';
 
-const STEP_LABELS: Record<UploadStep, string> = {
+interface ImageData {
+  file: File;
+  preview: string;
+  altText?: string;
+}
+
+const STEP_LABELS: Record<string, string> = {
   files: 'Select Images',
   metadata: 'Add Details',
   reorder: 'Arrange Panels',
@@ -16,13 +26,32 @@ const STEP_LABELS: Record<UploadStep, string> = {
 
 function UploadPage() {
   const { isLoading } = useRequireAuth();
+  const { tokens } = useAuth();
   const [currentStep, setCurrentStep] = useState<UploadStep>('files');
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [images, setImages] = useState<ImageData[]>([]);
   const [metadata, setMetadata] = useState<ComicMetadata | null>(null);
   const [isMetadataValid, setIsMetadataValid] = useState(false);
   const [selectedThumbnailIndex, setSelectedThumbnailIndex] = useState(0);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [publishedComic, setPublishedComic] = useState<{ slug: string; title: string } | null>(
+    null
+  );
+  
+  // Get auth token for S3 upload
+  const authToken = tokens?.idToken || '';
+  const apiEndpoint = '/api/generatePresignedUrl';
+  
+  const s3Upload = useS3Upload({
+    apiEndpoint,
+    authToken,
+    concurrency: 3,
+    onSuccess: (s3Keys) => {
+      console.log('Upload complete:', s3Keys);
+    },
+    onError: (error) => {
+      console.error('Upload error:', error);
+    },
+  });
 
   // Load draft from localStorage on mount
   useEffect(() => {
@@ -52,7 +81,7 @@ function UploadPage() {
             JSON.stringify({
               metadata,
               thumbnailIndex: selectedThumbnailIndex,
-              fileCount: selectedFiles.length,
+              fileCount: images.length,
             })
           );
         } catch (error) {
@@ -61,25 +90,27 @@ function UploadPage() {
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [metadata, selectedThumbnailIndex, selectedFiles.length]);
+  }, [metadata, selectedThumbnailIndex, images.length]);
 
-  // Create preview URLs when files change
+  // Cleanup preview URLs on unmount
   useEffect(() => {
-    // Revoke old URLs
-    previewUrls.forEach((url) => URL.revokeObjectURL(url));
-
-    // Create new URLs
-    const urls = selectedFiles.map((file) => URL.createObjectURL(file));
-    setPreviewUrls(urls);
-
-    // Cleanup on unmount
     return () => {
-      urls.forEach((url) => URL.revokeObjectURL(url));
+      images.forEach((img) => URL.revokeObjectURL(img.preview));
     };
-  }, [selectedFiles]);
+  }, []);
 
   const handleFilesChange = (files: File[]) => {
-    setSelectedFiles(files);
+    // Revoke old URLs
+    images.forEach((img) => URL.revokeObjectURL(img.preview));
+
+    // Create new image data
+    const newImages: ImageData[] = files.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+      altText: undefined,
+    }));
+
+    setImages(newImages);
     setValidationErrors([]);
     // Reset thumbnail index if it's out of bounds
     if (selectedThumbnailIndex >= files.length) {
@@ -99,12 +130,18 @@ function UploadPage() {
     setSelectedThumbnailIndex(index);
   };
 
+  const handleReorder = (newOrder: ImageData[]) => {
+    setImages(newOrder);
+    setCurrentStep('publish');
+    window.scrollTo(0, 0);
+  };
+
   const canProceedToNextStep = (): { canProceed: boolean; errors: string[] } => {
     const errors: string[] = [];
 
     switch (currentStep) {
       case 'files':
-        if (selectedFiles.length === 0) {
+        if (images.length === 0) {
           errors.push('Please select at least one image');
         }
         break;
@@ -114,10 +151,12 @@ function UploadPage() {
         }
         break;
       case 'reorder':
-        // No validation needed - this step is optional
+      case 'uploading':
+      case 'success':
+        // No validation needed
         break;
       case 'publish':
-        if (selectedFiles.length === 0) {
+        if (images.length === 0) {
           errors.push('No images to upload');
         }
         if (!metadata) {
@@ -139,7 +178,7 @@ function UploadPage() {
     const steps: UploadStep[] = ['files', 'metadata', 'reorder', 'publish'];
     const currentIndex = steps.indexOf(currentStep);
     if (currentIndex < steps.length - 1) {
-      setCurrentStep(steps[currentIndex + 1]);
+      setCurrentStep(steps[currentIndex + 1] as UploadStep);
       setValidationErrors([]);
       window.scrollTo(0, 0);
     }
@@ -149,7 +188,7 @@ function UploadPage() {
     const steps: UploadStep[] = ['files', 'metadata', 'reorder', 'publish'];
     const currentIndex = steps.indexOf(currentStep);
     if (currentIndex > 0) {
-      setCurrentStep(steps[currentIndex - 1]);
+      setCurrentStep(steps[currentIndex - 1] as UploadStep);
       setValidationErrors([]);
       window.scrollTo(0, 0);
     }
@@ -157,16 +196,28 @@ function UploadPage() {
 
   const handleClearAll = () => {
     if (window.confirm('Are you sure you want to clear all data? This cannot be undone.')) {
-      previewUrls.forEach((url) => URL.revokeObjectURL(url));
-      setSelectedFiles([]);
-      setPreviewUrls([]);
+      images.forEach((img) => URL.revokeObjectURL(img.preview));
+      setImages([]);
       setMetadata(null);
       setIsMetadataValid(false);
       setSelectedThumbnailIndex(0);
       setCurrentStep('files');
       setValidationErrors([]);
+      setPublishedComic(null);
       localStorage.removeItem('comic-upload-draft');
     }
+  };
+
+  const handleUploadAnother = () => {
+    images.forEach((img) => URL.revokeObjectURL(img.preview));
+    setImages([]);
+    setMetadata(null);
+    setIsMetadataValid(false);
+    setSelectedThumbnailIndex(0);
+    setCurrentStep('files');
+    setValidationErrors([]);
+    setPublishedComic(null);
+    localStorage.removeItem('comic-upload-draft');
   };
 
   const handleSkipReorder = () => {
@@ -175,15 +226,71 @@ function UploadPage() {
   };
 
   const handlePublish = async () => {
-    // TODO: Implement actual publishing logic in UPLOAD-008, UPLOAD-009, UPLOAD-010
-    console.log('Publishing comic...', {
-      files: selectedFiles,
-      metadata,
-      thumbnailIndex: selectedThumbnailIndex,
-    });
-    alert(
-      'Publishing functionality will be implemented in future tasks (UPLOAD-008 through UPLOAD-010)'
-    );
+    if (!metadata) {
+      setValidationErrors(['Metadata is required']);
+      return;
+    }
+
+    if (images.length === 0) {
+      setValidationErrors(['No images to upload']);
+      return;
+    }
+
+    setCurrentStep('uploading');
+    setValidationErrors([]);
+
+    try {
+      // Upload images to S3
+      const s3Keys = await s3Upload.upload(images.map((img) => img.file));
+
+      if (!s3Keys) {
+        throw new Error('Failed to upload images to S3');
+      }
+
+      // Prepare metadata for backend
+      const uploadMetadata = {
+        title: metadata.title,
+        caption: metadata.caption,
+        postedDate: metadata.postedDate,
+        happenedOnDate: metadata.happenedOnDate,
+        tags: metadata.tags,
+        scrollStyle: metadata.scrollStyle,
+        images: s3Keys.map((s3Key: string, index: number) => ({
+          s3Key,
+          altText: images[index].altText,
+        })),
+        thumbnailIndex: selectedThumbnailIndex,
+      };
+
+      // Call processUpload Lambda
+      const response = await fetch('/api/processUpload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(uploadMetadata),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to publish comic');
+      }
+
+      const result = await response.json();
+
+      // Clear draft and move to success screen
+      localStorage.removeItem('comic-upload-draft');
+      setPublishedComic({
+        slug: result.slug,
+        title: metadata.title,
+      });
+      setCurrentStep('success');
+    } catch (error) {
+      console.error('Upload failed:', error);
+      setValidationErrors([
+        error instanceof Error ? error.message : 'Failed to publish comic. Please try again.',
+      ]);
+      setCurrentStep('publish');
+    }
   };
 
   if (isLoading) {
@@ -191,6 +298,61 @@ function UploadPage() {
       <div className="upload-page">
         <div className="upload-page__loading">
           <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show success screen
+  if (currentStep === 'success' && publishedComic) {
+    return (
+      <div className="upload-page">
+        <div className="upload-page__container">
+          <UploadSuccess
+            comicSlug={publishedComic.slug}
+            comicTitle={publishedComic.title}
+            onUploadAnother={handleUploadAnother}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // Show uploading screen
+  if (currentStep === 'uploading') {
+    return (
+      <div className="upload-page">
+        <div className="upload-page__container">
+          <div className="upload-page__uploading">
+            <h2>Uploading Your Comic...</h2>
+            <div className="upload-page__upload-progress">
+              {images.map((image, index) => {
+                const fileProgress = s3Upload.getFileProgress(index);
+                return (
+                  <div key={index} className="upload-page__file-progress">
+                    <div className="upload-page__file-name">{image.file.name}</div>
+                    <div className="upload-page__progress-bar">
+                      <div
+                        className="upload-page__progress-fill"
+                        style={{ width: `${fileProgress?.percentage || 0}%` }}
+                      />
+                    </div>
+                    <div className="upload-page__progress-percent">
+                      {fileProgress?.percentage || 0}%
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="upload-page__overall-progress">
+              <strong>Overall Progress:</strong> {Math.round(s3Upload.overallProgress)}%
+            </div>
+            {s3Upload.error && (
+              <div className="upload-page__upload-error">
+                <p>Upload error: {s3Upload.error.message}</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -261,11 +423,11 @@ function UploadPage() {
                 onValidationChange={handleValidationChange}
                 initialMetadata={metadata || undefined}
               />
-              {selectedFiles.length > 0 && (
+              {images.length > 0 && (
                 <div className="upload-page__thumbnail-section">
                   <ThumbnailSelector
-                    images={selectedFiles}
-                    previewUrls={previewUrls}
+                    images={images.map((img) => img.file)}
+                    previewUrls={images.map((img) => img.preview)}
                     selectedIndex={selectedThumbnailIndex}
                     onSelect={handleThumbnailSelect}
                   />
@@ -274,31 +436,14 @@ function UploadPage() {
             </div>
           )}
 
-          {currentStep === 'reorder' && (
+          {currentStep === 'reorder' && metadata && (
             <div className="upload-page__step">
-              <h2>Arrange Panels</h2>
-              <p className="upload-page__step-description">
-                Drag and drop to reorder your comic panels (optional)
-              </p>
-              <div className="upload-page__reorder-placeholder">
-                <p>Panel reordering interface will be implemented in UPLOAD-007</p>
-                <p>Current order: {selectedFiles.length} images</p>
-                <div className="upload-page__preview-grid">
-                  {previewUrls.map((url, index) => (
-                    <div key={index} className="upload-page__reorder-preview">
-                      <img src={url} alt={`Panel ${index + 1}`} />
-                      <span className="upload-page__reorder-number">{index + 1}</span>
-                    </div>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  className="upload-page__skip-button"
-                  onClick={handleSkipReorder}
-                >
-                  Skip Reordering
-                </button>
-              </div>
+              <PanelReorderScreen
+                images={images}
+                onReorder={handleReorder}
+                onSkip={handleSkipReorder}
+                scrollStyle={metadata.scrollStyle}
+              />
             </div>
           )}
 
@@ -337,16 +482,16 @@ function UploadPage() {
                   </dl>
                 </div>
                 <div className="upload-page__review-section">
-                  <h3>Images ({selectedFiles.length})</h3>
+                  <h3>Images ({images.length})</h3>
                   <div className="upload-page__preview-grid">
-                    {previewUrls.map((url, index) => (
+                    {images.map((image, index) => (
                       <div
                         key={index}
                         className={`upload-page__review-image ${
                           index === selectedThumbnailIndex ? 'thumbnail' : ''
                         }`}
                       >
-                        <img src={url} alt={`Panel ${index + 1}`} />
+                        <img src={image.preview} alt={`Panel ${index + 1}`} />
                         {index === selectedThumbnailIndex && (
                           <span className="upload-page__thumbnail-badge">Thumbnail</span>
                         )}

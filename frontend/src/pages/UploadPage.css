@@ -500,3 +500,118 @@
     font-size: 1.25rem;
   }
 }
+
+/* Uploading Progress Screen */
+.upload-page__uploading {
+  text-align: center;
+  padding: 3rem 2rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.upload-page__uploading h2 {
+  color: #333;
+  margin-bottom: 2rem;
+  font-size: 1.875rem;
+}
+
+.upload-page__upload-progress {
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.upload-page__file-progress {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 1.25rem;
+  text-align: left;
+}
+
+.upload-page__file-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.upload-page__file-progress .upload-page__progress-bar {
+  height: 12px;
+  background-color: #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.upload-page__file-progress .upload-page__progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4caf50, #66bb6a);
+  transition: width 0.3s ease;
+  border-radius: 6px;
+}
+
+.upload-page__progress-percent {
+  text-align: right;
+  color: #666;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.upload-page__overall-progress {
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  padding: 1.5rem;
+  background: #e8f5e9;
+  border: 2px solid #4caf50;
+  border-radius: 8px;
+  font-size: 1.125rem;
+  color: #2e7d32;
+}
+
+.upload-page__overall-progress strong {
+  font-weight: 700;
+}
+
+.upload-page__upload-error {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background: #ffebee;
+  border: 2px solid #f44336;
+  border-radius: 8px;
+  color: #c62828;
+}
+
+.upload-page__upload-error p {
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Uploading Screen Responsive */
+@media (max-width: 768px) {
+  .upload-page__uploading {
+    padding: 2rem 1rem;
+  }
+
+  .upload-page__uploading h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .upload-page__file-progress {
+    padding: 1rem;
+  }
+
+  .upload-page__file-name {
+    font-size: 0.875rem;
+  }
+
+  .upload-page__overall-progress {
+    font-size: 1rem;
+    padding: 1.25rem;
+  }
+}
