@@ -6,14 +6,7 @@
 
 ### Standard Profile Usage
 ```bash
-aws --profile comics <command>
-```
-
-### Environment Variable Alternative
-For commands that need the profile set for the session:
-```bash
-export AWS_PROFILE=comics
-aws <command>
+aws <command> --profile comics
 ```
 
 ## CDK Operations
@@ -27,20 +20,12 @@ export AWS_PROFILE=comics
 cdk deploy
 cdk diff
 cdk synth
-cdk destroy
 ```
 
 **Alternative Method (CLI Option):**
 ```bash
 cdk deploy --profile comics
 cdk diff --profile comics
-```
-
-### CDK Bootstrap
-Initial bootstrap must use the correct profile:
-```bash
-aws sts get-caller-identity --profile comics  # Verify account first
-cdk bootstrap --profile comics
 ```
 
 ## Stack-Specific Context
@@ -139,36 +124,6 @@ aws cognito-idp list-users \
 aws cognito-idp admin-create-user \
   --user-pool-id <pool-id> \
   --username <email> \
-  --profile comics
-```
-
-## Cost Monitoring
-
-### Constitutional Compliance
-Monitor costs regularly to ensure adherence to $10/month target:
-
-```bash
-# Get current month's costs
-aws ce get-cost-and-usage \
-  --time-period Start=$(date -u +%Y-%m-01),End=$(date -u +%Y-%m-%d) \
-  --granularity MONTHLY \
-  --metrics "UnblendedCost" \
-  --profile comics
-
-# Get cost breakdown by service
-aws ce get-cost-and-usage \
-  --time-period Start=$(date -u +%Y-%m-01),End=$(date -u +%Y-%m-%d) \
-  --granularity MONTHLY \
-  --metrics "UnblendedCost" \
-  --group-by Type=DIMENSION,Key=SERVICE \
-  --profile comics
-```
-
-### Cost Alerts
-Set up budget alerts to monitor constitutional cost compliance:
-```bash
-aws budgets describe-budgets \
-  --account-id <account-id> \
   --profile comics
 ```
 
