@@ -588,6 +588,32 @@ export class ComicSiteStack extends cdk.Stack {
 			},
 		});
 
+		// Add API Gateway as CloudFront origin using custom origin
+		const apiGatewayDomainName = `${api.restApiId}.execute-api.${this.region}.amazonaws.com`;
+		
+		// Add API Gateway origin to existing distribution
+		cfnDistribution.addPropertyOverride('DistributionConfig.Origins.3', {
+			Id: 'APIGatewayOrigin',
+			DomainName: apiGatewayDomainName,
+			CustomOriginConfig: {
+				HTTPSPort: 443,
+				OriginProtocolPolicy: 'https-only',
+				OriginSSLProtocols: ['TLSv1.2'],
+			},
+		});
+
+		// Add API Gateway cache behavior
+		cfnDistribution.addPropertyOverride('DistributionConfig.CacheBehaviors.2', {
+			PathPattern: '/prod/api/*',
+			TargetOriginId: 'APIGatewayOrigin',
+			ViewerProtocolPolicy: 'redirect-to-https',
+			AllowedMethods: ['GET', 'HEAD', 'OPTIONS', 'PUT', 'POST', 'PATCH', 'DELETE'],
+			CachedMethods: ['GET', 'HEAD', 'OPTIONS'],
+			Compress: true,
+			CachePolicyId: apiCachePolicy.cachePolicyId,
+			OriginRequestPolicyId: apiOriginRequestPolicy.originRequestPolicyId,
+		});
+
 		// Add /api resource
 		const apiResource = api.root.addResource('api');
 
