@@ -20,7 +20,7 @@ This phase implements comprehensive testing across all layers of the application
 - Artist-First: Tests ensure validation errors are clear and helpful
 
 **Acceptance Criteria:**
-- [x] Test all validation rules from specs/validation-rules.md
+- [x] Test all validation rules from specs/02-validation-rules.md
 - [x] Test valid data from test/fixtures/valid-comics.json
 - [x] Test invalid data from test/fixtures/invalid-comics.json
 - [x] Verify error messages are artist-friendly

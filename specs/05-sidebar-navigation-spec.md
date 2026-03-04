@@ -3,11 +3,11 @@
 **Created:** November 8, 2025
 **Status:** Draft
 **Related Specs:** 
-- [Core MVP](core-mvp-spec.md)
-- [Tag Management](tag-management-spec.md)
-- [Enhanced Features](enhanced-features-spec.md)
-- [Search Functionality](search-functionality-spec.md)
-- [Random Comic Selection](random-comic-spec.md)
+- [Core MVP](01-core-mvp-spec.md)
+- [Tag Management](03-tag-management-spec.md)
+- [Enhanced Features](11-enhanced-features-spec.md)
+- [Search Functionality](06-search-functionality-spec.md)
+- [Random Comic Selection](07-random-comic-spec.md)
 
 ## Overview
 A responsive sidebar navigation system that provides persistent access to core site sections while prioritizing artist content management workflow. The navigation features a sticky positioning system that remains accessible during content scrolling, with a permanently visible sidebar on desktop and collapsible overlay behavior on mobile devices.

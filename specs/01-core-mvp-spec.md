@@ -4,10 +4,10 @@
 **Status:** Draft
 **Derived From:** Original monolithic comic site specification (refactored November 2025)
 **Related Specs:** 
-- [Tag Management](tag-management-spec.md)
-- [Raw Sketches](raw-sketches-spec.md) 
-- [Enhanced Features](enhanced-features-spec.md)
-- [Reader Login System](reader-login-spec.md) - Optional engagement features
+- [Tag Management](03-tag-management-spec.md)
+- [Raw Sketches](04-raw-sketches-spec.md) 
+- [Enhanced Features](11-enhanced-features-spec.md)
+- [Reader Login System](10-reader-login-spec.md) - Optional engagement features
 
 ## Overview
 Core MVP functionality for a CDK-based package that enables individual comic artists to easily deploy and manage their own AWS-hosted comic website. This spec covers the essential features needed for a functional comic site with artist upload capabilities and reader browsing.
@@ -54,7 +54,7 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 - As a comic artist, I want to define for each comic post whether its multiple images are shown in carousel form or simple long form so that I control the presentation of my content
 - As a comic artist, I want to optionally provide alt text descriptions for my comic images so that readers using screen readers and assistive technology can understand my visual content
 - As a comic artist, I want to select which image serves as the thumbnail for each comic post so that readers see the most representative image in listing contexts
-- As a comic artist, I want to reorder the panels of my comics during the upload process so that I can confirm the correct sequence before publication (see [Enhanced Features](enhanced-features-spec.md) for full panel reordering functionality)
+- As a comic artist, I want to reorder the panels of my comics during the upload process so that I can confirm the correct sequence before publication (see [Enhanced Features](11-enhanced-features-spec.md) for full panel reordering functionality)
 - As a comic reader, I want to see the latest comics on the homepage so that I can quickly access new content
 - As a comic reader, I want to browse comics by tags so that I can find content that matches my interests  
 - As a comic reader, I want to see explicitly related comics on individual comic pages so that I can follow artist-intended connections and storylines
@@ -62,7 +62,7 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 - As a comic reader, I want the entire site layout to adapt responsively to my device (desktop, tablet, mobile) so that I have an optimal viewing experience regardless of screen size
 - As a comic reader, I want comics and navigation elements to be appropriately sized and positioned for my device context so that I can comfortably read and browse on any screen
 - As a comic reader, I want touch-friendly controls on mobile devices and mouse-friendly controls on desktop so that interaction methods match my device capabilities
-- As a comic reader, I want to access all content anonymously so that I can enjoy comics without requiring account creation (Note: Optional reader login system available for enhanced engagement - see [Reader Login System](reader-login-spec.md))
+- As a comic reader, I want to access all content anonymously so that I can enjoy comics without requiring account creation (Note: Optional reader login system available for enhanced engagement - see [Reader Login System](10-reader-login-spec.md))
 - As a site administrator (artist), I want simple CDK-based deployment so that I can maintain my site without complex server management
 
 ## Functional Requirements
@@ -129,7 +129,7 @@ Core MVP functionality for a CDK-based package that enables individual comic art
       - Each relationship contains: `targetComicId` (string), `sourceType` ('caption'|'series'|'tag')
       - Relationships automatically created/updated when caption references are parsed
       - Bidirectional relationships maintained automatically across referenced comics
-  - `integrations` (array): Per-comic social media platform controls (see [Social Media Integration](social-media-integration-spec.md))
+  - `integrations` (array): Per-comic social media platform controls (see [Social Media Integration](09-social-media-integration-spec.md))
     - Each integration object contains: `type` (string), `use` (boolean)
     - Supported types: `instagram`, `facebook`
     - Default value: `[{"type": "instagram", "use": true}, {"type": "facebook", "use": true}]`
@@ -178,7 +178,7 @@ Core MVP functionality for a CDK-based package that enables individual comic art
   - Typography scales responsively while maintaining readability across all devices
   - Filtering and pagination controls adapt to touch interaction on mobile and mouse interaction on desktop
 - Anonymous access to all published content (no authentication required for basic reading experience)
-- Optional integration points for reader engagement features (see [Reader Login System](reader-login-spec.md))
+- Optional integration points for reader engagement features (see [Reader Login System](10-reader-login-spec.md))
 
 ### FR-6: Multi-Image Comic Display
 **Description:** Configurable display system allowing artists to choose between carousel and long form presentation with responsive layout adaptation
@@ -298,7 +298,7 @@ Core MVP functionality for a CDK-based package that enables individual comic art
    - System validates references and highlights any invalid comic titles
    - Can include multiple comic references within single caption
 5. Artist initiates upload and receives real-time progress feedback
-6. **Optional Panel Reordering:** Artist proceeds to panel reordering step (see [Enhanced Features](enhanced-features-spec.md) for full functionality):
+6. **Optional Panel Reordering:** Artist proceeds to panel reordering step (see [Enhanced Features](11-enhanced-features-spec.md) for full functionality):
    - System displays thumbnail preview of uploaded panels in current order
    - Artist can reorder panels using drag-and-drop (desktop) or touch gestures (iPad)
    - Real-time preview shows how reordered panels appear in both carousel and long-form modes
@@ -378,12 +378,12 @@ Measurable, constitutional-principle-aligned outcomes:
 
 ## Out of Scope for MVP
 Features explicitly excluded from MVP (see related specs):
-- Series management and navigation (see [Tag Management](tag-management-spec.md))
-- Raw sketch upload and display functionality (see [Raw Sketches](raw-sketches-spec.md))
-- Bulk upload operations and advanced management (see [Enhanced Features](enhanced-features-spec.md))
-- Advanced thumbnail generation (see [Enhanced Features](enhanced-features-spec.md))
-- Publish/unpublish controls (see [Enhanced Features](enhanced-features-spec.md))
-- Reader authentication, comments, and engagement features (see [Reader Login System](reader-login-spec.md))
+- Series management and navigation (see [Tag Management](03-tag-management-spec.md))
+- Raw sketch upload and display functionality (see [Raw Sketches](04-raw-sketches-spec.md))
+- Bulk upload operations and advanced management (see [Enhanced Features](11-enhanced-features-spec.md))
+- Advanced thumbnail generation (see [Enhanced Features](11-enhanced-features-spec.md))
+- Publish/unpublish controls (see [Enhanced Features](11-enhanced-features-spec.md))
+- Reader authentication, comments, and engagement features (see [Reader Login System](10-reader-login-spec.md))
 
 ## Implementation Notes
 

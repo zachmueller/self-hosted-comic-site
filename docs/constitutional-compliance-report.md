@@ -259,8 +259,8 @@ All four core constitutional principles are satisfied in the current implementat
 - ✅ Project Constitution: `.clinerules/memory/constitution.md`
 - ✅ Git Workflow: `.clinerules/git-workflow.md`
 - ✅ Task Templates: `.clinerules/templates/`
-- ✅ Specifications: `specs/core-mvp-spec.md` and others
-- ✅ Task Breakdown: `tasks/core-mvp/` with 8 phases
+- ✅ Specifications: `specs/01-core-mvp-spec.md` and others
+- ✅ Task Breakdown: `tasks/01-core-mvp/` with 8 phases
 - ✅ Testing Documentation:
   - Integration tests README
   - Performance bundle analysis

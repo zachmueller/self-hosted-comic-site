@@ -4,11 +4,11 @@
 **Status:** Draft
 **Derived From:** Original monolithic comic site specification (refactored November 2025)
 **Related Specs:** 
-- [Core MVP](core-mvp-spec.md) - Prerequisites
-- [Tag Management](tag-management-spec.md)
-- [Raw Sketches](raw-sketches-spec.md)
-- [Reader Login System](reader-login-spec.md) - Integrates with management interface
-- [Newsletter System](newsletter-system-spec.md) - Footer signup form integration
+- [Core MVP](01-core-mvp-spec.md) - Prerequisites
+- [Tag Management](03-tag-management-spec.md)
+- [Raw Sketches](04-raw-sketches-spec.md)
+- [Reader Login System](10-reader-login-spec.md) - Integrates with management interface
+- [Newsletter System](08-newsletter-system-spec.md) - Footer signup form integration
 
 ## Overview
 Advanced functionality that enhances the core comic site with one-time migration capabilities, advanced management features, thumbnail generation, and improved user experience. These features build upon the MVP foundation to provide a more robust and feature-rich comic publishing platform.
@@ -138,7 +138,7 @@ Advanced functionality that enhances the core comic site with one-time migration
   - Delete unused tags with confirmation workflow
   - Tag categorization and organization tools
   - Navigation highlighting management: artists control which tags are featured in reader-facing tag navigation
-- **Reader Engagement Integration:** Access point to reader moderation dashboard when reader login system is deployed (see [Reader Login System](reader-login-spec.md))
+- **Reader Engagement Integration:** Access point to reader moderation dashboard when reader login system is deployed (see [Reader Login System](10-reader-login-spec.md))
 - **Engagement Analytics Integration:** Comic performance metrics include reader reaction and comment data when available
 
 ### FR-E6: Custom Domain Configuration
@@ -196,7 +196,7 @@ Advanced functionality that enhances the core comic site with one-time migration
   - Content length limits prevent footer from overwhelming page layout or competing with newsletter signup
 - **Footer Display Features:**
   - Footer appears consistently across all reader-facing pages (homepage, comic pages, search results)
-  - Newsletter signup form integrated prominently within footer layout (see [Newsletter System](newsletter-system-spec.md))
+  - Newsletter signup form integrated prominently within footer layout (see [Newsletter System](08-newsletter-system-spec.md))
   - Responsive design ensures footer readability on all device sizes
   - Professional styling matches overall site aesthetic
   - External links open in new tabs/windows to retain reader on comic site

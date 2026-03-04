@@ -1,8 +1,8 @@
 # Core MVP Task Breakdown
 
 **Created:** November 18, 2025  
-**Implementation Plan:** [plans/core-mvp-plan.md](../../plans/core-mvp-plan.md)  
-**Specification:** [specs/core-mvp-spec.md](../../specs/core-mvp-spec.md)  
+**Implementation Plan:** [plans/01-01-core-mvp-plan.md](../../plans/01-01-core-mvp-plan.md)  
+**Specification:** [specs/01-core-mvp-spec.md](../../specs/01-core-mvp-spec.md)
 **Status:** In Progress
 
 ## Overview

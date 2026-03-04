@@ -3,8 +3,8 @@
 **Created:** November 8, 2025
 **Status:** Draft
 **Related Specs:** 
-- [Core MVP](core-mvp-spec.md) - Updates comic metadata schema
-- [Enhanced Features](enhanced-features-spec.md) - Complements publishing features
+- [Core MVP](01-core-mvp-spec.md) - Updates comic metadata schema
+- [Enhanced Features](11-enhanced-features-spec.md) - Complements publishing features
 
 ## Overview
 Enables automatic cross-posting of published comics to Instagram and Facebook accounts, allowing comic artists to maintain their social media presence while driving traffic to their self-hosted comic site. This feature integrates with the comic publishing workflow to automatically share content across platforms with customizable per-comic controls.

@@ -180,7 +180,7 @@
 
 **Status:** 9/9 tasks (100%)
 
-⚠️ **DISCREPANCY ALERT**: `tasks/core-mvp/README.md` incorrectly shows Phase 7 as "⏳ 0% Complete", but all tests exist and are documented as complete in `phase-7-testing.md`.
+⚠️ **DISCREPANCY ALERT**: `tasks/01-core-mvp/README.md` incorrectly shows Phase 7 as "⏳ 0% Complete", but all tests exist and are documented as complete in `phase-7-testing.md`.
 
 ### Completed Tasks
 - ✅ **TEST-001**: Validation Schema Tests - `frontend/src/validation/__tests__/` (124 tests)
@@ -203,7 +203,7 @@
 - ✅ Cost analysis shows $0.44-9.50/month (within $10 target)
 
 ### Required Action
-- 🔧 Update `tasks/core-mvp/README.md` to reflect Phase 7 completion status
+- 🔧 Update `tasks/01-core-mvp/README.md` to reflect Phase 7 completion status
 
 ---
 

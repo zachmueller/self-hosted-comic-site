@@ -38,7 +38,7 @@ This phase establishes the data foundation for the application, including TypeSc
 - Artist-First: Clear validation errors improve artist experience
 
 **Acceptance Criteria:**
-- [x] All validation rules from specs/validation-rules.md implemented
+- [x] All validation rules from specs/02-validation-rules.md implemented
 - [x] Comic metadata validation (title, caption, dates, tags)
 - [x] Image validation (file type, size limits)
 - [x] Reference syntax validation ([[Title]] and [[Title|Alias]])

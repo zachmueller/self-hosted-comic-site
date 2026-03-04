@@ -4,9 +4,9 @@
 **Status:** Draft
 **Derived From:** Original monolithic comic site specification (refactored November 2025)
 **Related Specs:** 
-- [Core MVP](core-mvp-spec.md) - Prerequisites
-- [Tag Management](tag-management-spec.md)
-- [Enhanced Features](enhanced-features-spec.md)
+- [Core MVP](01-core-mvp-spec.md) - Prerequisites
+- [Tag Management](03-tag-management-spec.md)
+- [Enhanced Features](11-enhanced-features-spec.md)
 
 ## Overview
 Raw sketch functionality that allows artists to upload sketch versions of their comics alongside final versions, with a global toggle system for readers to switch between viewing modes. This feature enables artists to share their creative process while maintaining the primary focus on finished comics.

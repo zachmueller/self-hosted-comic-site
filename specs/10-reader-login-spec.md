@@ -3,8 +3,8 @@
 **Created:** November 8, 2025
 **Status:** Draft
 **Related Specs:** 
-- [Core MVP](core-mvp-spec.md) - Prerequisites for basic comic display
-- [Enhanced Features](enhanced-features-spec.md) - May integrate with management interface
+- [Core MVP](01-core-mvp-spec.md) - Prerequisites for basic comic display
+- [Enhanced Features](11-enhanced-features-spec.md) - May integrate with management interface
 
 ## Overview
 Reader authentication and engagement system that allows comic site visitors to create accounts, react to individual comic panels with emoji reactions, and leave moderated comments on comic posts. This system maintains the artist-first principle by giving artists full control over reader engagement and community moderation.

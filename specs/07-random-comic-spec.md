@@ -3,9 +3,9 @@
 **Created:** November 8, 2025
 **Status:** Draft
 **Related Specs:** 
-- [Core MVP](core-mvp-spec.md)
-- [Sidebar Navigation System](sidebar-navigation-spec.md)
-- [Search Functionality](search-functionality-spec.md)
+- [Core MVP](01-core-mvp-spec.md)
+- [Sidebar Navigation System](05-sidebar-navigation-spec.md)
+- [Search Functionality](06-search-functionality-spec.md)
 
 ## Overview
 A "Random Comic" navigation feature that provides readers with serendipitous content discovery and artists with a quick way to review their published work. The feature adds a single button to the sidebar navigation that instantly navigates users to a randomly selected published comic, encouraging content exploration and re-engagement with the artist's full catalog.

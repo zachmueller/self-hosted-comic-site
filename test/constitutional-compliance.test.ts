@@ -17,11 +17,11 @@ describe('Constitutional Compliance', () => {
     it('should prioritize artist upload workflow in task completion', () => {
       // Verify upload tasks completed before reader tasks
       const uploadTasks = [
-        'tasks/core-mvp/phase-3-upload.md',
+        'tasks/01-core-mvp/phase-3-upload.md',
       ];
       
       const readerTasks = [
-        'tasks/core-mvp/phase-4-reader.md',
+        'tasks/01-core-mvp/phase-4-reader.md',
       ];
       
       uploadTasks.forEach(taskFile => {
@@ -286,7 +286,7 @@ describe('Constitutional Compliance', () => {
     });
     
     it('should have phase task documentation', () => {
-      const taskDir = 'tasks/core-mvp';
+      const taskDir = 'tasks/01-core-mvp';
       expect(fs.existsSync(taskDir)).toBe(true);
       
       const phases = fs.readdirSync(taskDir).filter(f => f.startsWith('phase-'));
@@ -302,13 +302,13 @@ describe('Constitutional Compliance', () => {
       const specs = fs.readdirSync(specsDir).filter(f => f.endsWith('.md'));
       
       // Should have core MVP spec at minimum
-      expect(specs).toContain('core-mvp-spec.md');
+      expect(specs).toContain('01-core-mvp-spec.md');
     });
   });
   
   describe('Git Workflow Compliance', () => {
     it('should have git workflow rules documented', () => {
-      const gitRules = '.clinerules/git-workflow.md';
+      const gitRules = '.clinerules/git.md';
       expect(fs.existsSync(gitRules)).toBe(true);
     });
     

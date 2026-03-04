@@ -3,7 +3,7 @@
 **Created:** November 9, 2025
 **Status:** Draft
 **Related Specs:** 
-- [Core MVP](core-mvp-spec.md) - Comic publishing and display functionality
+- [Core MVP](01-core-mvp-spec.md) - Comic publishing and display functionality
 
 ## Overview
 Simple newsletter subscription system that allows readers to sign up for email updates via a footer form. Readers provide their name and email address, which is automatically added to the artist's linked MailChimp account for email marketing. The system focuses on easy subscription with minimal friction, allowing artists to build their audience without complex subscriber management.

@@ -4,9 +4,9 @@
 **Status:** Draft
 **Derived From:** Original monolithic comic site specification (refactored November 2025)
 **Related Specs:** 
-- [Core MVP](core-mvp-spec.md) - Prerequisites
-- [Raw Sketches](raw-sketches-spec.md) 
-- [Enhanced Features](enhanced-features-spec.md)
+- [Core MVP](01-core-mvp-spec.md) - Prerequisites
+- [Raw Sketches](04-raw-sketches-spec.md) 
+- [Enhanced Features](11-enhanced-features-spec.md)
 
 ## Overview
 Comprehensive tag management functionality that extends the base tag system to provide enhanced metadata and organization capabilities. This includes both regular tags and series (which are special types of tags) with proper ordering, navigation, and display metadata. This builds upon the Core MVP's tag functionality to enable artists to organize and present their comics with rich categorization while maintaining the same underlying technical architecture.

@@ -1,7 +1,7 @@
 # Implementation Plan: Core MVP
 
 **Created:** November 18, 2025
-**Specification:** [specs/core-mvp-spec.md](../specs/core-mvp-spec.md)
+**Specification:** [specs/01-core-mvp-spec.md](../specs/01-core-mvp-spec.md)
 **Status:** Planning
 
 ## Technical Context
@@ -154,7 +154,7 @@
   - Implement data access layer with query patterns
 
 - **Validation Rules Integration:**
-  - Port validation rules from `specs/validation-rules.md` to TypeScript
+  - Port validation rules from `specs/02-validation-rules.md` to TypeScript
   - Create Zod schemas for runtime validation
   - Implement validation utilities for client and server
 
