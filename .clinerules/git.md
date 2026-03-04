@@ -10,20 +10,52 @@
    - **For deletions:** `git rm <deleted-files>` or `git rm -r <deleted-directories>`
    - **For mixed operations:** Use both approaches - `git add` for modifications/additions, `git rm` for deletions
    - **Always verify with `git status --porcelain` first** to identify what changed and ensure only intended changes are staged
-2. **Commit with descriptive message:** `git commit -m "Summary of work completed"`
+2. **Commit with descriptive message:** `git commit -m "{commit_message}"`
 3. **Include in commit message:**
    - Brief summary of what was accomplished
    - Key changes made to each file (explicitly listing deletions, modifications, and additions)
    - Context for why changes were needed
+   - Input provided by the human that led to the changes
 
 ### Commit Message Format
+
+**When explicit instructions/workflow file is attached:**
 ```
-<Action>: <Brief summary>
+[Cline] <Action>: <Brief summary>
 
 - <Specific change 1>
 - <Specific change 2>
 - <Context or rationale if helpful>
+
+---
+
+Workflow: {explicit_instruction_type}
+{human_input}
 ```
+
+**When NO explicit instructions/workflow file is attached:**
+```
+[Cline] <Action>: <Brief summary>
+
+- <Specific change 1>
+- <Specific change 2>
+- <Context or rationale if helpful>
+
+---
+
+{human_input}
+```
+
+**Important Requirements:**
+- **ALWAYS prepend** commit messages with `[Cline]` to indicate AI-generated commits
+- **When an explicit instruction/workflow file is attached:** Include `Workflow: {explicit_instruction_type}` line before human input
+  - Extract the workflow name from the `type` attribute of the `<explicit_instructions>` tag
+  - Example: `Workflow: version-bump.md`
+  - This identifies which workflow guided the AI's actions
+- **ALWAYS append** the human input that led to the commit after a `---` separator
+  - If the human's prompt is short (~255 words or less), include the full raw prompt text
+  - If the human's prompt is long, summarize it to approximately one paragraph in length
+- This structure ensures commit provenance and context are preserved in the git history
 
 ### When to Commit
 - ✅ After creating/updating any files
@@ -36,31 +68,6 @@
 - ❌ Files modified by user or other processes
 - ❌ Unrelated changes from previous work
 - ❌ Files that were only read (not modified)
-
-### Special File Types
-
-#### Scratchpad.md Commits
-- **When to commit**: After completing work sessions or major updates
-- **What to include**: Current project progress, meta-learning insights, scratch notes
-- **Commit message format**: `Update scratchpad: [brief summary of progress/insights]`
-- **Frequency**: Don't commit every small change - consolidate meaningful updates
-
-#### CPN/ Evergreen Notes
-- **When to commit**: Immediately after creating or significantly enhancing a concept note
-- **What to include**: Only the specific cpn/ files that were created or modified
-- **Commit message format**: `Add concept: [concept-title]` or `Enhance concept: [concept-title] - [specific improvement]`
-- **Linking updates**: If adding links to existing notes, include those changes in the same commit
-
-#### Combined Commits
-When work spans multiple file types, structure commits as:
-```
-Complete [project/work description]
-
-- Updated scratchpad.md with progress and insights
-- Created concept: [[new-concept-name]]
-- Enhanced existing concept: [[existing-concept-name]]
-- [Other specific changes]
-```
 
 ## Branch Management
 - Work should be committed to the current branch unless otherwise specified
