@@ -116,24 +116,20 @@ Core MVP functionality for a CDK-based package that enables individual comic art
 - **Core Metadata Schema per Post:**
   - `id` (string): Unique identifier serving as DynamoDB partition key
   - `images` (array): Ordered list of comic panel images with metadata objects
-    - Each image object contains: `s3Key` (string), `altText` (optional string)
+    - Each image object contains: `key` (string, S3 object key), `altText` (optional string), `order` (number, 0-indexed display order)
     - Alt text provides accessibility description for screen readers and assistive technology
   - `title` (string): Display title for the post
   - `slug` (string): URL slug portion specific to this post
   - `caption` (string): Text displayed below each comic
   - `tags` (array of strings): List of tags applied to comic
-  - `happenedOnDate` (date): Date when comic situation occurred
-  - `scrollStyle` (string): Display style (`carousel` or `long`)
+  - `happenedOnDate` (date, optional): Date when comic situation occurred (ISO 8601 format; pre-populated with today's date in upload UI but not required)
+  - `scrollStyle` (string): Display style (`carousel` or `longForm`)
   - `postedTimestamp` (timestamp): Publication date
   - `derivedRelationships` (array): Automatically generated bidirectional connections from caption references
       - Each relationship contains: `targetComicId` (string), `sourceType` ('caption'|'series'|'tag')
       - Relationships automatically created/updated when caption references are parsed
       - Bidirectional relationships maintained automatically across referenced comics
-  - `integrations` (array): Per-comic social media platform controls (see [Social Media Integration](09-social-media-integration-spec.md))
-    - Each integration object contains: `type` (string), `use` (boolean)
-    - Supported types: `instagram`, `facebook`
-    - Default value: `[{"type": "instagram", "use": true}, {"type": "facebook", "use": true}]`
-    - Artist can modify `use` values during upload to control per-comic social media posting
+  - **Note:** Per-comic social media integration controls are defined in [Social Media Integration](09-social-media-integration-spec.md) and are not part of the Core MVP metadata schema.
 - Tag system supports reader filtering and content discovery with case-insensitive matching
 - Comic slugs generated from titles for SEO-friendly URLs with duplicate detection requiring artist resolution
 - Relationship system supports bidirectional connections with automatic inverse relationship creation
@@ -212,7 +208,7 @@ Core MVP functionality for a CDK-based package that enables individual comic art
   - **Device-Adaptive Navigation:** Related comic thumbnails and links resize and reflow for optimal display on mobile, tablet, and desktop
   - Touch-friendly interface on mobile devices with appropriate spacing and target sizes
 - **Responsive Navigation Controls:**
-  - Basic chronological next/previous navigation between comics (by "happened on" date) with device-appropriate button sizing
+  - Basic chronological next/previous navigation between comics (by "happened on" date, falling back to `postedTimestamp` when `happenedOnDate` is absent) with device-appropriate button sizing
   - Navigation controls positioned optimally for each device type (bottom on mobile, sides on desktop)
 - **Share Functionality with Cross-Device Support:**
   - Share button beneath each comic that copies the direct comic URL to clipboard
@@ -240,7 +236,7 @@ Core MVP functionality for a CDK-based package that enables individual comic art
   - Color values stored as valid CSS hex codes (#RRGGBB format) with validation during input
   - All site pages apply configured color palette immediately upon artist configuration changes
   - Color palette changes update consistently across homepage, comic pages, navigation, and management interfaces
-  - Accessibility validation ensures sufficient contrast ratios between text and background colors
+  - Accessibility validation ensures sufficient contrast ratios between text and background colors (WCAG 2.1 AA: minimum 4.5:1 for normal text, 3:1 for large text)
   - Default color palette provides professional appearance for artists who don't customize colors
 - **Constitutional Compliance:**
   - Color configuration prioritizes artist branding control and creative expression
@@ -341,15 +337,15 @@ Measurable, constitutional-principle-aligned outcomes:
 ## Key Entities
 
 ### Comic Entity (MVP)
-- **Attributes:** id, title, caption, happenedOnDate, postedTimestamp, images (with s3Key and optional altText), tags, slug, scrollStyle, derivedRelationships, thumbnailImageIndex
-- **Validation:** Required title and happenedOnDate, at least one image required, altText optional but recommended for accessibility
+- **Attributes:** id, title, caption, happenedOnDate (optional), postedTimestamp, images (with key, altText, order), tags, slug, scrollStyle, derivedRelationships, thumbnailIndex
+- **Validation:** Required title, at least one image required, happenedOnDate optional (pre-populated in UI), altText optional but recommended for accessibility
 - **Caption Processing:** System automatically parses caption text for [[Comic Title]] references to derive relationships
-- **Thumbnail Selection:** thumbnailImageIndex (number) specifies which image from the images array serves as the post thumbnail (defaults to 0 for first image)
+- **Thumbnail Selection:** thumbnailIndex (number) specifies which image from the images array serves as the post thumbnail (defaults to 0 for first image)
 - **Relationships:** 
   - Has multiple tags for discovery
   - Has multiple automatically-derived bidirectional relationships to other comics from caption references
   - Each relationship includes: targetComicId (string), sourceType ('caption'|'series'|'tag')
-  - Each image includes: s3Key (required), altText (optional for accessibility)
+  - Each image includes: key (required, S3 object key), altText (optional for accessibility), order (number, display order)
 
 ### Comic Derived Relationship Entity
 - **Attributes:** targetComicId (string), sourceType ('caption'|'series'|'tag')

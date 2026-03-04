@@ -187,6 +187,27 @@ Medium and Low issues can be addressed in parallel with Phase 8 work.
 
 ---
 
-## Remediation Guidance
+## Remediation Status
 
-Would you like me to suggest concrete remediation edits for the top 6 issues (I1–I6)?
+All findings have been remediated as of April 3, 2026:
+
+| ID | Status | Action Taken |
+|----|--------|-------------|
+| I1 | ✅ Fixed | Updated spec FR-3 `scrollStyle` to `"longForm"` |
+| I2 | ✅ Fixed | Removed `integrations` from spec FR-3; added cross-ref to social media spec |
+| I3 | ✅ Fixed | Updated spec to use `thumbnailIndex` consistently |
+| I4 | ✅ Fixed | Updated spec image object to use `key` with `order` field, matching implementation |
+| I5 | ✅ Fixed | Updated tasks README: Phase 7 → ✅ 100% Complete |
+| I6 | ✅ Fixed | Updated Phase 8 header to 0/8 tasks; README total to 61 tasks |
+| D1 | ✅ Fixed | Removed duplicate `parseReferences` from comic.schema.ts; re-exports from shared utility; added sync note in Lambda |
+| D2 | ℹ️ Noted | Acceptable overlap between plan phases (intentional progressive detail) |
+| A1 | ✅ Fixed | Spec FR-3 now marks `happenedOnDate` as optional |
+| A2 | ✅ Fixed | Spec FR-8 now specifies WCAG 2.1 AA thresholds (4.5:1 / 3:1) |
+| A3 | ✅ Fixed | Removed `research.md` from plan deliverables |
+| U1 | ℹ️ Noted | Low priority; current implementation uses per-file progress bars |
+| U2 | ✅ Fixed | Spec FR-7 now specifies `postedTimestamp` fallback for null `happenedOnDate` |
+| C1 | ℹ️ Noted | Covered by UPLOAD-004 autocomplete; invalid styling implicit in implementation |
+| L1 | ✅ Fixed | Corrected link to `plans/01-core-mvp-plan.md` |
+| L2 | ✅ Fixed | Recalculated: 61 total tasks, 53 completed (87%) |
+| L3 | ✅ Fixed | Added phase numbering note to README |
+| L4 | ✅ Fixed | Updated estimated timeline to reflect current state |

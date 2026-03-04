@@ -44,6 +44,10 @@ interface DerivedRelationship {
 
 /**
  * Parse caption for [[Title]] or [[Title|Alias]] references
+ * 
+ * NOTE: This is an inline copy of the canonical parser in shared/utils/referenceParser.ts.
+ * Lambda functions are bundled individually and cannot import from shared/.
+ * If you modify parsing logic, keep both locations in sync.
  */
 function parseReferences(caption: string): Array<{ title: string; alias?: string }> {
   const referenceRegex = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;

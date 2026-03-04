@@ -20,6 +20,11 @@ import {
   altTextSchema,
 } from './metadata.schema'
 
+// Re-export reference parsing from the canonical shared utility
+// All reference parsing logic should be maintained in referenceParser.ts
+export { parseReferences, referencePattern } from '../utils/referenceParser'
+import type { ParsedReference } from '../utils/referenceParser'
+
 /**
  * Complete Comic entity schema
  */
@@ -201,45 +206,6 @@ export const apiErrorSchema = z.object({
   details: z.string().optional(),
   timestamp: isoDateTimeSchema,
 })
-
-/**
- * Reference syntax validation for Obsidian-style links
- * Matches [[Title]] or [[Title|Alias]] patterns
- */
-export const referencePattern = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g
-
-/**
- * Parse caption for reference syntax
- */
-export function parseReferences(caption: string): Array<{
-  fullMatch: string
-  title: string
-  alias?: string
-  index: number
-}> {
-  const references: Array<{
-    fullMatch: string
-    title: string
-    alias?: string
-    index: number
-  }> = []
-  
-  let match: RegExpExecArray | null
-  
-  // Reset regex lastIndex to start from beginning
-  referencePattern.lastIndex = 0
-  
-  while ((match = referencePattern.exec(caption)) !== null) {
-    references.push({
-      fullMatch: match[0],
-      title: match[1].trim(),
-      alias: match[2]?.trim(),
-      index: match.index,
-    })
-  }
-  
-  return references
-}
 
 /**
  * Validate that references in caption can be resolved

@@ -1,8 +1,8 @@
 # Core MVP Task Breakdown
 
 **Created:** November 18, 2025  
-**Implementation Plan:** [plans/01-01-core-mvp-plan.md](../../plans/01-01-core-mvp-plan.md)  
-**Specification:** [specs/01-core-mvp-spec.md](../../specs/01-core-mvp-spec.md)
+**Implementation Plan:** [plans/01-core-mvp-plan.md](../../plans/01-core-mvp-plan.md)  
+**Specification:** [specs/01-core-mvp-spec.md](../../specs/01-core-mvp-spec.md)  
 **Status:** In Progress
 
 ## Overview
@@ -11,11 +11,13 @@ This directory contains the task breakdown for the Core MVP, organized by implem
 
 ## Task Summary
 
-**Total Tasks:** 58  
-**Completed:** 53 (91%)
-**In Progress:** Multiple phases  
+**Total Tasks:** 61  
+**Completed:** 53 (87%)  
+**Remaining:** 8 (Phase 8)  
 **Estimated Complexity:** High  
 **Parallel Execution Opportunities:** 12 task groups
+
+> **Note on phase numbering:** The implementation plan (`plans/01-core-mvp-plan.md`) uses phases 0–7, while the task breakdown uses phases 0–8. The plan's "Phase 1: Authentication & Core Infrastructure" maps to tasks Phase 2, and the plan's combined "Phase 7: Documentation & Deployment" was split into tasks Phase 7 (Testing) and Phase 8 (Documentation & Deployment).
 
 ## Constitutional Compliance Integration
 
@@ -27,8 +29,8 @@ This directory contains the task breakdown for the Core MVP, organized by implem
 
 ### Artist-First Development Priority
 - [x] Artist workflow tasks prioritized over reader experience tasks
-- [x] Upload and management interface tasks scheduled in Phase 2 (before reader features)
-- [x] Reader-facing tasks scheduled in Phase 3 (after artist tools functional)
+- [x] Upload and management interface tasks scheduled in Phase 3 (before reader features)
+- [x] Reader-facing tasks scheduled in Phase 4 (after artist tools functional)
 - [x] User testing focused on artist ease-of-use (iPad optimization, <5min upload target)
 
 ### Deployment Simplicity Validation
@@ -75,13 +77,13 @@ This directory contains the task breakdown for the Core MVP, organized by implem
 - API-001 through API-005
 - Status: All tasks complete
 
-### [Phase 7: Testing & Quality Assurance](./phase-7-testing.md) ⏳ 0% Complete
+### [Phase 7: Testing & Quality Assurance](./phase-7-testing.md) ✅ 100% Complete
 9 tasks covering unit tests, integration tests, and constitutional compliance.
 - TEST-001 through TEST-009
-- Status: Not started
+- Status: All tasks complete
 
 ### [Phase 8: Documentation & Deployment](./phase-8-deployment.md) ⏳ 0% Complete
-5 tasks covering documentation and production deployment.
+8 tasks covering documentation and production deployment.
 - DOC-001 through DOC-003
 - DEPLOY-001 through DEPLOY-004
 - VAL-001 (Final constitutional compliance validation)
@@ -97,13 +99,10 @@ This directory contains the task breakdown for the Core MVP, organized by implem
 - ✅ Phase 4: Reader Experience (8/8 tasks)
 - ✅ Phase 5: Color Palette Configuration (5/5 tasks)
 - ✅ Phase 6: API Implementation (5/5 tasks)
-
-### Active Phases
-- None currently
+- ✅ Phase 7: Testing & Quality Assurance (9/9 tasks)
 
 ### Upcoming Phases
-- ⏳ Phase 7: Testing & Quality Assurance
-- ⏳ Phase 8: Documentation & Deployment
+- ⏳ Phase 8: Documentation & Deployment (0/8 tasks)
 
 ## Critical Path
 
@@ -114,14 +113,13 @@ The critical path for MVP completion:
 4. ✅ API Implementation (Complete!)
 5. ✅ Reader Experience (Complete!)
 6. ✅ Color Configuration (Complete!)
-7. ⏳ **Testing & Validation** (Next focus)
-8. ⏳ Documentation & Deployment
+7. ✅ Testing & Validation (Complete!)
+8. ⏳ **Documentation & Deployment** (Next focus)
 
 ## Next Steps
 
 ### Immediate Priorities
-1. **Phase 7**: Testing & Quality Assurance
-2. **Phase 8**: Documentation & Deployment
+1. **Phase 8**: Documentation & Deployment (8 remaining tasks)
 
 ### Secondary Priorities
 - Performance optimization
@@ -134,14 +132,11 @@ See individual phase documents for detailed parallelization notes. Key parallel 
 - Phase 4: Reader components can be developed in parallel
 - Phase 6: API endpoints can be implemented in parallel
 - Phase 7: Test suites can be written in parallel
+- Phase 8: Documentation tasks can be written in parallel with build optimization
 
 ## Estimated Timeline
 
-With parallelization: 6-8 weeks for complete MVP implementation
-- Phases 0-2: ✅ Complete
-- Phase 3: 🔄 ~1 week remaining
-- Phases 4-6: ~2-3 weeks
-- Phase 7: ~1-2 weeks
-- Phase 8: ~1 week
+- Phases 0-7: ✅ Complete
+- Phase 8: ~2-3 weeks (documentation, deployment optimization, final validation)
 
-**Current Progress:** ~91% complete (53/58 tasks)
+**Current Progress:** 87% complete (53/61 tasks)
